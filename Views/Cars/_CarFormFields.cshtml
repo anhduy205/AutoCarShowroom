@@ -5,6 +5,14 @@
 
 <div class="row g-4">
     <div class="col-md-6">
+        <label asp-for="Brand" class="form-label"></label>
+        <select asp-for="Brand" class="form-select" asp-items="ViewBag.BrandOptions">
+            <option value="">Chon hang xe</option>
+        </select>
+        <span asp-validation-for="Brand" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
         <label asp-for="CarName" class="form-label"></label>
         <input asp-for="CarName" class="form-control" placeholder="VD: Toyota Camry 2.5Q" />
         <span asp-validation-for="CarName" class="text-danger"></span>

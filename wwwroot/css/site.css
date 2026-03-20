@@ -297,7 +297,7 @@ a:hover {
 
 @media (min-width: 992px) {
   .filter-bar {
-    grid-template-columns: 2fr 1fr 1fr auto;
+    grid-template-columns: minmax(200px, 2fr) repeat(3, minmax(150px, 1fr)) auto;
     align-items: end;
   }
 }

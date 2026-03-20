@@ -71,7 +71,10 @@
                         <img src="@car.Image" alt="@car.CarName" class="car-card__image" />
                         <div class="car-card__body">
                             <div class="car-card__meta">
-                                <span class="badge rounded-pill text-bg-light">@car.Year</span>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge rounded-pill text-bg-light">@car.Brand</span>
+                                    <span class="badge rounded-pill text-bg-light">@car.Year</span>
+                                </div>
                                 <strong>@car.Price.ToString("N0") VND</strong>
                             </div>
                             <h3>@car.CarName</h3>

@@ -21,7 +21,7 @@ namespace AutoCarShowroom.Controllers
             _environment = environment;
         }
 
-        public async Task<IActionResult> Index(string? searchTerm, int? year, string sortOrder = "name")
+        public async Task<IActionResult> Index(string? searchTerm, string? brand, int? year, string sortOrder = "name")
         {
             try
             {
@@ -32,7 +32,7 @@ namespace AutoCarShowroom.Controllers
                     .OrderByDescending(value => value)
                     .ToListAsync();
 
-                PopulateFilterOptions(availableYears, year, sortOrder);
+                PopulateFilterOptions(availableYears, brand, year, sortOrder);
                 ViewData["CurrentSearch"] = searchTerm;
 
                 var carsQuery = _context.Cars.AsNoTracking().AsQueryable();
@@ -40,6 +40,11 @@ namespace AutoCarShowroom.Controllers
                 if (!string.IsNullOrWhiteSpace(searchTerm))
                 {
                     carsQuery = carsQuery.Where(car => car.CarName.Contains(searchTerm));
+                }
+
+                if (!string.IsNullOrWhiteSpace(brand))
+                {
+                    carsQuery = carsQuery.Where(car => car.Brand == brand);
                 }
 
                 if (year.HasValue)
@@ -60,7 +65,7 @@ namespace AutoCarShowroom.Controllers
             }
             catch (Exception)
             {
-                PopulateFilterOptions(Array.Empty<int>(), year, sortOrder);
+                PopulateFilterOptions(Array.Empty<int>(), brand, year, sortOrder);
                 ViewData["LoadError"] = "Khong the tai danh sach xe. Hay kiem tra ket noi database.";
                 return View(new List<Car>());
             }
@@ -88,8 +93,11 @@ namespace AutoCarShowroom.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
+            PopulateBrandOptions();
+
             return View(new CarFormViewModel
             {
+                Brand = CarCatalogMetadata.MainstreamBrands.First(),
                 Year = DateTime.Now.Year
             });
         }
@@ -103,6 +111,7 @@ namespace AutoCarShowroom.Controllers
 
             if (!ModelState.IsValid)
             {
+                PopulateBrandOptions(model.Brand);
                 return View(model);
             }
 
@@ -114,6 +123,7 @@ namespace AutoCarShowroom.Controllers
 
                 var car = new Car
                 {
+                    Brand = model.Brand,
                     CarName = model.CarName,
                     Price = model.Price,
                     Year = model.Year,
@@ -130,6 +140,7 @@ namespace AutoCarShowroom.Controllers
             {
                 DeleteUploadedImage(savedImagePath);
                 ModelState.AddModelError(string.Empty, "Khong the luu du lieu vao database. Vui long thu lai.");
+                PopulateBrandOptions(model.Brand);
                 return View(model);
             }
         }
@@ -149,6 +160,7 @@ namespace AutoCarShowroom.Controllers
                 return NotFound();
             }
 
+            PopulateBrandOptions(car.Brand);
             return View(MapToFormViewModel(car));
         }
 
@@ -174,6 +186,7 @@ namespace AutoCarShowroom.Controllers
             if (!ModelState.IsValid)
             {
                 model.CurrentImagePath = car.Image;
+                PopulateBrandOptions(model.Brand);
                 return View(model);
             }
 
@@ -182,6 +195,7 @@ namespace AutoCarShowroom.Controllers
 
             try
             {
+                car.Brand = model.Brand;
                 car.CarName = model.CarName;
                 car.Price = model.Price;
                 car.Year = model.Year;
@@ -219,6 +233,7 @@ namespace AutoCarShowroom.Controllers
                 DeleteUploadedImage(newImagePath);
                 model.CurrentImagePath = previousImagePath;
                 ModelState.AddModelError(string.Empty, "Khong the cap nhat du lieu. Vui long thu lai.");
+                PopulateBrandOptions(model.Brand);
                 return View(model);
             }
         }
@@ -272,8 +287,9 @@ namespace AutoCarShowroom.Controllers
             }
         }
 
-        private void PopulateFilterOptions(IEnumerable<int> years, int? selectedYear, string sortOrder)
+        private void PopulateFilterOptions(IEnumerable<int> years, string? selectedBrand, int? selectedYear, string sortOrder)
         {
+            ViewBag.Brands = new SelectList(CarCatalogMetadata.AllBrands, selectedBrand);
             ViewBag.Years = new SelectList(years, selectedYear);
             ViewBag.SortOptions = new List<SelectListItem>
             {
@@ -285,11 +301,17 @@ namespace AutoCarShowroom.Controllers
             };
         }
 
+        private void PopulateBrandOptions(string? selectedBrand = null)
+        {
+            ViewBag.BrandOptions = new SelectList(CarCatalogMetadata.AllBrands, selectedBrand);
+        }
+
         private static CarFormViewModel MapToFormViewModel(Car car)
         {
             return new CarFormViewModel
             {
                 CarID = car.CarID,
+                Brand = car.Brand,
                 CarName = car.CarName,
                 Price = car.Price,
                 Year = car.Year,

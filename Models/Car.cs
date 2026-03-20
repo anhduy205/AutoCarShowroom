@@ -8,6 +8,11 @@ namespace AutoCarShowroom.Models
         [Key]
         public int CarID { get; set; }
 
+        [Required(ErrorMessage = "Vui long chon hang xe.")]
+        [Display(Name = "Hang xe")]
+        [StringLength(120)]
+        public string Brand { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "Vui long nhap ten xe.")]
         [Display(Name = "Ten xe")]
         public string CarName { get; set; } = string.Empty;

@@ -7,6 +7,10 @@ namespace AutoCarShowroom.ViewModels
     {
         public int CarID { get; set; }
 
+        [Required(ErrorMessage = "Vui long chon hang xe.")]
+        [Display(Name = "Hang xe")]
+        public string Brand { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "Vui long nhap ten xe.")]
         [Display(Name = "Ten xe")]
         public string CarName { get; set; } = string.Empty;

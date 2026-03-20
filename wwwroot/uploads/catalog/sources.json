@@ -1,0 +1,402 @@
+﻿[
+    {
+        "slug":  "toyota-vios",
+        "query":  "Toyota Vios",
+        "pageTitle":  "Toyota Vios",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Toyota_Vios",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Toyota_Vios_1.5_VVT-i_G_%28IV%29_%E2%80%93_f_13032025.jpg/1920px-Toyota_Vios_1.5_VVT-i_G_%28IV%29_%E2%80%93_f_13032025.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\toyota-vios.jpg"
+    },
+    {
+        "slug":  "toyota-corolla-cross",
+        "query":  "Toyota Corolla Cross",
+        "pageTitle":  "Toyota Corolla Cross",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Toyota_Corolla_Cross",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/2023_Toyota_Corolla_Cross_XLE_4WD_in_Wind_Chill_Pearl%2C_front_left.jpg/1920px-2023_Toyota_Corolla_Cross_XLE_4WD_in_Wind_Chill_Pearl%2C_front_left.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\toyota-corolla-cross.jpg"
+    },
+    {
+        "slug":  "toyota-innova-cross",
+        "query":  "Toyota Innova",
+        "pageTitle":  "Toyota Innova",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Toyota_Innova",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/2022_Toyota_Kijang_Innova_2.4_G_GUN142R_%2820220302%29.jpg/1920px-2022_Toyota_Kijang_Innova_2.4_G_GUN142R_%2820220302%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\toyota-innova-cross.jpg"
+    },
+    {
+        "slug":  "toyota-fortuner",
+        "query":  "Toyota Fortuner",
+        "pageTitle":  "Toyota Fortuner",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Toyota_Fortuner",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/2015_Toyota_Fortuner_%28New_Zealand%29.jpg/1920px-2015_Toyota_Fortuner_%28New_Zealand%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\toyota-fortuner.jpg"
+    },
+    {
+        "slug":  "toyota-camry",
+        "query":  "Toyota Camry",
+        "pageTitle":  "Toyota Camry",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Toyota_Camry",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/2018_Toyota_Camry_%28ASV70R%29_Ascent_sedan_%282018-08-27%29_01.jpg/1920px-2018_Toyota_Camry_%28ASV70R%29_Ascent_sedan_%282018-08-27%29_01.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\toyota-camry.jpg"
+    },
+    {
+        "slug":  "hyundai-accent",
+        "query":  "Hyundai Accent",
+        "pageTitle":  "Hyundai Accent",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Hyundai_Accent",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/2019_Hyundai_Accent_1.6L%2C_front_10.8.19.jpg/1920px-2019_Hyundai_Accent_1.6L%2C_front_10.8.19.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\hyundai-accent.jpg"
+    },
+    {
+        "slug":  "hyundai-creta",
+        "query":  "Hyundai Creta",
+        "pageTitle":  "Hyundai Creta",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Hyundai_Creta",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/2022_Hyundai_Creta_1.6_Plus_%28Chile%29_front_view.jpg/1920px-2022_Hyundai_Creta_1.6_Plus_%28Chile%29_front_view.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\hyundai-creta.jpg"
+    },
+    {
+        "slug":  "hyundai-tucson",
+        "query":  "Hyundai Tucson",
+        "pageTitle":  "Hyundai Tucson",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Hyundai_Tucson",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/2022_Hyundai_Tucson_Preferred%2C_Front_Right%2C_05-24-2021.jpg/1920px-2022_Hyundai_Tucson_Preferred%2C_Front_Right%2C_05-24-2021.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\hyundai-tucson.jpg"
+    },
+    {
+        "slug":  "hyundai-santa-fe",
+        "query":  "Hyundai Santa Fe",
+        "pageTitle":  "Hyundai Santa Fe",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Hyundai_Santa_Fe",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/2024_Hyundai_Santa_Fe_Luxury_AWD_in_Hampton_Grey%2C_front_left%2C_2024-06-30.jpg/1920px-2024_Hyundai_Santa_Fe_Luxury_AWD_in_Hampton_Grey%2C_front_left%2C_2024-06-30.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\hyundai-santa-fe.jpg"
+    },
+    {
+        "slug":  "hyundai-stargazer-x",
+        "query":  "Hyundai Stargazer",
+        "pageTitle":  "Hyundai Stargazer",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Hyundai_Stargazer",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/2022_Hyundai_Stargazer_Prime_%28Indonesia%29_front_view_01.jpg/1920px-2022_Hyundai_Stargazer_Prime_%28Indonesia%29_front_view_01.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\hyundai-stargazer-x.jpg"
+    },
+    {
+        "slug":  "kia-k3",
+        "query":  "Kia Forte",
+        "pageTitle":  "Kia Forte",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Kia_Forte",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Kia_K3_BD_FL_Snow_White_Pearl_%2813%29_%28cropped%29.jpg/1920px-Kia_K3_BD_FL_Snow_White_Pearl_%2813%29_%28cropped%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\kia-k3.jpg"
+    },
+    {
+        "slug":  "kia-seltos",
+        "query":  "Kia Seltos",
+        "pageTitle":  "Kia Seltos",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Kia_Seltos",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Kia_Seltos_SP2_PE_Snow_White_Pearl_%2817%29_%28cropped%29.jpg/1920px-Kia_Seltos_SP2_PE_Snow_White_Pearl_%2817%29_%28cropped%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\kia-seltos.jpg"
+    },
+    {
+        "slug":  "kia-sportage",
+        "query":  "Kia Sportage",
+        "pageTitle":  "Kia Sportage",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Kia_Sportage",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/2022_Kia_Sportage_GT-Line_ISG_HEV_Automatic_1.6_Front.jpg/1920px-2022_Kia_Sportage_GT-Line_ISG_HEV_Automatic_1.6_Front.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\kia-sportage.jpg"
+    },
+    {
+        "slug":  "kia-sorento",
+        "query":  "Kia Sorento",
+        "pageTitle":  "Kia Sorento",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Kia_Sorento",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/2024_Kia_Sorento_X-Line_SX_Prestige_%28facelift%29%2C_front_12.20.24.jpg/1920px-2024_Kia_Sorento_X-Line_SX_Prestige_%28facelift%29%2C_front_12.20.24.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\kia-sorento.jpg"
+    },
+    {
+        "slug":  "kia-carnival",
+        "query":  "Kia Carnival",
+        "pageTitle":  "Kia Carnival",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Kia_Carnival",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/2025_Kia_Carnival_Hybrid_EX%2C_front_right%2C_10-12-2025.jpg/1920px-2025_Kia_Carnival_Hybrid_EX%2C_front_right%2C_10-12-2025.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\kia-carnival.jpg"
+    },
+    {
+        "slug":  "ford-territory",
+        "query":  "Ford Territory SUV",
+        "pageTitle":  "Ford Territory (China)",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Ford_Territory_(China)",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/2023_Ford_Territory_KIMLIN88_front.jpg/1920px-2023_Ford_Territory_KIMLIN88_front.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\ford-territory.jpg"
+    },
+    {
+        "slug":  "ford-everest",
+        "query":  "Ford Everest",
+        "pageTitle":  "Ford Everest",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Ford_Everest",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Ford_Everest_3.0_V6_Turbo_Diesel_4WD_Platinum_%28III%29_%E2%80%93_f_02012026.jpg/1920px-Ford_Everest_3.0_V6_Turbo_Diesel_4WD_Platinum_%28III%29_%E2%80%93_f_02012026.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\ford-everest.jpg"
+    },
+    {
+        "slug":  "ford-ranger",
+        "query":  "Ford Ranger",
+        "pageTitle":  "Ford Ranger",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Ford_Ranger",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Ford_Ranger_%28T6%2C_P703%29_Wildtrak_IMG_7320.jpg/1920px-Ford_Ranger_%28T6%2C_P703%29_Wildtrak_IMG_7320.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\ford-ranger.jpg"
+    },
+    {
+        "slug":  "ford-transit",
+        "query":  "Ford Transit",
+        "pageTitle":  "Ford Transit",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Ford_Transit",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/2016_Ford_Transit_350_2.2.jpg/1920px-2016_Ford_Transit_350_2.2.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\ford-transit.jpg"
+    },
+    {
+        "slug":  "ford-explorer",
+        "query":  "Ford Explorer",
+        "pageTitle":  "Ford Explorer",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Ford_Explorer",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Ford_Explorer_%28sixth_generation%29_IMG_6063.jpg/1920px-Ford_Explorer_%28sixth_generation%29_IMG_6063.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\ford-explorer.jpg"
+    },
+    {
+        "slug":  "mazda-mazda3",
+        "query":  "Mazda3",
+        "pageTitle":  "Mazda3",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Mazda3",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mazda3_SKYACTIV-G.jpg/1920px-Mazda3_SKYACTIV-G.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\mazda-mazda3.jpg"
+    },
+    {
+        "slug":  "mazda-cx-3",
+        "query":  "Mazda CX-3",
+        "pageTitle":  "Mazda CX-3",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Mazda_CX-3",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/2017_Mazda_CX-3_Sport_NAV_Automatic_2.0_Front.jpg/1920px-2017_Mazda_CX-3_Sport_NAV_Automatic_2.0_Front.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\mazda-cx-3.jpg"
+    },
+    {
+        "slug":  "mazda-cx-5",
+        "query":  "Mazda CX-5",
+        "pageTitle":  "Mazda CX-5",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Mazda_CX-5",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/2024_Mazda_CX-5_2.5_S_Select_in_Platinum_Quartz_Metallic%2C_front_right.jpg/1920px-2024_Mazda_CX-5_2.5_S_Select_in_Platinum_Quartz_Metallic%2C_front_right.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\mazda-cx-5.jpg"
+    },
+    {
+        "slug":  "mazda-cx-8",
+        "query":  "Mazda CX-8",
+        "pageTitle":  "Mazda CX-8",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Mazda_CX-8",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Mazda_CX-8_Skyactiv-D_2.2_%E2%80%93_f_21032025.jpg/1920px-Mazda_CX-8_Skyactiv-D_2.2_%E2%80%93_f_21032025.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\mazda-cx-8.jpg"
+    },
+    {
+        "slug":  "mazda-bt-50",
+        "query":  "Mazda BT-50",
+        "pageTitle":  "Mazda BT-50",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Mazda_BT-50",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/2022_Mazda_BT-50_3.0d_Turbo_4x4_%28Chile%29_front_view.jpg/1920px-2022_Mazda_BT-50_3.0d_Turbo_4x4_%28Chile%29_front_view.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\mazda-bt-50.jpg"
+    },
+    {
+        "slug":  "honda-city",
+        "query":  "Honda City",
+        "pageTitle":  "Honda City",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Honda_City",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/2022_Honda_City_ZX_i-VTEC_%28India%29_front_view_%28cropped%29.jpg/1920px-2022_Honda_City_ZX_i-VTEC_%28India%29_front_view_%28cropped%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\honda-city.jpg"
+    },
+    {
+        "slug":  "honda-civic",
+        "query":  "Honda Civic",
+        "pageTitle":  "Honda Civic",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Honda_Civic",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Honda_Civic_e-HEV_Sport_%28XI%29_%E2%80%93_f_30062024.jpg/1920px-Honda_Civic_e-HEV_Sport_%28XI%29_%E2%80%93_f_30062024.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\honda-civic.jpg"
+    },
+    {
+        "slug":  "honda-hr-v",
+        "query":  "Honda HR-V",
+        "pageTitle":  "Honda HR-V",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Honda_HR-V",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/2023_Honda_HR-V_Advance_i-MMD_CVT_1.5.jpg/1920px-2023_Honda_HR-V_Advance_i-MMD_CVT_1.5.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\honda-hr-v.jpg"
+    },
+    {
+        "slug":  "honda-cr-v",
+        "query":  "Honda CR-V",
+        "pageTitle":  "Honda CR-V",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Honda_CR-V",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Honda_CR-V_e-HEV_Elegance_AWD_%28VI%29_%E2%80%93_f_14072024.jpg/1920px-Honda_CR-V_e-HEV_Elegance_AWD_%28VI%29_%E2%80%93_f_14072024.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\honda-cr-v.jpg"
+    },
+    {
+        "slug":  "honda-br-v",
+        "query":  "Honda BR-V",
+        "pageTitle":  "Honda BR-V",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Honda_BR-V",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/2022_Honda_BR-V_Prestige_with_Honda_Sensing_1.5_DG3_%2820220429%29.jpg/1920px-2022_Honda_BR-V_Prestige_with_Honda_Sensing_1.5_DG3_%2820220429%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\honda-br-v.jpg"
+    },
+    {
+        "slug":  "mitsubishi-attrage",
+        "query":  "Mitsubishi Mirage G4",
+        "pageTitle":  "Mitsubishi Mirage",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Mitsubishi_Mirage",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/2021_Mitsubishi_Mirage_Carbonite_Edition_in_White_Diamond%2C_front_right.jpg/1920px-2021_Mitsubishi_Mirage_Carbonite_Edition_in_White_Diamond%2C_front_right.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\mitsubishi-attrage.jpg"
+    },
+    {
+        "slug":  "mitsubishi-xforce",
+        "query":  "Mitsubishi Xforce",
+        "pageTitle":  "Mitsubishi Xforce",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Mitsubishi_Xforce",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/2024_Mitsubishi_Xforce_Ultimate_%28front%29.jpg/1920px-2024_Mitsubishi_Xforce_Ultimate_%28front%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\mitsubishi-xforce.jpg"
+    },
+    {
+        "slug":  "mitsubishi-xpander",
+        "query":  "Mitsubishi Xpander",
+        "pageTitle":  "Mitsubishi Xpander",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Mitsubishi_Xpander",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/2018_Mitsubishi_Xpander_Ultimate_1.5_NC1W_%2820190623%29.jpg/1920px-2018_Mitsubishi_Xpander_Ultimate_1.5_NC1W_%2820190623%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\mitsubishi-xpander.jpg"
+    },
+    {
+        "slug":  "mitsubishi-pajero-sport",
+        "query":  "Mitsubishi Pajero Sport",
+        "pageTitle":  "Mitsubishi Pajero Sport",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Mitsubishi_Pajero_Sport",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Mitsubishi_Pajero_Sport_%283rd_generation%29_1X7A0409.jpg/1920px-Mitsubishi_Pajero_Sport_%283rd_generation%29_1X7A0409.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\mitsubishi-pajero-sport.jpg"
+    },
+    {
+        "slug":  "mitsubishi-triton",
+        "query":  "Mitsubishi Triton",
+        "pageTitle":  "Mitsubishi Triton",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Mitsubishi_Triton",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Mitsubishi_Triton_LC_2.4_GLS_2WD_Blade_Silver_Metallic_%28cropped%29.jpg/1920px-Mitsubishi_Triton_LC_2.4_GLS_2WD_Blade_Silver_Metallic_%28cropped%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\mitsubishi-triton.jpg"
+    },
+    {
+        "slug":  "vinfast-vf-3",
+        "query":  "VinFast VF 3",
+        "pageTitle":  "VinFast VF 3",
+        "pageUrl":  "https://en.wikipedia.org/wiki/VinFast_VF_3",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/2025_VinFast_VF_3%2C_front_left.jpg/1920px-2025_VinFast_VF_3%2C_front_left.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\vinfast-vf-3.jpg"
+    },
+    {
+        "slug":  "vinfast-vf-5",
+        "query":  "VinFast VF 5",
+        "pageTitle":  "VinFast VF 5",
+        "pageUrl":  "https://en.wikipedia.org/wiki/VinFast_VF_5",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/2025_VinFast_VF_5_in_Vinfast_Blue%2C_front_left.jpg/1920px-2025_VinFast_VF_5_in_Vinfast_Blue%2C_front_left.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\vinfast-vf-5.jpg"
+    },
+    {
+        "slug":  "vinfast-vf-6",
+        "query":  "VinFast VF 6",
+        "pageTitle":  "VinFast VF 6",
+        "pageUrl":  "https://en.wikipedia.org/wiki/VinFast_VF_6",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/VinFast_VF_6_DSC_8468.jpg/1920px-VinFast_VF_6_DSC_8468.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\vinfast-vf-6.jpg"
+    },
+    {
+        "slug":  "vinfast-vf-7",
+        "query":  "VinFast VF 7",
+        "pageTitle":  "VinFast VF 7",
+        "pageUrl":  "https://en.wikipedia.org/wiki/VinFast_VF_7",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/VinFast_VF7%2C_front_NYIAS_2022.jpg/1920px-VinFast_VF7%2C_front_NYIAS_2022.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\vinfast-vf-7.jpg"
+    },
+    {
+        "slug":  "vinfast-vf-8",
+        "query":  "VinFast VF 8",
+        "pageTitle":  "VinFast VF 8",
+        "pageUrl":  "https://en.wikipedia.org/wiki/VinFast_VF_8",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/VinFast_VF_8_DSC_8568.jpg/1920px-VinFast_VF_8_DSC_8568.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\vinfast-vf-8.jpg"
+    },
+    {
+        "slug":  "ferrari-296-gtb",
+        "query":  "Ferrari 296 GTB",
+        "pageTitle":  "Ferrari 296",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Ferrari_296",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/2022_Ferrari_296_%28cropped%29.jpg/1920px-2022_Ferrari_296_%28cropped%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\ferrari-296-gtb.jpg"
+    },
+    {
+        "slug":  "ferrari-sf90-spider",
+        "query":  "Ferrari SF90 Spider",
+        "pageTitle":  "Ferrari SF90 Stradale",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Ferrari_SF90_Stradale",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Red_2019_Ferrari_SF90_Stradale_%2848264238897%29_%28cropped%29.jpg/1920px-Red_2019_Ferrari_SF90_Stradale_%2848264238897%29_%28cropped%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\ferrari-sf90-spider.jpg"
+    },
+    {
+        "slug":  "ferrari-12cilindri",
+        "query":  "Ferrari 12Cilindri",
+        "pageTitle":  "Ferrari 12Cilindri",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Ferrari_12Cilindri",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/2025_Ferrari_12Cilindri_in_Rosso_Imola%2C_front_left.jpg/1920px-2025_Ferrari_12Cilindri_in_Rosso_Imola%2C_front_left.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\ferrari-12cilindri.jpg"
+    },
+    {
+        "slug":  "ferrari-purosangue",
+        "query":  "Ferrari Purosangue",
+        "pageTitle":  "Ferrari Purosangue",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Ferrari_Purosangue",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Ferrari_Purosangue_DSC_7008.jpg/1920px-Ferrari_Purosangue_DSC_7008.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\ferrari-purosangue.jpg"
+    },
+    {
+        "slug":  "ferrari-f80",
+        "query":  "Ferrari F80",
+        "pageTitle":  "Ferrari F80",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Ferrari_F80",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/FerrariF80_%28resized%29_%28cropped%29.jpg/1920px-FerrariF80_%28resized%29_%28cropped%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\ferrari-f80.jpg"
+    },
+    {
+        "slug":  "lamborghini-temerario",
+        "query":  "Lamborghini Temerario",
+        "pageTitle":  "Lamborghini Temerario",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Lamborghini_Temerario",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Lamborghini_Temerario_MYLE_Festival_2025_DSC_9643.jpg/1920px-Lamborghini_Temerario_MYLE_Festival_2025_DSC_9643.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\lamborghini-temerario.jpg"
+    },
+    {
+        "slug":  "lamborghini-revuelto",
+        "query":  "Lamborghini Revuelto",
+        "pageTitle":  "Lamborghini Revuelto",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Lamborghini_Revuelto",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Lamborghini_Revuelto_DSC_6985_%28cropped%29.jpg/1920px-Lamborghini_Revuelto_DSC_6985_%28cropped%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\lamborghini-revuelto.jpg"
+    },
+    {
+        "slug":  "lamborghini-urus-se",
+        "query":  "Lamborghini Urus",
+        "pageTitle":  "Lamborghini Urus",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Lamborghini_Urus",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Lamborghini_Urus_SE_DSC_8524.jpg/1920px-Lamborghini_Urus_SE_DSC_8524.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\lamborghini-urus-se.jpg"
+    },
+    {
+        "slug":  "lamborghini-huracan-sto",
+        "query":  "Lamborghini Huracan STO",
+        "pageTitle":  "Lamborghini Huracán",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Lamborghini_Hurac%C3%A1n",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/2017_Lamborghini_Huracan_LP610.jpg/1920px-2017_Lamborghini_Huracan_LP610.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\lamborghini-huracan-sto.jpg"
+    },
+    {
+        "slug":  "lamborghini-huracan-sterrato",
+        "query":  "Lamborghini Huracan Sterrato",
+        "pageTitle":  "Lamborghini Huracán",
+        "pageUrl":  "https://en.wikipedia.org/wiki/Lamborghini_Hurac%C3%A1n",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/2017_Lamborghini_Huracan_LP610.jpg/1920px-2017_Lamborghini_Huracan_LP610.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\uploads\\catalog\\lamborghini-huracan-sterrato.jpg"
+    }
+]
