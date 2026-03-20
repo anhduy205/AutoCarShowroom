@@ -1,0 +1,103 @@
+@using System.Linq
+@model IEnumerable<Car>
+
+@{
+    ViewData["Title"] = "Quan ly xe";
+    var currentSearch = ViewData["CurrentSearch"] as string;
+}
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="eyebrow">Kho xe</span>
+            <h1>Quan ly danh sach xe</h1>
+        </div>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a asp-action="Create" class="btn btn-dark">Them xe moi</a>
+        }
+        else
+        {
+            <a asp-controller="Account" asp-action="Login" class="btn btn-dark">Dang nhap admin</a>
+        }
+    </div>
+
+    @if (ViewData["LoadError"] is string loadError)
+    {
+        <div class="alert alert-warning app-alert" role="alert">
+            @loadError
+        </div>
+    }
+
+    <form asp-action="Index" method="get" class="app-form mb-4">
+        <div class="filter-bar">
+            <div>
+                <label class="form-label" for="searchTerm">Tim theo ten xe</label>
+                <input id="searchTerm" name="searchTerm" value="@currentSearch" class="form-control" placeholder="Nhap ten xe can tim" />
+            </div>
+            <div>
+                <label class="form-label" for="year">Loc theo nam</label>
+                <select id="year" name="year" class="form-select" asp-items="ViewBag.Years">
+                    <option value="">Tat ca nam</option>
+                </select>
+            </div>
+            <div>
+                <label class="form-label" for="sortOrder">Sap xep</label>
+                <select id="sortOrder" name="sortOrder" class="form-select" asp-items="ViewBag.SortOptions"></select>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-dark">Ap dung</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Dat lai</a>
+            </div>
+        </div>
+    </form>
+
+    @if (Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var car in Model)
+            {
+                var shortDescription = car.Description.Length > 120
+                    ? $"{car.Description[..120]}..."
+                    : car.Description;
+
+                <div class="col-md-6 col-xl-4">
+                    <article class="car-card h-100">
+                        <img src="@car.Image" alt="@car.CarName" class="car-card__image" />
+                        <div class="car-card__body">
+                            <div class="car-card__meta">
+                                <span class="badge rounded-pill text-bg-light">@car.Year</span>
+                                <strong>@car.Price.ToString("N0") VND</strong>
+                            </div>
+                            <h3>@car.CarName</h3>
+                            <p>@shortDescription</p>
+                            <div class="car-card__actions">
+                                <a asp-action="Details" asp-route-id="@car.CarID" class="btn btn-dark">Chi tiet</a>
+                                @if (User.Identity?.IsAuthenticated == true)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@car.CarID" class="btn btn-outline-secondary">Sua</a>
+                                    <a asp-action="Delete" asp-route-id="@car.CarID" class="btn btn-outline-danger">Xoa</a>
+                                }
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <h2>Khong co xe phu hop</h2>
+            <p>Thu doi bo loc, tim kiem lai hoac dang nhap de them du lieu moi vao he thong.</p>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-action="Create" class="btn btn-dark">Them xe moi</a>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login" class="btn btn-dark">Dang nhap admin</a>
+            }
+        </div>
+    }
+</section>

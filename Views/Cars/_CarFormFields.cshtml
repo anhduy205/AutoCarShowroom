@@ -1,0 +1,50 @@
+@model CarFormViewModel
+
+<input asp-for="CurrentImagePath" type="hidden" />
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <label asp-for="CarName" class="form-label"></label>
+        <input asp-for="CarName" class="form-control" placeholder="VD: Toyota Camry 2.5Q" />
+        <span asp-validation-for="CarName" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Price" class="form-label"></label>
+        <input asp-for="Price" class="form-control" type="number" min="0" step="0.01" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Year" class="form-label"></label>
+        <input asp-for="Year" class="form-control" type="number" min="1950" max="@(DateTime.Now.Year + 1)" />
+        <span asp-validation-for="Year" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="ImageFile" class="form-label"></label>
+        <input asp-for="ImageFile" class="form-control" type="file" accept=".jpg,.jpeg,.png,.webp,.gif" />
+        <div class="upload-help">Chap nhan JPG, JPEG, PNG, WEBP, GIF. Kich thuoc toi da 5MB.</div>
+        <span asp-validation-for="ImageFile" class="text-danger"></span>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.CurrentImagePath))
+    {
+        <div class="col-12">
+            <div class="upload-preview">
+                <img src="@Model.CurrentImagePath" alt="@Model.CarName" class="upload-preview__image" />
+                <div>
+                    <span class="eyebrow">Anh hien tai</span>
+                    <p class="mb-0 text-muted">Tai len anh moi neu ban muon thay the hinh dang su dung.</p>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="col-12">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="5" placeholder="Mo ta ngan gon ve mau xe, tinh nang noi bat va tinh trang."></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+</div>

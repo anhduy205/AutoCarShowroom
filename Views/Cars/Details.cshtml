@@ -1,0 +1,62 @@
+@model Car
+
+@{
+    ViewData["Title"] = "Chi tiet xe";
+}
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="eyebrow">Chi tiet san pham</span>
+            <h1>@Model.CarName</h1>
+        </div>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <div class="d-flex flex-wrap gap-2">
+                <a asp-action="Edit" asp-route-id="@Model.CarID" class="btn btn-dark">Chinh sua</a>
+                <a asp-action="Delete" asp-route-id="@Model.CarID" class="btn btn-outline-danger">Xoa</a>
+            </div>
+        }
+    </div>
+
+    <div class="detail-panel">
+        <div class="row g-4 align-items-start">
+            <div class="col-lg-6">
+                <img src="@Model.Image" alt="@Model.CarName" class="detail-panel__image" />
+            </div>
+            <div class="col-lg-6">
+                <div class="detail-list">
+                    <div class="detail-list__item">
+                        <span>Gia ban</span>
+                        <strong>@Model.Price.ToString("N0") VND</strong>
+                    </div>
+                    <div class="detail-list__item">
+                        <span>Nam san xuat</span>
+                        <strong>@Model.Year</strong>
+                    </div>
+                    <div class="detail-list__item">
+                        <span>Ma xe</span>
+                        <strong>#@Model.CarID</strong>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <h2>Mo ta</h2>
+                    <p class="text-muted">@Model.Description</p>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 mt-4">
+                    <a asp-action="Index" class="btn btn-outline-secondary">Quay lai danh sach</a>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <a asp-action="Create" class="btn btn-outline-dark">Them xe moi</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-dark">Dang nhap admin</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

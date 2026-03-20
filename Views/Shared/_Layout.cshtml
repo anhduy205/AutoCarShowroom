@@ -1,5 +1,5 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,35 +10,70 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-light app-navbar">
+            <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AutoCarShowroom</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="navbar-collapse collapse justify-content-between">
+                    <ul class="navbar-nav gap-lg-2">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Trang chu</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-controller="Cars" asp-action="Index">Showroom</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Noi dung do an</a>
                         </li>
                     </ul>
+
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <span class="admin-chip">Admin: @User.Identity.Name</span>
+                            <a class="btn btn-dark" asp-area="" asp-controller="Cars" asp-action="Create">Them xe</a>
+                            <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-outline-secondary">Dang xuat</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <a class="btn btn-dark" asp-area="" asp-controller="Account" asp-action="Login">Dang nhap admin</a>
+                        }
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
+
+    <div class="container layout-shell">
+        @if (TempData["SuccessMessage"] is string successMessage)
+        {
+            <div class="alert alert-success app-alert" role="alert">
+                @successMessage
+            </div>
+        }
+
+        @if (TempData["ErrorMessage"] is string errorMessage)
+        {
+            <div class="alert alert-danger app-alert" role="alert">
+                @errorMessage
+            </div>
+        }
+
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="footer">
         <div class="container">
-            &copy; 2026 - AutoCarShowroom - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <span>&copy; 2026 - AutoCarShowroom</span>
+            <a asp-area="" asp-controller="Home" asp-action="Privacy">Xem mo ta do an</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

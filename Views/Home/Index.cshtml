@@ -1,8 +1,104 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@using System.Linq
+@model HomeViewModel
+
+@{
+    ViewData["Title"] = "Trang chu";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="hero-panel">
+    <div class="hero-panel__content">
+        <span class="eyebrow">AutoCarShowroom</span>
+        <h1>Showroom MVC cho do an mon hoc voi du lieu mau, upload anh that va khu quan tri rieng.</h1>
+        <p class="hero-panel__text">
+            He thong cho phep xem danh sach xe cong khai, quan tri bang tai khoan admin,
+            cap nhat xe bang upload hinh anh va co san du lieu demo de thuyet trinh.
+        </p>
+        <div class="hero-panel__actions">
+            <a asp-controller="Cars" asp-action="Index" class="btn btn-dark btn-lg">Xem kho xe</a>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-controller="Cars" asp-action="Create" class="btn btn-outline-dark btn-lg">Them xe moi</a>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login" class="btn btn-outline-dark btn-lg">Dang nhap admin</a>
+            }
+        </div>
+    </div>
+
+    <div class="hero-panel__stats">
+        <article class="stat-card">
+            <span class="stat-card__label">Tong so xe</span>
+            <strong>@Model.TotalCars</strong>
+            <p>So mau xe dang duoc luu trong he thong showroom.</p>
+        </article>
+        <article class="stat-card">
+            <span class="stat-card__label">Gia trung binh</span>
+            <strong>@Model.AveragePrice.ToString("N0") VND</strong>
+            <p>Moc tham khao de so sanh nhanh danh muc xe hien co.</p>
+        </article>
+        <article class="stat-card">
+            <span class="stat-card__label">Doi xe moi nhat</span>
+            <strong>@(Model.NewestModelYear == 0 ? "--" : Model.NewestModelYear)</strong>
+            <p>Nam san xuat moi nhat dang co mat trong kho xe.</p>
+        </article>
+    </div>
+</section>
+
+@if (ViewData["LoadError"] is string loadError)
+{
+    <div class="alert alert-warning app-alert" role="alert">
+        @loadError
+    </div>
+}
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="eyebrow">Xe noi bat</span>
+            <h2>Danh sach de xuat tu kho xe hien tai</h2>
+        </div>
+        <a asp-controller="Cars" asp-action="Index" class="btn btn-outline-secondary">Quan ly danh sach</a>
+    </div>
+
+    @if (Model.FeaturedCars.Any())
+    {
+        <div class="row g-4">
+            @foreach (var car in Model.FeaturedCars)
+            {
+                <div class="col-md-6 col-xl-4">
+                    <article class="car-card h-100">
+                        <img src="@car.Image" alt="@car.CarName" class="car-card__image" />
+                        <div class="car-card__body">
+                            <div class="car-card__meta">
+                                <span class="badge rounded-pill text-bg-light">@car.Year</span>
+                                <strong>@car.Price.ToString("N0") VND</strong>
+                            </div>
+                            <h3>@car.CarName</h3>
+                            <p>@car.Description</p>
+                            <div class="car-card__actions">
+                                <a asp-controller="Cars" asp-action="Details" asp-route-id="@car.CarID" class="btn btn-dark">
+                                    Xem chi tiet
+                                </a>
+                                @if (User.Identity?.IsAuthenticated == true)
+                                {
+                                    <a asp-controller="Cars" asp-action="Edit" asp-route-id="@car.CarID" class="btn btn-outline-secondary">
+                                        Sua nhanh
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <h3>Chua co du lieu xe</h3>
+            <p>Ban co the dang nhap admin va them xe dau tien de bat dau hoan thien do an.</p>
+            <a asp-controller="Account" asp-action="Login" class="btn btn-dark">Dang nhap de quan tri</a>
+        </div>
+    }
+</section>

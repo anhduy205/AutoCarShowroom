@@ -1,0 +1,49 @@
+@model AutoCarShowroom.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = "Dang nhap admin";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<section class="login-shell">
+    <div class="login-panel">
+        <span class="eyebrow">Admin access</span>
+        <h1>Dang nhap quan tri</h1>
+        <p class="text-muted">
+            Dang nhap de them, sua, xoa xe va quan ly noi dung showroom.
+        </p>
+
+        <form asp-controller="Account" asp-action="Login" method="post" class="app-form mt-4">
+            <input type="hidden" asp-for="ReturnUrl" />
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label"></label>
+                <input asp-for="Username" class="form-control" autocomplete="username" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" class="form-control" autocomplete="current-password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-check mb-4">
+                <input asp-for="RememberMe" class="form-check-input" />
+                <label asp-for="RememberMe" class="form-check-label"></label>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-dark btn-lg">Dang nhap</button>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Quay ve trang chu</a>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
