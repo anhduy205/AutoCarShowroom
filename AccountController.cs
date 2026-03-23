@@ -47,7 +47,7 @@ namespace AutoCarShowroom.Controllers
 
             if (!isValidUsername || !isValidPassword)
             {
-                ModelState.AddModelError(string.Empty, "Tai khoan hoac mat khau khong dung.");
+                ModelState.AddModelError(string.Empty, "Tài khoản hoặc mật khẩu không đúng.");
                 return View("~/Login.cshtml", model);
             }
 
@@ -70,7 +70,7 @@ namespace AutoCarShowroom.Controllers
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
 
-            TempData["SuccessMessage"] = "Dang nhap thanh cong.";
+            TempData["SuccessMessage"] = "Đăng nhập thành công.";
 
             if (!string.IsNullOrWhiteSpace(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
             {
@@ -86,7 +86,7 @@ namespace AutoCarShowroom.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            TempData["SuccessMessage"] = "Dang xuat thanh cong.";
+            TempData["SuccessMessage"] = "Đăng xuất thành công.";
             return RedirectToAction("Index", "Home");
         }
     }

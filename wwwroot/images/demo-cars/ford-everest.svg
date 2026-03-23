@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2b3d35"/>
+      <stop offset="100%" stop-color="#7da08c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="720" fill="url(#bg)"/>
+  <circle cx="1000" cy="160" r="150" fill="rgba(255,255,255,.08)"/>
+  <text x="80" y="120" fill="#fff" font-size="64" font-weight="700" font-family="Segoe UI, Arial">Ford Everest</text>
+  <text x="80" y="170" fill="rgba(255,255,255,.72)" font-size="28" font-family="Segoe UI, Arial">Adventure SUV</text>
+  <path d="M220 435h510l138 80H165l55-80z" fill="#19221d"/>
+  <path d="M350 285h255c87 0 156 51 208 115H240c34-79 68-115 110-115z" fill="#eef5f1"/>
+  <rect x="452" y="323" width="172" height="40" rx="10" fill="#d6e1dc"/>
+  <circle cx="338" cy="522" r="55" fill="#101612"/>
+  <circle cx="338" cy="522" r="22" fill="#d8ddd8"/>
+  <circle cx="742" cy="522" r="55" fill="#101612"/>
+  <circle cx="742" cy="522" r="22" fill="#d8ddd8"/>
+</svg>

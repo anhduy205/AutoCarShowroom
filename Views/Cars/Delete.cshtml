@@ -1,16 +1,16 @@
 @model Car
 
 @{
-    ViewData["Title"] = "Xoa xe";
+    ViewData["Title"] = "Xóa xe";
 }
 
 <section class="section-block">
     <div class="section-heading">
         <div>
-            <span class="eyebrow">Xac nhan thao tac</span>
-            <h1>Xoa xe khoi he thong</h1>
+            <span class="section-kicker">Xác nhận thao tác</span>
+            <h1>Xóa mẫu xe khỏi showroom</h1>
         </div>
-        <a asp-action="Index" class="btn btn-outline-secondary">Quay lai danh sach</a>
+        <a asp-action="Index" class="btn btn-outline-dark">Quay lại danh mục</a>
     </div>
 
     <div class="detail-panel">
@@ -20,28 +20,32 @@
             </div>
             <div class="col-lg-7">
                 <h2>@Model.CarName</h2>
-                <p class="text-muted">Ban sap xoa mau xe nay khoi showroom. Thao tac nay khong the hoan tac.</p>
+                <p class="text-muted">Thao tác này sẽ gỡ mẫu xe khỏi showroom và không thể hoàn tác.</p>
 
                 <div class="detail-list mt-4">
                     <div class="detail-list__item">
-                        <span>Hang xe</span>
-                        <strong>@Model.Brand</strong>
+                        <span>Giá bán</span>
+                        <strong>@Model.Price.ToString("N0") VNĐ</strong>
                     </div>
                     <div class="detail-list__item">
-                        <span>Gia ban</span>
-                        <strong>@Model.Price.ToString("N0") VND</strong>
-                    </div>
-                    <div class="detail-list__item">
-                        <span>Nam san xuat</span>
+                        <span>Năm sản xuất</span>
                         <strong>@Model.Year</strong>
+                    </div>
+                    <div class="detail-list__item">
+                        <span>Hãng và dòng xe</span>
+                        <strong>@Model.Brand @Model.ModelName</strong>
+                    </div>
+                    <div class="detail-list__item">
+                        <span>Trạng thái</span>
+                        <strong>@Model.Status</strong>
                     </div>
                 </div>
 
-                <form asp-action="Delete" class="mt-4">
+                <form asp-action="Delete" asp-route-id="@Model.CarID" method="post" class="mt-4">
                     <input type="hidden" asp-for="CarID" />
                     <div class="d-flex flex-wrap gap-2">
-                        <button type="submit" class="btn btn-danger">Xac nhan xoa</button>
-                        <a asp-action="Details" asp-route-id="@Model.CarID" class="btn btn-outline-secondary">Huy</a>
+                        <button type="submit" class="btn btn-danger">Xác nhận xóa</button>
+                        <a asp-action="Details" asp-route-id="@Model.CarID" class="btn btn-outline-dark">Quay lại chi tiết</a>
                     </div>
                 </form>
             </div>

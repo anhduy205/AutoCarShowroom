@@ -10,6 +10,16 @@ namespace AutoCarShowroom.Controllers
     public class CarsController : Controller
     {
         private static readonly string[] AllowedImageExtensions = [".jpg", ".jpeg", ".png", ".webp", ".gif"];
+        private static readonly string[] VehicleBodyTypes = ["SUV", "Sedan", "Hatchback", "MPV", "Crossover", "Pickup", "Coupe", "Mui trần", "Khác"];
+        private static readonly string[] VehicleStatuses = ["Còn hàng", "Đã bán", "Khuyến mãi"];
+        private static readonly PriceRangeOption[] PriceRangeOptions =
+        [
+            new("under_700", "Dưới 700 triệu", null, 700_000_000m),
+            new("700_1000", "700 triệu - 1 tỷ", 700_000_000m, 1_000_000_000m),
+            new("1000_1500", "1 tỷ - 1.5 tỷ", 1_000_000_000m, 1_500_000_000m),
+            new("1500_2500", "1.5 tỷ - 2.5 tỷ", 1_500_000_000m, 2_500_000_000m),
+            new("above_2500", "Trên 2.5 tỷ", 2_500_000_000m, null)
+        ];
         private const long MaxImageSizeInBytes = 5 * 1024 * 1024;
 
         private readonly ShowroomDbContext _context;
@@ -21,10 +31,25 @@ namespace AutoCarShowroom.Controllers
             _environment = environment;
         }
 
-        public async Task<IActionResult> Index(string? searchTerm, string? brand, int? year, string sortOrder = "name")
+        public async Task<IActionResult> Index(
+            string? searchTerm,
+            string? brand,
+            string? bodyType,
+            string? status,
+            string? priceRange,
+            int? year,
+            string sortOrder = "name")
         {
             try
             {
+                var availableBrands = await _context.Cars
+                    .AsNoTracking()
+                    .Select(car => car.Brand)
+                    .Where(value => !string.IsNullOrWhiteSpace(value))
+                    .Distinct()
+                    .OrderBy(value => value)
+                    .ToListAsync();
+
                 var availableYears = await _context.Cars
                     .AsNoTracking()
                     .Select(car => car.Year)
@@ -32,14 +57,27 @@ namespace AutoCarShowroom.Controllers
                     .OrderByDescending(value => value)
                     .ToListAsync();
 
-                PopulateFilterOptions(availableYears, brand, year, sortOrder);
+                PopulateFilterOptions(availableBrands, availableYears, brand, bodyType, status, priceRange, year, sortOrder);
                 ViewData["CurrentSearch"] = searchTerm;
 
                 var carsQuery = _context.Cars.AsNoTracking().AsQueryable();
 
                 if (!string.IsNullOrWhiteSpace(searchTerm))
                 {
-                    carsQuery = carsQuery.Where(car => car.CarName.Contains(searchTerm));
+                    var keyword = searchTerm.Trim();
+                    carsQuery = carsQuery.Where(car =>
+                        car.CarName.Contains(keyword) ||
+                        car.Brand.Contains(keyword) ||
+                        car.ModelName.Contains(keyword) ||
+                        car.Color.Contains(keyword) ||
+                        car.BodyType.Contains(keyword) ||
+                        car.Status.Contains(keyword) ||
+                        car.Description.Contains(keyword));
+                }
+
+                if (year.HasValue)
+                {
+                    carsQuery = carsQuery.Where(car => car.Year == year.Value);
                 }
 
                 if (!string.IsNullOrWhiteSpace(brand))
@@ -47,10 +85,17 @@ namespace AutoCarShowroom.Controllers
                     carsQuery = carsQuery.Where(car => car.Brand == brand);
                 }
 
-                if (year.HasValue)
+                if (!string.IsNullOrWhiteSpace(bodyType))
                 {
-                    carsQuery = carsQuery.Where(car => car.Year == year.Value);
+                    carsQuery = carsQuery.Where(car => car.BodyType == bodyType);
                 }
+
+                if (!string.IsNullOrWhiteSpace(status))
+                {
+                    carsQuery = carsQuery.Where(car => car.Status == status);
+                }
+
+                carsQuery = ApplyPriceRangeFilter(carsQuery, priceRange);
 
                 carsQuery = sortOrder switch
                 {
@@ -65,8 +110,8 @@ namespace AutoCarShowroom.Controllers
             }
             catch (Exception)
             {
-                PopulateFilterOptions(Array.Empty<int>(), brand, year, sortOrder);
-                ViewData["LoadError"] = "Khong the tai danh sach xe. Hay kiem tra ket noi database.";
+                PopulateFilterOptions(Array.Empty<string>(), Array.Empty<int>(), brand, bodyType, status, priceRange, year, sortOrder);
+                ViewData["LoadError"] = "Không thể tải danh sách xe. Vui lòng kiểm tra kết nối cơ sở dữ liệu.";
                 return View(new List<Car>());
             }
         }
@@ -93,13 +138,14 @@ namespace AutoCarShowroom.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
-            PopulateBrandOptions();
-
-            return View(new CarFormViewModel
+            var viewModel = new CarFormViewModel
             {
-                Brand = CarCatalogMetadata.MainstreamBrands.First(),
-                Year = DateTime.Now.Year
-            });
+                Year = DateTime.Now.Year,
+                Status = VehicleStatuses[0]
+            };
+
+            PopulateFormOptions(viewModel.BodyType, viewModel.Status);
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -108,10 +154,11 @@ namespace AutoCarShowroom.Controllers
         public async Task<IActionResult> Create(CarFormViewModel model)
         {
             ValidateImageFile(model.ImageFile, imageRequired: true);
+            ValidateVehicleMetadata(model);
 
             if (!ModelState.IsValid)
             {
-                PopulateBrandOptions(model.Brand);
+                PopulateFormOptions(model.BodyType, model.Status);
                 return View(model);
             }
 
@@ -123,24 +170,29 @@ namespace AutoCarShowroom.Controllers
 
                 var car = new Car
                 {
-                    Brand = model.Brand,
                     CarName = model.CarName,
+                    Brand = model.Brand,
+                    ModelName = model.ModelName,
                     Price = model.Price,
                     Year = model.Year,
+                    Color = model.Color,
+                    BodyType = model.BodyType,
+                    Status = model.Status,
                     Image = savedImagePath,
+                    Specifications = model.Specifications,
                     Description = model.Description
                 };
 
                 _context.Add(car);
                 await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Them xe thanh cong.";
+                TempData["SuccessMessage"] = "Đã thêm xe thành công.";
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateException)
             {
                 DeleteUploadedImage(savedImagePath);
-                ModelState.AddModelError(string.Empty, "Khong the luu du lieu vao database. Vui long thu lai.");
-                PopulateBrandOptions(model.Brand);
+                ModelState.AddModelError(string.Empty, "Không thể lưu dữ liệu vào cơ sở dữ liệu. Vui lòng thử lại.");
+                PopulateFormOptions(model.BodyType, model.Status);
                 return View(model);
             }
         }
@@ -160,8 +212,9 @@ namespace AutoCarShowroom.Controllers
                 return NotFound();
             }
 
-            PopulateBrandOptions(car.Brand);
-            return View(MapToFormViewModel(car));
+            var viewModel = MapToFormViewModel(car);
+            PopulateFormOptions(viewModel.BodyType, viewModel.Status);
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -182,11 +235,12 @@ namespace AutoCarShowroom.Controllers
             }
 
             ValidateImageFile(model.ImageFile, imageRequired: false);
+            ValidateVehicleMetadata(model);
 
             if (!ModelState.IsValid)
             {
                 model.CurrentImagePath = car.Image;
-                PopulateBrandOptions(model.Brand);
+                PopulateFormOptions(model.BodyType, model.Status);
                 return View(model);
             }
 
@@ -195,10 +249,15 @@ namespace AutoCarShowroom.Controllers
 
             try
             {
-                car.Brand = model.Brand;
                 car.CarName = model.CarName;
+                car.Brand = model.Brand;
+                car.ModelName = model.ModelName;
                 car.Price = model.Price;
                 car.Year = model.Year;
+                car.Color = model.Color;
+                car.BodyType = model.BodyType;
+                car.Status = model.Status;
+                car.Specifications = model.Specifications;
                 car.Description = model.Description;
 
                 if (model.ImageFile != null)
@@ -214,7 +273,7 @@ namespace AutoCarShowroom.Controllers
                     DeleteUploadedImage(previousImagePath);
                 }
 
-                TempData["SuccessMessage"] = "Cap nhat xe thanh cong.";
+                TempData["SuccessMessage"] = "Cập nhật xe thành công.";
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateConcurrencyException)
@@ -232,8 +291,8 @@ namespace AutoCarShowroom.Controllers
             {
                 DeleteUploadedImage(newImagePath);
                 model.CurrentImagePath = previousImagePath;
-                ModelState.AddModelError(string.Empty, "Khong the cap nhat du lieu. Vui long thu lai.");
-                PopulateBrandOptions(model.Brand);
+                ModelState.AddModelError(string.Empty, "Không thể cập nhật dữ liệu. Vui lòng thử lại.");
+                PopulateFormOptions(model.BodyType, model.Status);
                 return View(model);
             }
         }
@@ -277,33 +336,71 @@ namespace AutoCarShowroom.Controllers
                 _context.Cars.Remove(car);
                 await _context.SaveChangesAsync();
                 DeleteUploadedImage(imagePath);
-                TempData["SuccessMessage"] = "Xoa xe thanh cong.";
+                TempData["SuccessMessage"] = "Đã xoá xe thành công.";
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateException)
             {
-                TempData["ErrorMessage"] = "Khong the xoa xe o thoi diem hien tai.";
+                TempData["ErrorMessage"] = "Không thể xoá xe ở thời điểm hiện tại.";
                 return RedirectToAction(nameof(Delete), new { id });
             }
         }
 
-        private void PopulateFilterOptions(IEnumerable<int> years, string? selectedBrand, int? selectedYear, string sortOrder)
+        private void PopulateFilterOptions(
+            IEnumerable<string> brands,
+            IEnumerable<int> years,
+            string? selectedBrand,
+            string? selectedBodyType,
+            string? selectedStatus,
+            string? selectedPriceRange,
+            int? selectedYear,
+            string sortOrder)
         {
-            ViewBag.Brands = new SelectList(CarCatalogMetadata.AllBrands, selectedBrand);
+            ViewBag.Brands = new SelectList(brands, selectedBrand);
+            ViewBag.BodyTypeFilters = new SelectList(VehicleBodyTypes, selectedBodyType);
+            ViewBag.StatusFilters = new SelectList(VehicleStatuses, selectedStatus);
+            ViewBag.PriceRanges = new SelectList(
+                PriceRangeOptions.Select(option => new SelectListItem(option.Label, option.Value)),
+                "Value",
+                "Text",
+                selectedPriceRange);
             ViewBag.Years = new SelectList(years, selectedYear);
             ViewBag.SortOptions = new List<SelectListItem>
             {
-                new("Ten A-Z", "name", sortOrder == "name"),
-                new("Gia cao den thap", "price_desc", sortOrder == "price_desc"),
-                new("Gia thap den cao", "price_asc", sortOrder == "price_asc"),
-                new("Nam moi den cu", "year_desc", sortOrder == "year_desc"),
-                new("Nam cu den moi", "year_asc", sortOrder == "year_asc")
+                new("Tên A - Z", "name", sortOrder == "name"),
+                new("Giá cao đến thấp", "price_desc", sortOrder == "price_desc"),
+                new("Giá thấp đến cao", "price_asc", sortOrder == "price_asc"),
+                new("Năm mới đến cũ", "year_desc", sortOrder == "year_desc"),
+                new("Năm cũ đến mới", "year_asc", sortOrder == "year_asc")
             };
         }
 
-        private void PopulateBrandOptions(string? selectedBrand = null)
+        private static IQueryable<Car> ApplyPriceRangeFilter(IQueryable<Car> carsQuery, string? priceRange)
         {
-            ViewBag.BrandOptions = new SelectList(CarCatalogMetadata.AllBrands, selectedBrand);
+            var selectedRange = PriceRangeOptions.FirstOrDefault(option => option.Value == priceRange);
+
+            if (selectedRange == null)
+            {
+                return carsQuery;
+            }
+
+            if (selectedRange.MinPrice.HasValue)
+            {
+                carsQuery = carsQuery.Where(car => car.Price >= selectedRange.MinPrice.Value);
+            }
+
+            if (selectedRange.MaxPrice.HasValue)
+            {
+                carsQuery = carsQuery.Where(car => car.Price < selectedRange.MaxPrice.Value);
+            }
+
+            return carsQuery;
+        }
+
+        private void PopulateFormOptions(string? selectedBodyType, string? selectedStatus)
+        {
+            ViewBag.BodyTypes = new SelectList(VehicleBodyTypes, selectedBodyType);
+            ViewBag.StatusOptions = new SelectList(VehicleStatuses, selectedStatus);
         }
 
         private static CarFormViewModel MapToFormViewModel(Car car)
@@ -311,13 +408,33 @@ namespace AutoCarShowroom.Controllers
             return new CarFormViewModel
             {
                 CarID = car.CarID,
-                Brand = car.Brand,
                 CarName = car.CarName,
+                Brand = car.Brand,
+                ModelName = car.ModelName,
                 Price = car.Price,
                 Year = car.Year,
+                Color = car.Color,
+                BodyType = car.BodyType,
+                Status = car.Status,
+                Specifications = car.Specifications,
                 Description = car.Description,
                 CurrentImagePath = car.Image
             };
+        }
+
+        private void ValidateVehicleMetadata(CarFormViewModel model)
+        {
+            if (!string.IsNullOrWhiteSpace(model.BodyType) &&
+                !VehicleBodyTypes.Contains(model.BodyType, StringComparer.OrdinalIgnoreCase))
+            {
+                ModelState.AddModelError(nameof(CarFormViewModel.BodyType), "Loại xe không hợp lệ.");
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Status) &&
+                !VehicleStatuses.Contains(model.Status, StringComparer.OrdinalIgnoreCase))
+            {
+                ModelState.AddModelError(nameof(CarFormViewModel.Status), "Trạng thái xe không hợp lệ.");
+            }
         }
 
         private void ValidateImageFile(IFormFile? imageFile, bool imageRequired)
@@ -326,7 +443,7 @@ namespace AutoCarShowroom.Controllers
             {
                 if (imageRequired)
                 {
-                    ModelState.AddModelError(nameof(CarFormViewModel.ImageFile), "Vui long chon anh xe.");
+                    ModelState.AddModelError(nameof(CarFormViewModel.ImageFile), "Vui lòng chọn ảnh xe.");
                 }
 
                 return;
@@ -334,20 +451,20 @@ namespace AutoCarShowroom.Controllers
 
             if (imageFile.Length == 0)
             {
-                ModelState.AddModelError(nameof(CarFormViewModel.ImageFile), "File anh khong hop le.");
+                ModelState.AddModelError(nameof(CarFormViewModel.ImageFile), "Tệp ảnh không hợp lệ.");
                 return;
             }
 
             if (imageFile.Length > MaxImageSizeInBytes)
             {
-                ModelState.AddModelError(nameof(CarFormViewModel.ImageFile), "Anh vuot qua gioi han 5MB.");
+                ModelState.AddModelError(nameof(CarFormViewModel.ImageFile), "Ảnh vượt quá giới hạn 5MB.");
             }
 
             var fileExtension = Path.GetExtension(imageFile.FileName);
 
             if (!AllowedImageExtensions.Contains(fileExtension, StringComparer.OrdinalIgnoreCase))
             {
-                ModelState.AddModelError(nameof(CarFormViewModel.ImageFile), "Chi chap nhan file JPG, JPEG, PNG, WEBP hoac GIF.");
+                ModelState.AddModelError(nameof(CarFormViewModel.ImageFile), "Chỉ chấp nhận tệp JPG, JPEG, PNG, WEBP hoặc GIF.");
             }
         }
 
@@ -387,5 +504,7 @@ namespace AutoCarShowroom.Controllers
         {
             return _context.Cars.AnyAsync(car => car.CarID == id);
         }
+
+        private sealed record PriceRangeOption(string Value, string Label, decimal? MinPrice, decimal? MaxPrice);
     }
 }

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#512b3f"/>
+      <stop offset="100%" stop-color="#c57b8f"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="720" fill="url(#bg)"/>
+  <circle cx="1000" cy="150" r="150" fill="rgba(255,255,255,.08)"/>
+  <text x="80" y="120" fill="#fff" font-size="64" font-weight="700" font-family="Segoe UI, Arial">Mazda CX-5</text>
+  <text x="80" y="170" fill="rgba(255,255,255,.72)" font-size="28" font-family="Segoe UI, Arial">Crossover</text>
+  <path d="M250 440h470l120 72H175l75-72z" fill="#1d1b21"/>
+  <path d="M380 308h230c70 0 132 36 176 92H260c31-63 65-92 120-92z" fill="#f6eef2"/>
+  <rect x="462" y="338" width="136" height="38" rx="10" fill="#ead0d8"/>
+  <circle cx="352" cy="510" r="52" fill="#111218"/>
+  <circle cx="352" cy="510" r="21" fill="#d7d8df"/>
+  <circle cx="700" cy="510" r="52" fill="#111218"/>
+  <circle cx="700" cy="510" r="21" fill="#d7d8df"/>
+</svg>

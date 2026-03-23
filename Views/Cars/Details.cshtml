@@ -1,65 +1,94 @@
 @model Car
 
 @{
-    ViewData["Title"] = "Chi tiet xe";
+    ViewData["Title"] = "Chi tiết xe";
+    var statusClass = Model.Status switch
+    {
+        "Đã bán" => "status-badge status-badge--sold",
+        "Khuyến mãi" => "status-badge status-badge--promo",
+        _ => "status-badge status-badge--available"
+    };
 }
+
+<section class="detail-hero">
+    <div class="detail-hero__media">
+        <img src="@Model.Image" alt="@Model.CarName" class="detail-hero__image" />
+    </div>
+
+    <div class="detail-hero__content">
+        <span class="section-kicker">Thông tin mẫu xe</span>
+        <p class="detail-hero__eyebrow">@Model.Brand @Model.ModelName</p>
+        <h1>@Model.CarName</h1>
+        <div class="detail-hero__specs">
+            <span class="pill">@Model.BodyType</span>
+            <span class="pill">Màu @Model.Color</span>
+            <span class="pill">Đời @Model.Year</span>
+            <span class="@statusClass">@Model.Status</span>
+        </div>
+
+        <div class="price-banner">@Model.Price.ToString("N0") VNĐ</div>
+        <p class="detail-hero__description">@Model.Description</p>
+
+        <div class="detail-hero__actions">
+            <a asp-action="Index" class="btn btn-outline-dark">Quay lại bộ sưu tập</a>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-action="Edit" asp-route-id="@Model.CarID" class="btn btn-accent">Chỉnh sửa mẫu xe</a>
+                <a asp-action="Delete" asp-route-id="@Model.CarID" class="btn btn-outline-danger">Xóa xe</a>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login" class="btn btn-accent">Đăng nhập quản trị</a>
+            }
+        </div>
+    </div>
+</section>
 
 <section class="section-block">
     <div class="section-heading">
         <div>
-            <span class="eyebrow">Chi tiet san pham</span>
-            <h1>@Model.CarName</h1>
+            <span class="section-kicker">Chi tiết</span>
+            <h2>Thông tin xe</h2>
         </div>
-        @if (User.Identity?.IsAuthenticated == true)
-        {
-            <div class="d-flex flex-wrap gap-2">
-                <a asp-action="Edit" asp-route-id="@Model.CarID" class="btn btn-dark">Chinh sua</a>
-                <a asp-action="Delete" asp-route-id="@Model.CarID" class="btn btn-outline-danger">Xoa</a>
-            </div>
-        }
     </div>
 
-    <div class="detail-panel">
-        <div class="row g-4 align-items-start">
-            <div class="col-lg-6">
-                <img src="@Model.Image" alt="@Model.CarName" class="detail-panel__image" />
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="detail-list">
+                <div class="detail-list__item">
+                    <span>Hãng xe</span>
+                    <strong>@Model.Brand</strong>
+                </div>
+                <div class="detail-list__item">
+                    <span>Dòng xe</span>
+                    <strong>@Model.ModelName</strong>
+                </div>
+                <div class="detail-list__item">
+                    <span>Tên xe hiển thị</span>
+                    <strong>@Model.CarName</strong>
+                </div>
+                <div class="detail-list__item">
+                    <span>Loại xe</span>
+                    <strong>@Model.BodyType</strong>
+                </div>
+                <div class="detail-list__item">
+                    <span>Màu sắc</span>
+                    <strong>@Model.Color</strong>
+                </div>
+                <div class="detail-list__item">
+                    <span>Trạng thái</span>
+                    <strong>@Model.Status</strong>
+                </div>
             </div>
-            <div class="col-lg-6">
-                <div class="detail-list">
-                    <div class="detail-list__item">
-                        <span>Hang xe</span>
-                        <strong>@Model.Brand</strong>
-                    </div>
-                    <div class="detail-list__item">
-                        <span>Gia ban</span>
-                        <strong>@Model.Price.ToString("N0") VND</strong>
-                    </div>
-                    <div class="detail-list__item">
-                        <span>Nam san xuat</span>
-                        <strong>@Model.Year</strong>
-                    </div>
-                    <div class="detail-list__item">
-                        <span>Ma xe</span>
-                        <strong>#@Model.CarID</strong>
-                    </div>
-                </div>
+        </div>
 
-                <div class="mt-4">
-                    <h2>Mo ta</h2>
-                    <p class="text-muted">@Model.Description</p>
-                </div>
+        <div class="col-lg-6">
+            <div class="spec-panel h-100">
+                <span class="section-kicker">Thông số kỹ thuật</span>
+                <p class="spec-panel__text">@Model.Specifications</p>
 
-                <div class="d-flex flex-wrap gap-2 mt-4">
-                    <a asp-action="Index" class="btn btn-outline-secondary">Quay lai danh sach</a>
-                    @if (User.Identity?.IsAuthenticated == true)
-                    {
-                        <a asp-action="Create" class="btn btn-outline-dark">Them xe moi</a>
-                    }
-                    else
-                    {
-                        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-dark">Dang nhap admin</a>
-                    }
-                </div>
+                <span class="section-kicker mt-4">Mô tả nổi bật</span>
+                <p class="spec-panel__text">@Model.Description</p>
             </div>
         </div>
     </div>

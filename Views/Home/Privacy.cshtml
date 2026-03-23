@@ -1,71 +1,76 @@
 @inject Microsoft.Extensions.Options.IOptions<AutoCarShowroom.Models.AdminAccountOptions> AdminOptions
 
 @{
-    ViewData["Title"] = "Thong tin do an";
+    ViewData["Title"] = "Giới thiệu đồ án";
 }
 
 <section class="section-block">
     <div class="section-heading">
         <div>
-            <span class="eyebrow">Bao cao tom tat</span>
+            <span class="section-kicker">Giới thiệu hệ thống</span>
             <h1>@ViewData["Title"]</h1>
         </div>
-        <a asp-controller="Cars" asp-action="Index" class="btn btn-outline-secondary">Mo showroom</a>
+        <a asp-controller="Cars" asp-action="Index" class="btn btn-accent">Mở showroom</a>
     </div>
 
-    <div class="row g-4">
-        <div class="col-lg-4">
-            <article class="info-card h-100">
-                <h2>Muc tieu</h2>
-                <p>Xay dung website showroom xe su dung ASP.NET Core MVC de quan ly danh sach xe, hinh anh va thong tin chi tiet.</p>
-            </article>
-        </div>
-        <div class="col-lg-4">
-            <article class="info-card h-100">
-                <h2>Cong nghe</h2>
-                <p>ASP.NET Core MVC, Entity Framework Core, SQL Server, Bootstrap va cookie authentication cho khu admin.</p>
-            </article>
-        </div>
-        <div class="col-lg-4">
-            <article class="info-card h-100">
-                <h2>Chuc nang</h2>
-                <p>Xem showroom cong khai, dang nhap admin, them sua xoa xe, upload anh that, tim kiem, loc va sap xep danh sach.</p>
-            </article>
-        </div>
+    <div class="service-grid">
+        <article class="service-card">
+            <span class="service-card__number">01</span>
+            <h3>Mục tiêu đồ án</h3>
+            <p>Xây dựng website showroom ô tô với giao diện hiện đại, khả năng quản trị nội dung và trưng bày xe trực quan.</p>
+        </article>
+        <article class="service-card">
+            <span class="service-card__number">02</span>
+            <h3>Công nghệ sử dụng</h3>
+            <p>ASP.NET Core MVC, Entity Framework Core, SQL Server, cookie authentication và giao diện tuỳ biến bằng CSS.</p>
+        </article>
+        <article class="service-card">
+            <span class="service-card__number">03</span>
+            <h3>Luồng quản trị</h3>
+            <p>Tài khoản quản trị mặc định là <strong>@AdminOptions.Value.Username</strong>, cho phép đăng xe, sửa nội dung và cập nhật hình ảnh.</p>
+        </article>
     </div>
 </section>
 
-<section class="section-block">
+<section class="section-block section-block--dark">
     <div class="section-heading">
         <div>
-            <span class="eyebrow">Demo</span>
-            <h2>Noi dung trinh bay khi bao cao</h2>
+            <span class="section-kicker">Điểm nhấn thuyết trình</span>
+            <h2>Những nội dung bạn có thể trình bày khi báo cáo</h2>
         </div>
     </div>
 
     <div class="row g-4">
         <div class="col-md-6">
-            <article class="info-card h-100">
-                <h3>Luong nguoi dung</h3>
-                <p>Khach truy cap co the xem danh sach xe, loc theo nam, tim theo ten va xem chi tiet tung mau xe.</p>
+            <article class="car-card car-card--dark h-100">
+                <div class="car-card__body">
+                    <h3>Giao diện phong cách web xe</h3>
+                    <p>Trang chủ và trang danh mục đã được thiết kế theo cảm hứng showroom ô tô với ảnh lớn, màu sắc cao cấp và nhịp bố cục rõ ràng.</p>
+                </div>
             </article>
         </div>
         <div class="col-md-6">
-            <article class="info-card h-100">
-                <h3>Luong quan tri</h3>
-                <p>Sau khi dang nhap tai khoan <strong>@AdminOptions.Value.Username</strong>, admin co the them, sua, xoa xe va thay doi anh bang file upload.</p>
+            <article class="car-card car-card--dark h-100">
+                <div class="car-card__body">
+                    <h3>Việt hoá toàn bộ hệ thống</h3>
+                    <p>Mọi nút bấm, tiêu đề, mô tả và thông báo người dùng chính đều đã được chuyển sang tiếng Việt có dấu.</p>
+                </div>
             </article>
         </div>
         <div class="col-md-6">
-            <article class="info-card h-100">
-                <h3>Du lieu mau</h3>
-                <p>He thong tu seed san danh sach xe demo luc khoi dong neu database chua co du lieu, giup ban demo ngay sau khi chay app.</p>
+            <article class="car-card car-card--dark h-100">
+                <div class="car-card__body">
+                    <h3>Quản trị viên thao tác trực tiếp</h3>
+                    <p>Đăng nhập để thêm xe, tải ảnh thật từ máy, cập nhật thông tin và xoá xe khỏi hệ thống.</p>
+                </div>
             </article>
         </div>
         <div class="col-md-6">
-            <article class="info-card h-100">
-                <h3>Huong mo rong</h3>
-                <p>Co the phat trien them dat lich xem xe, thong ke doanh thu, phan quyen nhieu vai tro va luu lich su cap nhat.</p>
+            <article class="car-card car-card--dark h-100">
+                <div class="car-card__body">
+                    <h3>Dữ liệu mẫu để demo</h3>
+                    <p>Nếu cơ sở dữ liệu đang trống, hệ thống có thể seed dữ liệu để bạn trình bày ngay luồng hiển thị và quản trị.</p>
+                </div>
             </article>
         </div>
     </div>

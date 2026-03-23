@@ -4,16 +4,16 @@ namespace AutoCarShowroom.ViewModels
 {
     public class LoginViewModel
     {
-        [Required(ErrorMessage = "Vui long nhap tai khoan.")]
-        [Display(Name = "Tai khoan")]
+        [Required(ErrorMessage = "Vui lòng nhập tài khoản.")]
+        [Display(Name = "Tài khoản")]
         public string Username { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Vui long nhap mat khau.")]
+        [Required(ErrorMessage = "Vui lòng nhập mật khẩu.")]
         [DataType(DataType.Password)]
-        [Display(Name = "Mat khau")]
+        [Display(Name = "Mật khẩu")]
         public string Password { get; set; } = string.Empty;
 
-        [Display(Name = "Ghi nho dang nhap")]
+        [Display(Name = "Ghi nhớ đăng nhập")]
         public bool RememberMe { get; set; }
 
         public string? ReturnUrl { get; set; }

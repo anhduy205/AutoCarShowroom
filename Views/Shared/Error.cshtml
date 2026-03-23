@@ -1,25 +1,36 @@
-﻿@model ErrorViewModel
+@model ErrorViewModel
 @{
-    ViewData["Title"] = "Error";
+    ViewData["Title"] = "Lỗi hệ thống";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Hệ thống gặp sự cố</span>
+            <h1>Đã xảy ra lỗi trong quá trình xử lý yêu cầu của bạn</h1>
+        </div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark">Quay về trang chủ</a>
+    </div>
 
-@if (Model.ShowRequestId)
-{
-    <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
-    </p>
-}
+    <div class="detail-panel">
+        <p class="mb-4">
+            Bạn có thể tải lại trang, kiểm tra thao tác vừa thực hiện hoặc quay về trang chủ để tiếp tục sử dụng showroom.
+        </p>
 
-<h3>Development Mode</h3>
-<p>
-    Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
-</p>
-<p>
-    <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
-    It can result in displaying sensitive information from exceptions to end users.
-    For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
-    and restarting the app.
-</p>
+        @if (Model.ShowRequestId)
+        {
+            <p>
+                <strong>Mã yêu cầu:</strong> <code>@Model.RequestId</code>
+            </p>
+        }
+
+        <h3 class="mt-4">Ghi chú cho quá trình kiểm thử</h3>
+        <p>
+            Nếu bạn đang chạy dự án ở môi trường phát triển, có thể bật chế độ <strong>Development</strong>
+            để xem thông tin lỗi chi tiết hơn khi debug.
+        </p>
+        <p class="mb-0">
+            Không nên bật chế độ này trên môi trường triển khai thật vì có thể làm lộ thông tin kỹ thuật nội bộ của hệ thống.
+        </p>
+    </div>
+</section>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1d2733"/>
+      <stop offset="100%" stop-color="#8b9cab"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="720" fill="url(#bg)"/>
+  <circle cx="1000" cy="160" r="152" fill="rgba(255,255,255,.08)"/>
+  <text x="80" y="120" fill="#fff" font-size="64" font-weight="700" font-family="Segoe UI, Arial">BMW X5</text>
+  <text x="80" y="170" fill="rgba(255,255,255,.72)" font-size="28" font-family="Segoe UI, Arial">Executive SUV</text>
+  <path d="M215 438h525l138 78H160l55-78z" fill="#161b21"/>
+  <path d="M350 286h260c88 0 160 48 210 114H242c36-79 70-114 108-114z" fill="#f6f8fa"/>
+  <rect x="455" y="323" width="178" height="40" rx="10" fill="#dce2e8"/>
+  <circle cx="336" cy="522" r="55" fill="#101216"/>
+  <circle cx="336" cy="522" r="22" fill="#dde2e6"/>
+  <circle cx="748" cy="522" r="55" fill="#101216"/>
+  <circle cx="748" cy="522" r="22" fill="#dde2e6"/>
+</svg>

@@ -10,39 +10,42 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light app-navbar">
+        <nav class="navbar navbar-expand-lg app-navbar">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AutoCarShowroom</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <span class="navbar-brand__title">AutoCarShowroom</span>
+                    <span class="navbar-brand__subtitle">Premium Auto Gallery</span>
+                </a>
+                <button class="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Bật menu điều hướng">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse justify-content-between">
-                    <ul class="navbar-nav gap-lg-2">
+                    <ul class="navbar-nav gap-lg-3">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Trang chu</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Cars" asp-action="Index">Showroom</a>
+                            <a class="nav-link" asp-area="" asp-controller="Cars" asp-action="Index">Bộ sưu tập xe</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Noi dung do an</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Giới thiệu đồ án</a>
                         </li>
                     </ul>
 
                     <div class="d-flex flex-wrap align-items-center gap-2">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
-                            <span class="admin-chip">Admin: @User.Identity.Name</span>
-                            <a class="btn btn-dark" asp-area="" asp-controller="Cars" asp-action="Create">Them xe</a>
+                            <span class="admin-chip">Quản trị viên: @User.Identity.Name</span>
+                            <a class="btn btn-accent" asp-area="" asp-controller="Cars" asp-action="Create">Đăng xe mới</a>
                             <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
                                 @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-outline-secondary">Dang xuat</button>
+                                <button type="submit" class="btn btn-outline-light">Đăng xuất</button>
                             </form>
                         }
                         else
                         {
-                            <a class="btn btn-dark" asp-area="" asp-controller="Account" asp-action="Login">Dang nhap admin</a>
+                            <a class="btn btn-accent" asp-area="" asp-controller="Account" asp-action="Login">Đăng nhập quản trị</a>
                         }
                     </div>
                 </div>
@@ -71,9 +74,12 @@
     </div>
 
     <footer class="footer">
-        <div class="container">
-            <span>&copy; 2026 - AutoCarShowroom</span>
-            <a asp-area="" asp-controller="Home" asp-action="Privacy">Xem mo ta do an</a>
+        <div class="container footer__inner">
+            <div>
+                <strong>AutoCarShowroom</strong>
+                <p class="mb-0">Showroom ô tô cho đồ án.</p>
+            </div>
+            <a asp-area="" asp-controller="Home" asp-action="Privacy">Xem thông tin hệ thống</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

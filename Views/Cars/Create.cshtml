@@ -1,24 +1,24 @@
 @model CarFormViewModel
 
 @{
-    ViewData["Title"] = "Them xe";
+    ViewData["Title"] = "Đăng xe mới";
 }
 
 <section class="section-block">
     <div class="section-heading">
         <div>
-            <span class="eyebrow">Quan ly xe</span>
-            <h1>Them xe moi</h1>
+            <span class="section-kicker">Quản trị showroom</span>
+            <h1>Đăng mẫu xe mới lên hệ thống</h1>
         </div>
-        <a asp-action="Index" class="btn btn-outline-secondary">Quay lai danh sach</a>
+        <a asp-action="Index" class="btn btn-outline-dark">Quay lại danh mục</a>
     </div>
 
-    <form asp-action="Create" enctype="multipart/form-data" class="app-form">
+    <form asp-action="Create" method="post" enctype="multipart/form-data" class="app-form">
         <partial name="_CarFormFields" model="Model" />
 
         <div class="d-flex flex-wrap gap-2 mt-4">
-            <button type="submit" class="btn btn-dark">Luu xe</button>
-            <a asp-action="Index" class="btn btn-outline-secondary">Huy</a>
+            <button type="submit" class="btn btn-accent">Lưu thông tin xe</button>
+            <a asp-action="Index" class="btn btn-outline-dark">Hủy</a>
         </div>
     </form>
 </section>

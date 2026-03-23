@@ -3,3 +3,4 @@ obj/
 .vs/
 App_Data/
 wwwroot/uploads/cars/
+artifacts/

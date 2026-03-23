@@ -2,47 +2,93 @@
 @model HomeViewModel
 
 @{
-    ViewData["Title"] = "Trang chu";
+    ViewData["Title"] = "Trang chủ";
+    var xeNoiBat = Model.FeaturedCars.FirstOrDefault();
 }
 
-<section class="hero-panel">
-    <div class="hero-panel__content">
-        <span class="eyebrow">AutoCarShowroom</span>
-        <h1>Showroom MVC cho do an mon hoc voi du lieu mau, upload anh that va khu quan tri rieng.</h1>
-        <p class="hero-panel__text">
-            He thong cho phep xem danh sach xe cong khai, quan tri bang tai khoan admin,
-            cap nhat xe bang upload hinh anh va co san du lieu demo de thuyet trinh.
+<section class="hero-showcase">
+    <div class="hero-showcase__copy">
+        <span class="section-kicker">Showroom ô tô</span>
+        <h1>Chọn mẫu xe đẹp, rõ giá, xem nhanh.</h1>
+        <p class="hero-showcase__description">
+            Giao diện gọn, trực quan và dễ demo.
         </p>
-        <div class="hero-panel__actions">
-            <a asp-controller="Cars" asp-action="Index" class="btn btn-dark btn-lg">Xem kho xe</a>
+
+        <div class="hero-showcase__actions">
+            <a asp-controller="Cars" asp-action="Index" class="btn btn-accent btn-lg">Khám phá kho xe</a>
             @if (User.Identity?.IsAuthenticated == true)
             {
-                <a asp-controller="Cars" asp-action="Create" class="btn btn-outline-dark btn-lg">Them xe moi</a>
+                <a asp-controller="Cars" asp-action="Create" class="btn btn-outline-dark btn-lg">Đăng mẫu xe mới</a>
             }
             else
             {
-                <a asp-controller="Account" asp-action="Login" class="btn btn-outline-dark btn-lg">Dang nhap admin</a>
+                <a asp-controller="Account" asp-action="Login" class="btn btn-outline-dark btn-lg">Đăng nhập quản trị</a>
             }
+        </div>
+
+        <div class="hero-showcase__tags">
+            <span>SUV</span>
+            <span>Sedan</span>
+            <span>MPV</span>
         </div>
     </div>
 
-    <div class="hero-panel__stats">
-        <article class="stat-card">
-            <span class="stat-card__label">Tong so xe</span>
-            <strong>@Model.TotalCars</strong>
-            <p>So mau xe dang duoc luu trong he thong showroom.</p>
-        </article>
-        <article class="stat-card">
-            <span class="stat-card__label">Gia trung binh</span>
-            <strong>@Model.AveragePrice.ToString("N0") VND</strong>
-            <p>Moc tham khao de so sanh nhanh danh muc xe hien co.</p>
-        </article>
-        <article class="stat-card">
-            <span class="stat-card__label">Doi xe moi nhat</span>
-            <strong>@(Model.NewestModelYear == 0 ? "--" : Model.NewestModelYear)</strong>
-            <p>Nam san xuat moi nhat dang co mat trong kho xe.</p>
-        </article>
+    <div class="hero-showcase__visual">
+        @if (xeNoiBat != null)
+        {
+            var statusClass = xeNoiBat.Status switch
+            {
+                "Đã bán" => "status-badge status-badge--sold",
+                "Khuyến mãi" => "status-badge status-badge--promo",
+                _ => "status-badge status-badge--available"
+            };
+
+            <article class="feature-card">
+                <img src="@xeNoiBat.Image" alt="@xeNoiBat.CarName" class="feature-card__image" />
+                <div class="feature-card__overlay">
+                    <span class="feature-card__badge">@xeNoiBat.Brand @xeNoiBat.ModelName</span>
+                    <h2>@xeNoiBat.CarName</h2>
+                    <div class="feature-card__meta">
+                        <span class="pill">@xeNoiBat.BodyType</span>
+                        <span class="pill">Màu @xeNoiBat.Color</span>
+                        <span class="@statusClass">@xeNoiBat.Status</span>
+                    </div>
+                    <div class="feature-card__footer">
+                        <strong>@xeNoiBat.Price.ToString("N0") VNĐ</strong>
+                        <a asp-controller="Cars" asp-action="Details" asp-route-id="@xeNoiBat.CarID" class="btn btn-light">Xem chi tiết</a>
+                    </div>
+                </div>
+            </article>
+        }
+        else
+        {
+            <div class="feature-card feature-card--placeholder">
+                <div class="feature-card__overlay">
+                    <span class="feature-card__badge">Showroom</span>
+                    <h2>Sẵn sàng trưng bày mẫu xe đầu tiên</h2>
+                    <p>Đăng nhập quản trị để thêm dữ liệu và bắt đầu hoàn thiện bài đồ án của bạn.</p>
+                </div>
+            </div>
+        }
     </div>
+</section>
+
+<section class="metrics-strip">
+    <article class="metric-card">
+        <span class="metric-card__label">Số lượng xe</span>
+        <strong>@Model.TotalCars</strong>
+        <p>Đang trưng bày.</p>
+    </article>
+    <article class="metric-card">
+        <span class="metric-card__label">Giá trung bình</span>
+        <strong>@Model.AveragePrice.ToString("N0") VNĐ</strong>
+        <p>Mốc tham khảo.</p>
+    </article>
+    <article class="metric-card">
+        <span class="metric-card__label">Đời xe mới nhất</span>
+        <strong>@(Model.NewestModelYear == 0 ? "--" : Model.NewestModelYear)</strong>
+        <p>Phiên bản mới.</p>
+    </article>
 </section>
 
 @if (ViewData["LoadError"] is string loadError)
@@ -52,13 +98,13 @@
     </div>
 }
 
-<section class="section-block">
+<section class="section-block section-block--dark">
     <div class="section-heading">
         <div>
-            <span class="eyebrow">Xe noi bat</span>
-            <h2>Danh sach de xuat tu kho xe hien tai</h2>
+            <span class="section-kicker">Nổi bật</span>
+            <h2>Mẫu xe đáng xem</h2>
         </div>
-        <a asp-controller="Cars" asp-action="Index" class="btn btn-outline-secondary">Quan ly danh sach</a>
+        <a asp-controller="Cars" asp-action="Index" class="btn btn-outline-light">Xem toàn bộ danh mục</a>
     </div>
 
     @if (Model.FeaturedCars.Any())
@@ -66,28 +112,35 @@
         <div class="row g-4">
             @foreach (var car in Model.FeaturedCars)
             {
+                var statusClass = car.Status switch
+                {
+                    "Đã bán" => "status-badge status-badge--sold",
+                    "Khuyến mãi" => "status-badge status-badge--promo",
+                    _ => "status-badge status-badge--available"
+                };
+
                 <div class="col-md-6 col-xl-4">
                     <article class="car-card h-100">
                         <img src="@car.Image" alt="@car.CarName" class="car-card__image" />
                         <div class="car-card__body">
                             <div class="car-card__meta">
-                                <div class="d-flex flex-wrap gap-2">
-                                    <span class="badge rounded-pill text-bg-light">@car.Brand</span>
-                                    <span class="badge rounded-pill text-bg-light">@car.Year</span>
+                                <div class="car-card__tag-group">
+                                    <span class="pill">@car.BodyType</span>
+                                    <span class="pill">@car.Year</span>
                                 </div>
-                                <strong>@car.Price.ToString("N0") VND</strong>
+                                <span class="@statusClass">@car.Status</span>
                             </div>
+                            <p class="car-card__eyebrow">@car.Brand @car.ModelName</p>
                             <h3>@car.CarName</h3>
-                            <p>@car.Description</p>
+                            <p class="car-card__subtitle">Màu sắc: @car.Color</p>
+                            <div class="car-card__meta">
+                                <span class="car-card__price">@car.Price.ToString("N0") VNĐ</span>
+                            </div>
                             <div class="car-card__actions">
-                                <a asp-controller="Cars" asp-action="Details" asp-route-id="@car.CarID" class="btn btn-dark">
-                                    Xem chi tiet
-                                </a>
+                                <a asp-controller="Cars" asp-action="Details" asp-route-id="@car.CarID" class="btn btn-accent">Xem xe</a>
                                 @if (User.Identity?.IsAuthenticated == true)
                                 {
-                                    <a asp-controller="Cars" asp-action="Edit" asp-route-id="@car.CarID" class="btn btn-outline-secondary">
-                                        Sua nhanh
-                                    </a>
+                                    <a asp-controller="Cars" asp-action="Edit" asp-route-id="@car.CarID" class="btn btn-outline-dark">Chỉnh sửa</a>
                                 }
                             </div>
                         </div>
@@ -98,10 +151,37 @@
     }
     else
     {
-        <div class="empty-state">
-            <h3>Chua co du lieu xe</h3>
-            <p>Ban co the dang nhap admin va them xe dau tien de bat dau hoan thien do an.</p>
-            <a asp-controller="Account" asp-action="Login" class="btn btn-dark">Dang nhap de quan tri</a>
+        <div class="empty-state empty-state--dark">
+            <h3>Chưa có dữ liệu showroom</h3>
+            <p>Đăng nhập để thêm xe.</p>
+            <a asp-controller="Account" asp-action="Login" class="btn btn-accent">Đăng nhập ngay</a>
         </div>
     }
+</section>
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Điểm mạnh</span>
+            <h2>Gọn, rõ, dễ dùng</h2>
+        </div>
+    </div>
+
+    <div class="service-grid">
+        <article class="service-card">
+            <span class="service-card__number">01</span>
+            <h3>Ảnh lớn</h3>
+            <p>Nhìn xe rõ ngay.</p>
+        </article>
+        <article class="service-card">
+            <span class="service-card__number">02</span>
+            <h3>Lọc nhanh</h3>
+            <p>Tìm xe dễ hơn.</p>
+        </article>
+        <article class="service-card">
+            <span class="service-card__number">03</span>
+            <h3>Quản trị gọn</h3>
+            <p>Thêm sửa nhanh.</p>
+        </article>
+    </div>
 </section>

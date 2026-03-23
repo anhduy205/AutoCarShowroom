@@ -50,8 +50,8 @@ namespace AutoCarShowroom.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Unable to load showroom data for the home page.");
-                ViewData["LoadError"] = "Chua the tai du lieu showroom. Hay kiem tra ket noi SQL Server va migration.";
+                _logger.LogWarning(ex, "Không thể tải dữ liệu cho trang chủ showroom.");
+                ViewData["LoadError"] = "Chưa thể tải dữ liệu showroom. Vui lòng kiểm tra kết nối SQL Server và migration.";
                 return View(new HomeViewModel());
             }
         }

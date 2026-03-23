@@ -2,111 +2,150 @@
 @model IEnumerable<Car>
 
 @{
-    ViewData["Title"] = "Quan ly xe";
+    ViewData["Title"] = "Bộ sưu tập xe";
     var currentSearch = ViewData["CurrentSearch"] as string;
+    var soLuongXe = Model.Count();
 }
 
-<section class="section-block">
-    <div class="section-heading">
-        <div>
-            <span class="eyebrow">Kho xe</span>
-            <h1>Quan ly danh sach xe</h1>
+<section class="inventory-hero">
+    <div class="inventory-hero__copy">
+        <span class="section-kicker">Bộ sưu tập</span>
+        <h1>Kho xe đang có tại showroom</h1>
+        <p>Xem nhanh, lọc nhanh, chọn nhanh.</p>
+        <div class="hero-showcase__tags">
+            <span>@soLuongXe mẫu xe</span>
+            <span>Giao diện gọn</span>
+            <span>Responsive</span>
         </div>
+    </div>
+
+    <div class="inventory-hero__panel">
+        <span class="inventory-hero__label">Trạng thái truy cập</span>
         @if (User.Identity?.IsAuthenticated == true)
         {
-            <a asp-action="Create" class="btn btn-dark">Them xe moi</a>
+            <strong>Bạn đang ở chế độ quản trị</strong>
+            <p>Sẵn sàng thêm hoặc sửa xe.</p>
+            <a asp-action="Create" class="btn btn-accent">Đăng xe mới</a>
         }
         else
         {
-            <a asp-controller="Account" asp-action="Login" class="btn btn-dark">Dang nhap admin</a>
+            <strong>Khách tham khảo</strong>
+            <p>Xem xe và lọc theo nhu cầu.</p>
+            <a asp-controller="Account" asp-action="Login" class="btn btn-accent">Đăng nhập quản trị</a>
         }
     </div>
-
-    @if (ViewData["LoadError"] is string loadError)
-    {
-        <div class="alert alert-warning app-alert" role="alert">
-            @loadError
-        </div>
-    }
-
-    <form asp-action="Index" method="get" class="app-form mb-4">
-        <div class="filter-bar">
-            <div>
-                <label class="form-label" for="searchTerm">Tim theo ten xe</label>
-                <input id="searchTerm" name="searchTerm" value="@currentSearch" class="form-control" placeholder="Nhap ten xe can tim" />
-            </div>
-            <div>
-                <label class="form-label" for="brand">Loc theo hang</label>
-                <select id="brand" name="brand" class="form-select" asp-items="ViewBag.Brands">
-                    <option value="">Tat ca hang xe</option>
-                </select>
-            </div>
-            <div>
-                <label class="form-label" for="year">Loc theo nam</label>
-                <select id="year" name="year" class="form-select" asp-items="ViewBag.Years">
-                    <option value="">Tat ca nam</option>
-                </select>
-            </div>
-            <div>
-                <label class="form-label" for="sortOrder">Sap xep</label>
-                <select id="sortOrder" name="sortOrder" class="form-select" asp-items="ViewBag.SortOptions"></select>
-            </div>
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-dark">Ap dung</button>
-                <a asp-action="Index" class="btn btn-outline-secondary">Dat lai</a>
-            </div>
-        </div>
-    </form>
-
-    @if (Model.Any())
-    {
-        <div class="row g-4">
-            @foreach (var car in Model)
-            {
-                var shortDescription = car.Description.Length > 120
-                    ? $"{car.Description[..120]}..."
-                    : car.Description;
-
-                <div class="col-md-6 col-xl-4">
-                    <article class="car-card h-100">
-                        <img src="@car.Image" alt="@car.CarName" class="car-card__image" />
-                        <div class="car-card__body">
-                            <div class="car-card__meta">
-                                <div class="d-flex flex-wrap gap-2">
-                                    <span class="badge rounded-pill text-bg-light">@car.Brand</span>
-                                    <span class="badge rounded-pill text-bg-light">@car.Year</span>
-                                </div>
-                                <strong>@car.Price.ToString("N0") VND</strong>
-                            </div>
-                            <h3>@car.CarName</h3>
-                            <p>@shortDescription</p>
-                            <div class="car-card__actions">
-                                <a asp-action="Details" asp-route-id="@car.CarID" class="btn btn-dark">Chi tiet</a>
-                                @if (User.Identity?.IsAuthenticated == true)
-                                {
-                                    <a asp-action="Edit" asp-route-id="@car.CarID" class="btn btn-outline-secondary">Sua</a>
-                                    <a asp-action="Delete" asp-route-id="@car.CarID" class="btn btn-outline-danger">Xoa</a>
-                                }
-                            </div>
-                        </div>
-                    </article>
-                </div>
-            }
-        </div>
-    }
-    else
-    {
-        <div class="empty-state">
-            <h2>Khong co xe phu hop</h2>
-            <p>Thu doi bo loc, tim kiem lai hoac dang nhap de them du lieu moi vao he thong.</p>
-            @if (User.Identity?.IsAuthenticated == true)
-            {
-                <a asp-action="Create" class="btn btn-dark">Them xe moi</a>
-            }
-            else
-            {
-                <a asp-controller="Account" asp-action="Login" class="btn btn-dark">Dang nhap admin</a>
-            }
-        </div>
-    }
 </section>
+
+@if (ViewData["LoadError"] is string loadError)
+{
+    <div class="alert alert-warning app-alert" role="alert">
+        @loadError
+    </div>
+}
+
+<form asp-action="Index" method="get" class="filter-panel">
+    <div class="filter-bar">
+        <div class="filter-field filter-field--search">
+            <label class="form-label" for="searchTerm">Tìm kiếm</label>
+            <input id="searchTerm" name="searchTerm" value="@currentSearch" class="form-control" placeholder="Toyota, Camry, SUV..." />
+        </div>
+        <div class="filter-field">
+            <label class="form-label" for="brand">Hãng xe</label>
+            <select id="brand" name="brand" class="form-select" asp-items="ViewBag.Brands">
+                <option value="">Tất cả hãng</option>
+            </select>
+        </div>
+        <div class="filter-field">
+            <label class="form-label" for="bodyType">Loại xe</label>
+            <select id="bodyType" name="bodyType" class="form-select" asp-items="ViewBag.BodyTypeFilters">
+                <option value="">Tất cả loại xe</option>
+            </select>
+        </div>
+        <div class="filter-field">
+            <label class="form-label" for="priceRange">Khoảng giá</label>
+            <select id="priceRange" name="priceRange" class="form-select" asp-items="ViewBag.PriceRanges">
+                <option value="">Tất cả mức giá</option>
+            </select>
+        </div>
+        <div class="filter-field">
+            <label class="form-label" for="status">Trạng thái</label>
+            <select id="status" name="status" class="form-select" asp-items="ViewBag.StatusFilters">
+                <option value="">Tất cả trạng thái</option>
+            </select>
+        </div>
+        <div class="filter-field">
+            <label class="form-label" for="year">Lọc theo năm</label>
+            <select id="year" name="year" class="form-select" asp-items="ViewBag.Years">
+                <option value="">Tất cả năm</option>
+            </select>
+        </div>
+        <div class="filter-field">
+            <label class="form-label" for="sortOrder">Sắp xếp</label>
+            <select id="sortOrder" name="sortOrder" class="form-select" asp-items="ViewBag.SortOptions"></select>
+        </div>
+        <div class="filter-field filter-field--actions d-flex gap-2">
+            <button type="submit" class="btn btn-accent">Áp dụng</button>
+            <a asp-action="Index" class="btn btn-outline-dark">Đặt lại</a>
+        </div>
+    </div>
+</form>
+
+@if (Model.Any())
+{
+    <div class="row g-4">
+        @foreach (var car in Model)
+        {
+            var statusClass = car.Status switch
+            {
+                "Đã bán" => "status-badge status-badge--sold",
+                "Khuyến mãi" => "status-badge status-badge--promo",
+                _ => "status-badge status-badge--available"
+            };
+
+            <div class="col-md-6 col-xl-4">
+                <article class="car-card h-100">
+                    <img src="@car.Image" alt="@car.CarName" class="car-card__image" />
+                    <div class="car-card__body">
+                        <div class="car-card__meta">
+                            <div class="car-card__tag-group">
+                                <span class="pill">@car.BodyType</span>
+                                <span class="pill">@car.Year</span>
+                                <span class="pill">@car.Color</span>
+                            </div>
+                            <span class="@statusClass">@car.Status</span>
+                        </div>
+                        <p class="car-card__eyebrow">@car.Brand @car.ModelName</p>
+                        <h3>@car.CarName</h3>
+                        <p class="car-card__subtitle">@car.Color</p>
+                        <div class="car-card__meta">
+                            <span class="car-card__price">@car.Price.ToString("N0") VNĐ</span>
+                        </div>
+                        <div class="car-card__actions">
+                            <a asp-action="Details" asp-route-id="@car.CarID" class="btn btn-accent">Xem chi tiết</a>
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                <a asp-action="Edit" asp-route-id="@car.CarID" class="btn btn-outline-dark">Sửa</a>
+                                <a asp-action="Delete" asp-route-id="@car.CarID" class="btn btn-outline-danger">Xóa</a>
+                            }
+                        </div>
+                    </div>
+                </article>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="empty-state">
+        <h2>Chưa tìm thấy mẫu xe phù hợp</h2>
+        <p>Hãy đổi bộ lọc hoặc từ khóa.</p>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a asp-action="Create" class="btn btn-accent">Đăng xe mới</a>
+        }
+        else
+        {
+            <a asp-controller="Account" asp-action="Login" class="btn btn-accent">Đăng nhập quản trị</a>
+        }
+    </div>
+}

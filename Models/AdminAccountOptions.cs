@@ -6,6 +6,6 @@ namespace AutoCarShowroom.Models
 
         public string Password { get; set; } = "Admin@123";
 
-        public string DisplayName { get; set; } = "Quan tri showroom";
+        public string DisplayName { get; set; } = "Quản trị showroom";
     }
 }
