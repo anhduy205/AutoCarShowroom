@@ -30,8 +30,8 @@
         else
         {
             <strong>Khách tham khảo</strong>
-            <p>Xem xe và lọc theo nhu cầu.</p>
-            <a asp-controller="Account" asp-action="Login" class="btn btn-accent">Đăng nhập quản trị</a>
+            <p>Xem xe, thêm vào giỏ và thanh toán mô phỏng.</p>
+            <a asp-controller="Cart" asp-action="Index" class="btn btn-accent">Mở giỏ hàng</a>
         }
     </div>
 </section>
@@ -95,6 +95,7 @@
     <div class="row g-4">
         @foreach (var car in Model)
         {
+            var canOrder = OrderWorkflow.CanOrder(car);
             var statusClass = car.Status switch
             {
                 "Đã bán" => "status-badge status-badge--sold",
@@ -127,6 +128,19 @@
                                 <a asp-action="Edit" asp-route-id="@car.CarID" class="btn btn-outline-dark">Sửa</a>
                                 <a asp-action="Delete" asp-route-id="@car.CarID" class="btn btn-outline-danger">Xóa</a>
                             }
+                            else if (canOrder)
+                            {
+                                <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="carId" value="@car.CarID" />
+                                    <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                                    <button type="submit" class="btn btn-outline-dark">Thêm vào giỏ</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-outline-dark" disabled>Ngừng nhận đặt</button>
+                            }
                         </div>
                     </div>
                 </article>
@@ -145,7 +159,7 @@ else
         }
         else
         {
-            <a asp-controller="Account" asp-action="Login" class="btn btn-accent">Đăng nhập quản trị</a>
+            <a asp-controller="Cart" asp-action="Index" class="btn btn-accent">Xem giỏ hàng</a>
         }
     </div>
 }

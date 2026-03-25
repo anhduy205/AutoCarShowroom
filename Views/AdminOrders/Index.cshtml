@@ -1,0 +1,62 @@
+@model IEnumerable<Order>
+
+@{
+    ViewData["Title"] = "Quản lý đơn hàng";
+}
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Quản trị</span>
+            <h1>Danh sách đơn hàng</h1>
+        </div>
+        <a asp-controller="Cars" asp-action="Index" class="btn btn-outline-light">Quay lại kho xe</a>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="table-shell">
+            <table class="app-table">
+                <thead>
+                    <tr>
+                        <th>Mã đơn</th>
+                        <th>Khách hàng</th>
+                        <th>Số xe</th>
+                        <th>Tổng tiền</th>
+                        <th>Thanh toán</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td><strong>@order.OrderCode</strong></td>
+                            <td>
+                                <strong>@order.CustomerName</strong>
+                                <div class="table-subtitle">@order.PhoneNumber</div>
+                            </td>
+                            <td>@order.Items.Count</td>
+                            <td>@order.TotalAmount.ToString("N0") VNĐ</td>
+                            <td>@order.PaymentStatus</td>
+                            <td>@order.OrderStatus</td>
+                            <td>@order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@order.OrderId" class="btn btn-outline-light btn-sm">Chi tiết</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <h2>Chưa có đơn hàng nào</h2>
+            <p>Đơn hàng của khách sẽ hiển thị tại đây sau khi thanh toán mô phỏng.</p>
+        </div>
+    }
+</section>

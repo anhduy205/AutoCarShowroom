@@ -4,6 +4,7 @@ using AutoCarShowroom.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AutoCarShowroom.Migrations
 {
     [DbContext(typeof(ShowroomDbContext))]
-    partial class ShowroomDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260325132919_AddOrderCheckoutFlow")]
+    partial class AddOrderCheckoutFlow
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,0 +1,92 @@
+@model CheckoutViewModel
+
+@{
+    ViewData["Title"] = "Thanh toán";
+}
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Thanh toán</span>
+            <h1>@(Model.IsBuyNow ? "Mua ngay mẫu xe" : "Xác nhận đơn hàng")</h1>
+        </div>
+        <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-light">Quay lại giỏ hàng</a>
+    </div>
+
+    <div class="checkout-layout">
+        <div class="checkout-panel">
+            <span class="section-kicker">Thông tin khách</span>
+            <form asp-action="Checkout" method="post" class="app-form mt-4">
+                @Html.AntiForgeryToken()
+                <input asp-for="IsBuyNow" type="hidden" />
+                <input asp-for="BuyNowCarId" type="hidden" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="CustomerName" class="form-label"></label>
+                        <input asp-for="CustomerName" class="form-control" />
+                        <span asp-validation-for="CustomerName" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="PhoneNumber" class="form-label"></label>
+                        <input asp-for="PhoneNumber" class="form-control" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="PaymentMethod" class="form-label"></label>
+                        <select asp-for="PaymentMethod" asp-items="ViewBag.PaymentMethods" class="form-select"></select>
+                        <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="Address" class="form-label"></label>
+                        <input asp-for="Address" class="form-control" />
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="Note" class="form-label"></label>
+                        <textarea asp-for="Note" class="form-control" rows="4" placeholder="Ví dụ: ưu tiên liên hệ buổi chiều, cần tư vấn thêm về màu xe..."></textarea>
+                        <span asp-validation-for="Note" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="checkout-submit">
+                    <button type="submit" class="btn btn-accent">Xác nhận thanh toán mô phỏng</button>
+                </div>
+            </form>
+        </div>
+
+        <aside class="summary-panel">
+            <span class="section-kicker">Tóm tắt xe</span>
+            <h2>@(Model.IsBuyNow ? "Mẫu xe đang thanh toán" : "Các mẫu xe trong đơn")</h2>
+            <div class="checkout-items">
+                @foreach (var item in Model.Items)
+                {
+                    <article class="checkout-item">
+                        <img src="@item.Image" alt="@item.CarName" class="checkout-item__image" />
+                        <div>
+                            <p class="car-card__eyebrow">@item.Brand @item.ModelName</p>
+                            <h3>@item.CarName</h3>
+                            <p class="cart-item-card__price">@item.Price.ToString("N0") VNĐ</p>
+                        </div>
+                    </article>
+                }
+            </div>
+            <div class="summary-row">
+                <span>Tổng thanh toán</span>
+                <strong>@Model.TotalAmount.ToString("N0") VNĐ</strong>
+            </div>
+            <p class="checkout-note">Sau khi xác nhận, hệ thống sẽ tạo đơn ở trạng thái đã thanh toán để admin tiếp tục xử lý.</p>
+        </aside>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

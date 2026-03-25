@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Chi tiết xe";
+    var canOrder = OrderWorkflow.CanOrder(Model);
     var statusClass = Model.Status switch
     {
         "Đã bán" => "status-badge status-badge--sold",
@@ -38,7 +39,20 @@
             }
             else
             {
-                <a asp-controller="Account" asp-action="Login" class="btn btn-accent">Đăng nhập quản trị</a>
+                @if (canOrder)
+                {
+                    <a asp-controller="Orders" asp-action="Checkout" asp-route-carId="@Model.CarID" class="btn btn-accent">Mua ngay</a>
+                    <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="carId" value="@Model.CarID" />
+                        <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                        <button type="submit" class="btn btn-outline-light">Thêm vào giỏ</button>
+                    </form>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-outline-light" disabled>Xe đã bán hoặc ngừng nhận đặt</button>
+                }
             }
         </div>
     </div>

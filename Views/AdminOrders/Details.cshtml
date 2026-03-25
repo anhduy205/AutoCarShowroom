@@ -1,0 +1,99 @@
+@model AdminOrderDetailViewModel
+
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng";
+}
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Đơn hàng</span>
+            <h1>@Model.Order.OrderCode</h1>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-light">Quay lại danh sách đơn</a>
+    </div>
+
+    <div class="checkout-layout">
+        <div class="checkout-panel">
+            <span class="section-kicker">Thông tin khách hàng</span>
+            <div class="detail-list mt-4">
+                <div class="detail-list__item">
+                    <span>Họ và tên</span>
+                    <strong>@Model.Order.CustomerName</strong>
+                </div>
+                <div class="detail-list__item">
+                    <span>Số điện thoại</span>
+                    <strong>@Model.Order.PhoneNumber</strong>
+                </div>
+                <div class="detail-list__item">
+                    <span>Email</span>
+                    <strong>@Model.Order.Email</strong>
+                </div>
+                <div class="detail-list__item">
+                    <span>Địa chỉ</span>
+                    <strong>@Model.Order.Address</strong>
+                </div>
+                <div class="detail-list__item">
+                    <span>Phương thức thanh toán</span>
+                    <strong>@Model.Order.PaymentMethod</strong>
+                </div>
+                <div class="detail-list__item">
+                    <span>Ghi chú</span>
+                    <strong>@(string.IsNullOrWhiteSpace(Model.Order.Note) ? "Không có" : Model.Order.Note)</strong>
+                </div>
+            </div>
+        </div>
+
+        <aside class="summary-panel">
+            <span class="section-kicker">Cập nhật trạng thái</span>
+            <form asp-action="UpdateStatus" method="post" class="app-form mt-4">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Order.OrderId" />
+                <label class="form-label" for="orderStatus">Trạng thái đơn</label>
+                <select id="orderStatus" name="orderStatus" class="form-select">
+                    @foreach (var status in Model.OrderStatusOptions)
+                    {
+                        <option value="@status" selected="@(status == Model.Order.OrderStatus ? "selected" : null)">@status</option>
+                    }
+                </select>
+                <div class="summary-row mt-4">
+                    <span>Thanh toán</span>
+                    <strong>@Model.Order.PaymentStatus</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Tổng tiền</span>
+                    <strong>@Model.Order.TotalAmount.ToString("N0") VNĐ</strong>
+                </div>
+                <div class="summary-actions">
+                    <button type="submit" class="btn btn-accent">Lưu trạng thái</button>
+                </div>
+            </form>
+        </aside>
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Mẫu xe</span>
+            <h2>Xe nằm trong đơn</h2>
+        </div>
+    </div>
+
+    <div class="checkout-items">
+        @foreach (var item in Model.Order.Items)
+        {
+            <article class="checkout-item">
+                <img src="@item.CarImage" alt="@item.CarName" class="checkout-item__image" />
+                <div class="checkout-item__content">
+                    <h3>@item.CarName</h3>
+                    <p class="cart-item-card__price">@item.UnitPrice.ToString("N0") VNĐ</p>
+                    @if (item.CarId > 0)
+                    {
+                        <a asp-controller="Cars" asp-action="Details" asp-route-id="@item.CarId" class="btn btn-outline-light btn-sm">Xem xe</a>
+                    }
+                </div>
+            </article>
+        }
+    </div>
+</section>

@@ -22,7 +22,7 @@
             }
             else
             {
-                <a asp-controller="Account" asp-action="Login" class="btn btn-outline-dark btn-lg">Đăng nhập quản trị</a>
+                <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-dark btn-lg">Mở giỏ hàng</a>
             }
         </div>
 
@@ -112,6 +112,7 @@
         <div class="row g-4">
             @foreach (var car in Model.FeaturedCars)
             {
+                var canOrder = OrderWorkflow.CanOrder(car);
                 var statusClass = car.Status switch
                 {
                     "Đã bán" => "status-badge status-badge--sold",
@@ -141,6 +142,15 @@
                                 @if (User.Identity?.IsAuthenticated == true)
                                 {
                                     <a asp-controller="Cars" asp-action="Edit" asp-route-id="@car.CarID" class="btn btn-outline-dark">Chỉnh sửa</a>
+                                }
+                                else if (canOrder)
+                                {
+                                    <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="carId" value="@car.CarID" />
+                                        <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                                        <button type="submit" class="btn btn-outline-dark">Thêm vào giỏ</button>
+                                    </form>
                                 }
                             </div>
                         </div>
@@ -180,8 +190,8 @@
         </article>
         <article class="service-card">
             <span class="service-card__number">03</span>
-            <h3>Quản trị gọn</h3>
-            <p>Thêm sửa nhanh.</p>
+            <h3>Đặt xe nhanh</h3>
+            <p>Giỏ hàng và checkout mô phỏng.</p>
         </article>
     </div>
 </section>
