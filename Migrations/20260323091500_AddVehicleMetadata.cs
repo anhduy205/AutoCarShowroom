@@ -10,56 +10,21 @@ namespace AutoCarShowroom.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "BodyType",
-                table: "Cars",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "Khác");
-
-            migrationBuilder.AddColumn<string>(
-                name: "Brand",
-                table: "Cars",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "Chưa cập nhật");
-
-            migrationBuilder.AddColumn<string>(
-                name: "Color",
-                table: "Cars",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "Chưa cập nhật");
-
-            migrationBuilder.AddColumn<string>(
-                name: "ModelName",
-                table: "Cars",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "Chưa cập nhật");
-
-            migrationBuilder.AddColumn<string>(
-                name: "Specifications",
-                table: "Cars",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "Thông số kỹ thuật đang được cập nhật.");
-
-            migrationBuilder.AddColumn<string>(
-                name: "Status",
-                table: "Cars",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "Còn hàng");
+            AddRequiredNVarCharMaxColumnIfMissing(migrationBuilder, "BodyType", "Khac");
+            EnsureBrandColumn(migrationBuilder);
+            AddRequiredNVarCharMaxColumnIfMissing(migrationBuilder, "Color", "Chua cap nhat");
+            AddRequiredNVarCharMaxColumnIfMissing(migrationBuilder, "ModelName", "Chua cap nhat");
+            AddRequiredNVarCharMaxColumnIfMissing(migrationBuilder, "Specifications", "Thong so ky thuat dang duoc cap nhat.");
+            AddRequiredNVarCharMaxColumnIfMissing(migrationBuilder, "Status", "Con hang");
 
             migrationBuilder.Sql("""
                 UPDATE Cars
                 SET Brand = N'Toyota',
                     ModelName = N'Camry',
-                    Color = N'Nâu đồng',
+                    Color = N'Nau dong',
                     BodyType = N'Sedan',
-                    Status = N'Còn hàng',
-                    Specifications = N'Động cơ 2.5L, hộp số tự động 8 cấp, 5 chỗ, ghế da, màn hình giải trí lớn.'
+                    Status = N'Con hang',
+                    Specifications = N'Dong co 2.5L, hop so tu dong 8 cap, 5 cho, ghe da, man hinh giai tri lon.'
                 WHERE CarName = N'Toyota Camry 2.5Q';
                 """);
 
@@ -67,10 +32,10 @@ namespace AutoCarShowroom.Migrations
                 UPDATE Cars
                 SET Brand = N'Honda',
                     ModelName = N'CR-V',
-                    Color = N'Trắng ngọc',
+                    Color = N'Trang ngoc',
                     BodyType = N'SUV',
-                    Status = N'Khuyến mãi',
-                    Specifications = N'Động cơ tăng áp 1.5L, 7 chỗ, gói an toàn Honda Sensing, cốp điện.'
+                    Status = N'Khuyen mai',
+                    Specifications = N'Dong co tang ap 1.5L, 7 cho, goi an toan Honda Sensing, cop dien.'
                 WHERE CarName = N'Honda CR-V RS';
                 """);
 
@@ -78,10 +43,10 @@ namespace AutoCarShowroom.Migrations
                 UPDATE Cars
                 SET Brand = N'Mazda',
                     ModelName = N'CX-5',
-                    Color = N'Đỏ Soul Red',
+                    Color = N'Do Soul Red',
                     BodyType = N'Crossover',
-                    Status = N'Còn hàng',
-                    Specifications = N'Động cơ 2.0L, 5 chỗ, màn hình HUD, camera 360, gói hỗ trợ lái i-Activsense.'
+                    Status = N'Con hang',
+                    Specifications = N'Dong co 2.0L, 5 cho, man hinh HUD, camera 360, goi ho tro lai i-Activsense.'
                 WHERE CarName = N'Mazda CX-5 Premium';
                 """);
 
@@ -89,10 +54,10 @@ namespace AutoCarShowroom.Migrations
                 UPDATE Cars
                 SET Brand = N'Kia',
                     ModelName = N'Carnival',
-                    Color = N'Đen ánh kim',
+                    Color = N'Den anh kim',
                     BodyType = N'MPV',
-                    Status = N'Còn hàng',
-                    Specifications = N'Động cơ diesel 2.2L, 7 chỗ, ghế thương gia hàng 2, cửa lùa điện hai bên.'
+                    Status = N'Con hang',
+                    Specifications = N'Dong co diesel 2.2L, 7 cho, ghe thuong gia hang 2, cua lua dien hai ben.'
                 WHERE CarName = N'Kia Carnival Signature';
                 """);
 
@@ -100,10 +65,10 @@ namespace AutoCarShowroom.Migrations
                 UPDATE Cars
                 SET Brand = N'Ford',
                     ModelName = N'Everest',
-                    Color = N'Xanh rêu',
+                    Color = N'Xanh reu',
                     BodyType = N'SUV',
-                    Status = N'Đã bán',
-                    Specifications = N'Động cơ diesel 2.0L turbo, dẫn động 4x4, 7 chỗ, camera 360 và 6 chế độ lái.'
+                    Status = N'Da ban',
+                    Specifications = N'Dong co diesel 2.0L turbo, dan dong 4x4, 7 cho, camera 360 va 6 che do lai.'
                 WHERE CarName = N'Ford Everest Titanium';
                 """);
 
@@ -111,10 +76,10 @@ namespace AutoCarShowroom.Migrations
                 UPDATE Cars
                 SET Brand = N'Hyundai',
                     ModelName = N'Accent',
-                    Color = N'Xanh dương',
+                    Color = N'Xanh duong',
                     BodyType = N'Sedan',
-                    Status = N'Còn hàng',
-                    Specifications = N'Động cơ 1.5L, hộp số CVT, màn hình 8 inch, điều hòa tự động và cốp rộng.'
+                    Status = N'Con hang',
+                    Specifications = N'Dong co 1.5L, hop so CVT, man hinh 8 inch, dieu hoa tu dong va cop rong.'
                 WHERE CarName = N'Hyundai Accent AT';
                 """);
         }
@@ -122,29 +87,110 @@ namespace AutoCarShowroom.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "BodyType",
-                table: "Cars");
+            DropColumnIfExists(migrationBuilder, "BodyType");
+            DropColumnIfExists(migrationBuilder, "Color");
+            DropColumnIfExists(migrationBuilder, "ModelName");
+            DropColumnIfExists(migrationBuilder, "Specifications");
+            DropColumnIfExists(migrationBuilder, "Status");
 
-            migrationBuilder.DropColumn(
-                name: "Brand",
-                table: "Cars");
+            DropDefaultConstraintIfExists(migrationBuilder, "Brand");
+            migrationBuilder.Sql("""
+                IF COL_LENGTH('Cars', 'Brand') IS NOT NULL
+                BEGIN
+                    UPDATE [Cars]
+                    SET [Brand] = LEFT([Brand], 120)
+                    WHERE LEN([Brand]) > 120;
 
-            migrationBuilder.DropColumn(
-                name: "Color",
-                table: "Cars");
+                    ALTER TABLE [Cars]
+                    ALTER COLUMN [Brand] nvarchar(120) NOT NULL;
+                END
+                """);
+        }
 
-            migrationBuilder.DropColumn(
-                name: "ModelName",
-                table: "Cars");
+        private static void AddRequiredNVarCharMaxColumnIfMissing(MigrationBuilder migrationBuilder, string columnName, string defaultValue)
+        {
+            migrationBuilder.Sql($"""
+                IF COL_LENGTH('Cars', '{columnName}') IS NULL
+                BEGIN
+                    ALTER TABLE [Cars]
+                    ADD [{columnName}] nvarchar(max) NOT NULL DEFAULT N'{defaultValue}';
+                END
+                """);
+        }
 
-            migrationBuilder.DropColumn(
-                name: "Specifications",
-                table: "Cars");
+        private static void EnsureBrandColumn(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql("""
+                IF COL_LENGTH('Cars', 'Brand') IS NULL
+                BEGIN
+                    ALTER TABLE [Cars]
+                    ADD [Brand] nvarchar(max) NOT NULL DEFAULT N'Chua cap nhat';
+                END
+                """);
 
-            migrationBuilder.DropColumn(
-                name: "Status",
-                table: "Cars");
+            DropDefaultConstraintIfExists(migrationBuilder, "Brand");
+            migrationBuilder.Sql("""
+                IF COL_LENGTH('Cars', 'Brand') IS NOT NULL
+                BEGIN
+                    ALTER TABLE [Cars]
+                    ALTER COLUMN [Brand] nvarchar(max) NOT NULL;
+                END
+                """);
+        }
+
+        private static void DropColumnIfExists(MigrationBuilder migrationBuilder, string columnName)
+        {
+            migrationBuilder.Sql($"""
+                IF COL_LENGTH('Cars', '{columnName}') IS NOT NULL
+                BEGIN
+                    DECLARE @constraintName sysname;
+                    DECLARE @sql nvarchar(max);
+
+                    SELECT @constraintName = dc.name
+                    FROM sys.default_constraints dc
+                    INNER JOIN sys.columns c
+                        ON c.default_object_id = dc.object_id
+                    INNER JOIN sys.tables t
+                        ON t.object_id = c.object_id
+                    WHERE t.name = 'Cars'
+                      AND c.name = '{columnName}';
+
+                    IF @constraintName IS NOT NULL
+                    BEGIN
+                        SET @sql = N'ALTER TABLE [Cars] DROP CONSTRAINT ' + QUOTENAME(@constraintName);
+                        EXEC sp_executesql @sql;
+                    END
+
+                    SET @sql = N'ALTER TABLE [Cars] DROP COLUMN [{columnName}]';
+                    EXEC sp_executesql @sql;
+                END
+                """);
+        }
+
+        private static void DropDefaultConstraintIfExists(MigrationBuilder migrationBuilder, string columnName)
+        {
+            migrationBuilder.Sql($"""
+                IF COL_LENGTH('Cars', '{columnName}') IS NOT NULL
+                BEGIN
+                    DECLARE @constraintName sysname;
+                    DECLARE @sql nvarchar(max);
+
+                    SELECT @constraintName = dc.name
+                    FROM sys.default_constraints dc
+                    INNER JOIN sys.columns c
+                        ON c.default_object_id = dc.object_id
+                    INNER JOIN sys.tables t
+                        ON t.object_id = c.object_id
+                    WHERE t.name = 'Cars'
+                      AND c.name = '{columnName}';
+
+                    IF @constraintName IS NOT NULL
+                    BEGIN
+                        SET @sql = N'ALTER TABLE [Cars] DROP CONSTRAINT ' + QUOTENAME(@constraintName);
+                        EXEC sp_executesql @sql;
+                    END
+                END
+                """);
         }
     }
 }

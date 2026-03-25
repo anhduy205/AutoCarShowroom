@@ -18,112 +18,147 @@ namespace AutoCarShowroom.Controllers
 
         public async Task<IActionResult> Checkout(int? carId)
         {
-            var selection = await ResolveCheckoutSelectionAsync(carId);
-
-            if (!selection.Success)
+            try
             {
-                TempData["ErrorMessage"] = selection.ErrorMessage;
-                return selection.RedirectResult!;
+                var selection = await ResolveCheckoutSelectionAsync(carId);
+
+                if (!selection.Success)
+                {
+                    TempData["ErrorMessage"] = selection.ErrorMessage;
+                    return selection.RedirectResult!;
+                }
+
+                var model = new CheckoutViewModel
+                {
+                    IsBuyNow = carId.HasValue,
+                    BuyNowCarId = carId,
+                    Items = await BuildCartItemsAsync(selection.Cars)
+                };
+
+                PopulatePaymentOptions(model.PaymentMethod);
+                return View(model);
             }
-
-            var model = new CheckoutViewModel
+            catch (Exception)
             {
-                IsBuyNow = carId.HasValue,
-                BuyNowCarId = carId,
-                Items = await BuildCartItemsAsync(selection.Cars)
-            };
-
-            PopulatePaymentOptions(model.PaymentMethod);
-            return View(model);
+                TempData["ErrorMessage"] = "Trang thanh toán tạm thời chưa sẵn sàng vì hệ thống đơn hàng chưa kết nối được database hoặc chưa cập nhật đủ bảng.";
+                return RedirectToCheckoutFallback(carId);
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Checkout(CheckoutViewModel model)
         {
-            var selection = await ResolveCheckoutSelectionAsync(model.BuyNowCarId);
-
-            if (!selection.Success)
+            try
             {
-                TempData["ErrorMessage"] = selection.ErrorMessage;
-                return selection.RedirectResult!;
+                var selection = await ResolveCheckoutSelectionAsync(model.BuyNowCarId);
+
+                if (!selection.Success)
+                {
+                    TempData["ErrorMessage"] = selection.ErrorMessage;
+                    return selection.RedirectResult!;
+                }
+
+                model.Items = await BuildCartItemsAsync(selection.Cars);
+
+                if (!ModelState.IsValid)
+                {
+                    PopulatePaymentOptions(model.PaymentMethod);
+                    return View(model);
+                }
+
+                var order = new Order
+                {
+                    OrderCode = await GenerateOrderCodeAsync(),
+                    CustomerName = model.CustomerName,
+                    PhoneNumber = model.PhoneNumber,
+                    Email = model.Email,
+                    Address = model.Address,
+                    Note = model.Note,
+                    PaymentMethod = model.PaymentMethod,
+                    PaymentStatus = OrderWorkflow.PaymentStatusPaid,
+                    OrderStatus = OrderWorkflow.OrderStatusPaid,
+                    CreatedAt = DateTime.Now,
+                    TotalAmount = model.TotalAmount,
+                    Items = selection.Cars
+                        .Select(car => new OrderItem
+                        {
+                            CarId = car.CarID,
+                            CarName = car.CarName,
+                            CarImage = car.Image,
+                            UnitPrice = car.Price
+                        })
+                        .ToList()
+                };
+
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
+
+                var remainingCarIds = HttpContext.Session
+                    .GetCartCarIds()
+                    .Except(selection.Cars.Select(car => car.CarID))
+                    .ToList();
+
+                HttpContext.Session.SetCartCarIds(remainingCarIds);
+
+                TempData["SuccessMessage"] = "Đã tạo đơn đặt xe thành công.";
+                return RedirectToAction(nameof(Success), new { orderCode = order.OrderCode });
             }
-
-            model.Items = await BuildCartItemsAsync(selection.Cars);
-
-            if (!ModelState.IsValid)
+            catch (Exception)
             {
-                PopulatePaymentOptions(model.PaymentMethod);
-                return View(model);
+                TempData["ErrorMessage"] = "Chưa thể tạo đơn hàng vì hệ thống đơn hàng chưa sẵn sàng. Vui lòng kiểm tra lại kết nối database.";
+                return RedirectToCheckoutFallback(model.BuyNowCarId);
             }
-
-            var order = new Order
-            {
-                OrderCode = await GenerateOrderCodeAsync(),
-                CustomerName = model.CustomerName,
-                PhoneNumber = model.PhoneNumber,
-                Email = model.Email,
-                Address = model.Address,
-                Note = model.Note,
-                PaymentMethod = model.PaymentMethod,
-                PaymentStatus = OrderWorkflow.PaymentStatusPaid,
-                OrderStatus = OrderWorkflow.OrderStatusPaid,
-                CreatedAt = DateTime.Now,
-                TotalAmount = model.TotalAmount,
-                Items = selection.Cars
-                    .Select(car => new OrderItem
-                    {
-                        CarId = car.CarID,
-                        CarName = car.CarName,
-                        CarImage = car.Image,
-                        UnitPrice = car.Price
-                    })
-                    .ToList()
-            };
-
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
-
-            var remainingCarIds = HttpContext.Session
-                .GetCartCarIds()
-                .Except(selection.Cars.Select(car => car.CarID))
-                .ToList();
-
-            HttpContext.Session.SetCartCarIds(remainingCarIds);
-
-            TempData["SuccessMessage"] = "Đã tạo đơn đặt xe thành công.";
-            return RedirectToAction(nameof(Success), new { orderCode = order.OrderCode });
         }
 
         public async Task<IActionResult> Success(string? orderCode)
         {
-            if (string.IsNullOrWhiteSpace(orderCode))
+            try
             {
+                if (string.IsNullOrWhiteSpace(orderCode))
+                {
+                    return RedirectToAction("Index", "Cars");
+                }
+
+                var order = await _context.Orders
+                    .AsNoTracking()
+                    .Include(item => item.Items)
+                    .FirstOrDefaultAsync(item => item.OrderCode == orderCode);
+
+                if (order == null)
+                {
+                    TempData["ErrorMessage"] = "Không tìm thấy đơn hàng bạn vừa tạo.";
+                    return RedirectToAction("Index", "Cars");
+                }
+
+                return View(new OrderSuccessViewModel
+                {
+                    Order = order,
+                    Items = order.Items
+                        .OrderBy(item => item.OrderItemId)
+                        .ToList()
+                });
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "Chưa thể hiển thị thông tin đơn hàng vì database chưa sẵn sàng.";
                 return RedirectToAction("Index", "Cars");
             }
-
-            var order = await _context.Orders
-                .AsNoTracking()
-                .Include(item => item.Items)
-                .FirstOrDefaultAsync(item => item.OrderCode == orderCode);
-
-            if (order == null)
-            {
-                return RedirectToAction("Index", "Cars");
-            }
-
-            return View(new OrderSuccessViewModel
-            {
-                Order = order,
-                Items = order.Items
-                    .OrderBy(item => item.OrderItemId)
-                    .ToList()
-            });
         }
 
         private void PopulatePaymentOptions(string? selectedPaymentMethod)
         {
             ViewBag.PaymentMethods = new SelectList(OrderWorkflow.PaymentMethods, selectedPaymentMethod);
+        }
+
+        private IActionResult RedirectToCheckoutFallback(int? buyNowCarId)
+        {
+            if (buyNowCarId.HasValue)
+            {
+                return RedirectToAction("Details", "Cars", new { id = buyNowCarId.Value });
+            }
+
+            return RedirectToAction("Index", "Cart");
         }
 
         private async Task<string> GenerateOrderCodeAsync()

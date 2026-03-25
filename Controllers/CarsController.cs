@@ -42,25 +42,26 @@ namespace AutoCarShowroom.Controllers
         {
             try
             {
-                var availableBrands = await _context.Cars
-                    .AsNoTracking()
+                var visibleStatuses = GetVisibleStatusesForCurrentUser();
+                var visibleCarsQuery = GetVisibleCarsQuery();
+
+                var availableBrands = await visibleCarsQuery
                     .Select(car => car.Brand)
                     .Where(value => !string.IsNullOrWhiteSpace(value))
                     .Distinct()
                     .OrderBy(value => value)
                     .ToListAsync();
 
-                var availableYears = await _context.Cars
-                    .AsNoTracking()
+                var availableYears = await visibleCarsQuery
                     .Select(car => car.Year)
                     .Distinct()
                     .OrderByDescending(value => value)
                     .ToListAsync();
 
-                PopulateFilterOptions(availableBrands, availableYears, brand, bodyType, status, priceRange, year, sortOrder);
+                PopulateFilterOptions(availableBrands, availableYears, visibleStatuses, brand, bodyType, status, priceRange, year, sortOrder);
                 ViewData["CurrentSearch"] = searchTerm;
 
-                var carsQuery = _context.Cars.AsNoTracking().AsQueryable();
+                var carsQuery = visibleCarsQuery;
 
                 if (!string.IsNullOrWhiteSpace(searchTerm))
                 {
@@ -110,7 +111,7 @@ namespace AutoCarShowroom.Controllers
             }
             catch (Exception)
             {
-                PopulateFilterOptions(Array.Empty<string>(), Array.Empty<int>(), brand, bodyType, status, priceRange, year, sortOrder);
+                PopulateFilterOptions(Array.Empty<string>(), Array.Empty<int>(), GetVisibleStatusesForCurrentUser(), brand, bodyType, status, priceRange, year, sortOrder);
                 ViewData["LoadError"] = "Không thể tải danh sách xe. Vui lòng kiểm tra kết nối cơ sở dữ liệu.";
                 return View(new List<Car>());
             }
@@ -130,6 +131,12 @@ namespace AutoCarShowroom.Controllers
             if (car == null)
             {
                 return NotFound();
+            }
+
+            if (!User.IsInRole("Admin") && !OrderWorkflow.CanOrder(car))
+            {
+                TempData["ErrorMessage"] = "Mẫu xe này đã bán hoặc hiện không còn hiển thị cho khách hàng.";
+                return RedirectToAction(nameof(Index));
             }
 
             return View(car);
@@ -349,6 +356,7 @@ namespace AutoCarShowroom.Controllers
         private void PopulateFilterOptions(
             IEnumerable<string> brands,
             IEnumerable<int> years,
+            IEnumerable<string> statuses,
             string? selectedBrand,
             string? selectedBodyType,
             string? selectedStatus,
@@ -358,7 +366,7 @@ namespace AutoCarShowroom.Controllers
         {
             ViewBag.Brands = new SelectList(brands, selectedBrand);
             ViewBag.BodyTypeFilters = new SelectList(VehicleBodyTypes, selectedBodyType);
-            ViewBag.StatusFilters = new SelectList(VehicleStatuses, selectedStatus);
+            ViewBag.StatusFilters = new SelectList(statuses, selectedStatus);
             ViewBag.PriceRanges = new SelectList(
                 PriceRangeOptions.Select(option => new SelectListItem(option.Label, option.Value)),
                 "Value",
@@ -503,6 +511,25 @@ namespace AutoCarShowroom.Controllers
         private Task<bool> CarExistsAsync(int id)
         {
             return _context.Cars.AnyAsync(car => car.CarID == id);
+        }
+
+        private IQueryable<Car> GetVisibleCarsQuery()
+        {
+            var carsQuery = _context.Cars.AsNoTracking().AsQueryable();
+
+            if (!User.IsInRole("Admin"))
+            {
+                carsQuery = carsQuery.Where(car => OrderWorkflow.PurchasableCarStatuses.Contains(car.Status));
+            }
+
+            return carsQuery;
+        }
+
+        private IReadOnlyList<string> GetVisibleStatusesForCurrentUser()
+        {
+            return User.IsInRole("Admin")
+                ? VehicleStatuses
+                : OrderWorkflow.PurchasableCarStatuses;
         }
 
         private sealed record PriceRangeOption(string Value, string Label, decimal? MinPrice, decimal? MaxPrice);

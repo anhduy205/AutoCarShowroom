@@ -18,32 +18,49 @@ namespace AutoCarShowroom.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var orders = await _context.Orders
-                .AsNoTracking()
-                .Include(order => order.Items)
-                .OrderByDescending(order => order.CreatedAt)
-                .ToListAsync();
+            try
+            {
+                var orders = await _context.Orders
+                    .AsNoTracking()
+                    .Include(order => order.Items)
+                    .OrderByDescending(order => order.CreatedAt)
+                    .ToListAsync();
 
-            return View(orders);
+                return View(orders);
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "Danh sách đơn hàng tạm thời chưa sẵn sàng vì database chưa kết nối hoặc chưa cập nhật đủ bảng.";
+                return View(Enumerable.Empty<Order>());
+            }
         }
 
         public async Task<IActionResult> Details(int id)
         {
-            var order = await _context.Orders
-                .Include(item => item.Items)
-                .ThenInclude(item => item.Car)
-                .FirstOrDefaultAsync(item => item.OrderId == id);
-
-            if (order == null)
+            try
             {
-                return NotFound();
+                var order = await _context.Orders
+                    .Include(item => item.Items)
+                    .ThenInclude(item => item.Car)
+                    .FirstOrDefaultAsync(item => item.OrderId == id);
+
+                if (order == null)
+                {
+                    TempData["ErrorMessage"] = "Không tìm thấy đơn hàng cần xem.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                return View(new AdminOrderDetailViewModel
+                {
+                    Order = order,
+                    OrderStatusOptions = OrderWorkflow.OrderStatuses
+                });
             }
-
-            return View(new AdminOrderDetailViewModel
+            catch (Exception)
             {
-                Order = order,
-                OrderStatusOptions = OrderWorkflow.OrderStatuses
-            });
+                TempData["ErrorMessage"] = "Chưa thể mở chi tiết đơn hàng vì hệ thống đơn hàng chưa sẵn sàng.";
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         [HttpPost]
@@ -56,34 +73,43 @@ namespace AutoCarShowroom.Controllers
                 return RedirectToAction(nameof(Details), new { id });
             }
 
-            var order = await _context.Orders
-                .Include(item => item.Items)
-                .ThenInclude(item => item.Car)
-                .FirstOrDefaultAsync(item => item.OrderId == id);
-
-            if (order == null)
+            try
             {
-                return NotFound();
-            }
+                var order = await _context.Orders
+                    .Include(item => item.Items)
+                    .ThenInclude(item => item.Car)
+                    .FirstOrDefaultAsync(item => item.OrderId == id);
 
-            order.OrderStatus = orderStatus;
-
-            if (string.Equals(orderStatus, OrderWorkflow.OrderStatusCompleted, StringComparison.OrdinalIgnoreCase))
-            {
-                order.PaymentStatus = OrderWorkflow.PaymentStatusPaid;
-
-                foreach (var item in order.Items)
+                if (order == null)
                 {
-                    if (item.Car != null)
+                    TempData["ErrorMessage"] = "Không tìm thấy đơn hàng cần cập nhật.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                order.OrderStatus = orderStatus;
+
+                if (string.Equals(orderStatus, OrderWorkflow.OrderStatusCompleted, StringComparison.OrdinalIgnoreCase))
+                {
+                    order.PaymentStatus = OrderWorkflow.PaymentStatusPaid;
+
+                    foreach (var item in order.Items)
                     {
-                        item.Car.Status = OrderWorkflow.CarStatusSold;
+                        if (item.Car != null)
+                        {
+                            item.Car.Status = OrderWorkflow.CarStatusSold;
+                        }
                     }
                 }
-            }
 
-            await _context.SaveChangesAsync();
-            TempData["SuccessMessage"] = "Đã cập nhật trạng thái đơn hàng.";
-            return RedirectToAction(nameof(Details), new { id });
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Đã cập nhật trạng thái đơn hàng.";
+                return RedirectToAction(nameof(Details), new { id });
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "Chưa thể cập nhật đơn hàng vì database chưa sẵn sàng.";
+                return RedirectToAction(nameof(Index));
+            }
         }
     }
 }

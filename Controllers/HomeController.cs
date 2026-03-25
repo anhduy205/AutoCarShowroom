@@ -21,7 +21,14 @@ namespace AutoCarShowroom.Controllers
         {
             try
             {
-                var summary = await _context.Cars
+                var visibleCarsQuery = _context.Cars.AsNoTracking().AsQueryable();
+
+                if (!User.IsInRole("Admin"))
+                {
+                    visibleCarsQuery = visibleCarsQuery.Where(car => OrderWorkflow.PurchasableCarStatuses.Contains(car.Status));
+                }
+
+                var summary = await visibleCarsQuery
                     .GroupBy(_ => 1)
                     .Select(group => new
                     {
@@ -31,8 +38,7 @@ namespace AutoCarShowroom.Controllers
                     })
                     .FirstOrDefaultAsync();
 
-                var featuredCars = await _context.Cars
-                    .AsNoTracking()
+                var featuredCars = await visibleCarsQuery
                     .OrderByDescending(car => car.Year)
                     .ThenByDescending(car => car.Price)
                     .Take(6)

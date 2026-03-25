@@ -17,49 +17,65 @@ namespace AutoCarShowroom.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var carIds = HttpContext.Session.GetCartCarIds();
-            var items = await BuildCartItemsAsync(carIds, cleanupMissingCars: true);
-
-            return View(new CartViewModel
+            try
             {
-                Items = items
-            });
+                var carIds = HttpContext.Session.GetCartCarIds();
+                var items = await BuildCartItemsAsync(carIds, cleanupMissingCars: true);
+
+                return View(new CartViewModel
+                {
+                    Items = items
+                });
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "Giỏ hàng tạm thời chưa sẵn sàng vì database chưa kết nối hoặc chưa cập nhật đủ bảng.";
+                return View(new CartViewModel());
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(int carId, string? returnUrl = null)
         {
-            var car = await _context.Cars
-                .AsNoTracking()
-                .FirstOrDefaultAsync(item => item.CarID == carId);
-
-            if (car == null)
+            try
             {
-                TempData["ErrorMessage"] = "Không tìm thấy mẫu xe bạn muốn thêm vào giỏ.";
-                return RedirectToAction("Index", "Cars");
-            }
+                var car = await _context.Cars
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(item => item.CarID == carId);
 
-            if (!OrderWorkflow.CanOrder(car))
-            {
-                TempData["ErrorMessage"] = "Mẫu xe này hiện không còn sẵn sàng để đặt.";
+                if (car == null)
+                {
+                    TempData["ErrorMessage"] = "Không tìm thấy mẫu xe bạn muốn thêm vào giỏ.";
+                    return RedirectToAction("Index", "Cars");
+                }
+
+                if (!OrderWorkflow.CanOrder(car))
+                {
+                    TempData["ErrorMessage"] = "Mẫu xe này hiện không còn sẵn sàng để đặt.";
+                    return RedirectToLocalOrDetails(returnUrl, carId);
+                }
+
+                var lockedCarIds = await GetLockedCarIdsAsync([carId]);
+
+                if (lockedCarIds.Contains(carId))
+                {
+                    TempData["ErrorMessage"] = "Mẫu xe này đang được xử lý trong một đơn hàng khác.";
+                    return RedirectToLocalOrDetails(returnUrl, carId);
+                }
+
+                var added = HttpContext.Session.AddCarToCart(carId);
+                TempData["SuccessMessage"] = added
+                    ? $"Đã thêm {car.CarName} vào giỏ hàng."
+                    : "Mẫu xe này đã có trong giỏ hàng của bạn.";
+
                 return RedirectToLocalOrDetails(returnUrl, carId);
             }
-
-            var lockedCarIds = await GetLockedCarIdsAsync([carId]);
-
-            if (lockedCarIds.Contains(carId))
+            catch (Exception)
             {
-                TempData["ErrorMessage"] = "Mẫu xe này đang được xử lý trong một đơn hàng khác.";
+                TempData["ErrorMessage"] = "Chưa thể thêm xe vào giỏ hàng vì hệ thống đơn hàng chưa sẵn sàng.";
                 return RedirectToLocalOrDetails(returnUrl, carId);
             }
-
-            var added = HttpContext.Session.AddCarToCart(carId);
-            TempData["SuccessMessage"] = added
-                ? $"Đã thêm {car.CarName} vào giỏ hàng."
-                : "Mẫu xe này đã có trong giỏ hàng của bạn.";
-
-            return RedirectToLocalOrDetails(returnUrl, carId);
         }
 
         [HttpPost]
