@@ -1,0 +1,54 @@
+@model Car
+
+@{
+    ViewData["Title"] = "Xóa xe";
+}
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Xác nhận thao tác</span>
+            <h1>Xóa mẫu xe khỏi showroom</h1>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-dark">Quay lại danh mục</a>
+    </div>
+
+    <div class="detail-panel">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-5">
+                <img src="@Model.Image" alt="@Model.CarName" class="detail-panel__image" />
+            </div>
+            <div class="col-lg-7">
+                <h2>@Model.CarName</h2>
+                <p class="text-muted">Thao tác này sẽ gỡ mẫu xe khỏi showroom và không thể hoàn tác.</p>
+
+                <div class="detail-list mt-4">
+                    <div class="detail-list__item">
+                        <span>Giá bán</span>
+                        <strong>@Model.Price.ToString("N0") VNĐ</strong>
+                    </div>
+                    <div class="detail-list__item">
+                        <span>Năm sản xuất</span>
+                        <strong>@Model.Year</strong>
+                    </div>
+                    <div class="detail-list__item">
+                        <span>Hãng và dòng xe</span>
+                        <strong>@Model.Brand @Model.ModelName</strong>
+                    </div>
+                    <div class="detail-list__item">
+                        <span>Trạng thái</span>
+                        <strong>@Model.Status</strong>
+                    </div>
+                </div>
+
+                <form asp-action="Delete" asp-route-id="@Model.CarID" method="post" class="mt-4">
+                    <input type="hidden" asp-for="CarID" />
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="submit" class="btn btn-danger">Xác nhận xóa</button>
+                        <a asp-action="Details" asp-route-id="@Model.CarID" class="btn btn-outline-dark">Quay lại chi tiết</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

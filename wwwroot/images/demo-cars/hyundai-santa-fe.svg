@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3b4a53"/>
+      <stop offset="100%" stop-color="#9eb3bf"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="720" fill="url(#bg)"/>
+  <circle cx="980" cy="155" r="148" fill="rgba(255,255,255,.08)"/>
+  <text x="80" y="120" fill="#fff" font-size="64" font-weight="700" font-family="Segoe UI, Arial">Hyundai Santa Fe</text>
+  <text x="80" y="170" fill="rgba(255,255,255,.72)" font-size="28" font-family="Segoe UI, Arial">Modern SUV</text>
+  <path d="M220 438h520l132 76H168l52-76z" fill="#1a2025"/>
+  <path d="M352 286h255c84 0 152 44 202 112H245c34-78 68-112 107-112z" fill="#f3f7fa"/>
+  <rect x="455" y="322" width="170" height="40" rx="10" fill="#d8e2e8"/>
+  <circle cx="338" cy="520" r="55" fill="#11161b"/>
+  <circle cx="338" cy="520" r="22" fill="#dae1e5"/>
+  <circle cx="742" cy="520" r="55" fill="#11161b"/>
+  <circle cx="742" cy="520" r="22" fill="#dae1e5"/>
+</svg>

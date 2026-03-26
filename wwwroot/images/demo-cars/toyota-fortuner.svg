@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#705948"/>
+      <stop offset="100%" stop-color="#ccb29a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="720" fill="url(#bg)"/>
+  <circle cx="1040" cy="120" r="145" fill="rgba(255,255,255,.08)"/>
+  <text x="80" y="120" fill="#fff" font-size="64" font-weight="700" font-family="Segoe UI, Arial">Toyota Fortuner</text>
+  <text x="80" y="170" fill="rgba(255,255,255,.72)" font-size="28" font-family="Segoe UI, Arial">Ladder Frame SUV</text>
+  <path d="M220 438h510l138 77H162l58-77z" fill="#201814"/>
+  <path d="M350 284h255c90 0 162 49 210 116H242c35-81 71-116 108-116z" fill="#f7efe9"/>
+  <rect x="454" y="324" width="173" height="40" rx="10" fill="#ead9cc"/>
+  <circle cx="336" cy="520" r="55" fill="#131110"/>
+  <circle cx="336" cy="520" r="22" fill="#ddd5ce"/>
+  <circle cx="742" cy="520" r="55" fill="#131110"/>
+  <circle cx="742" cy="520" r="22" fill="#ddd5ce"/>
+</svg>

@@ -1,0 +1,29 @@
+@model CarFormViewModel
+
+@{
+    ViewData["Title"] = "Chỉnh sửa xe";
+}
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Cập nhật dữ liệu</span>
+            <h1>Chỉnh sửa thông tin mẫu xe</h1>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-dark">Quay lại danh mục</a>
+    </div>
+
+    <form asp-action="Edit" asp-route-id="@Model.CarID" method="post" enctype="multipart/form-data" class="app-form">
+        <input type="hidden" asp-for="CarID" />
+        <partial name="_CarFormFields" model="Model" />
+
+        <div class="d-flex flex-wrap gap-2 mt-4">
+            <button type="submit" class="btn btn-accent">Lưu thay đổi</button>
+            <a asp-action="Details" asp-route-id="@Model.CarID" class="btn btn-outline-dark">Xem trang chi tiết</a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

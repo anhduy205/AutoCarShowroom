@@ -1,0 +1,92 @@
+@model CartViewModel
+
+@{
+    ViewData["Title"] = "Giỏ hàng";
+}
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Giỏ hàng</span>
+            <h1>Xe bạn đang quan tâm</h1>
+        </div>
+        <a asp-controller="Cars" asp-action="Index" class="btn btn-outline-light">Tiếp tục xem xe</a>
+    </div>
+
+    @if (Model.Items.Count == 0)
+    {
+        <div class="empty-state">
+            <h2>Giỏ hàng đang trống</h2>
+            <p>Thêm xe từ showroom để bắt đầu đặt hàng.</p>
+            <a asp-controller="Cars" asp-action="Index" class="btn btn-accent">Xem bộ sưu tập</a>
+        </div>
+    }
+    else
+    {
+        <div class="cart-layout">
+            <div class="cart-list">
+                @foreach (var item in Model.Items)
+                {
+                    <article class="cart-item-card">
+                        <img src="@item.Image" alt="@item.CarName" class="cart-item-card__image" />
+                        <div class="cart-item-card__content">
+                            <div class="cart-item-card__header">
+                                <div>
+                                    <p class="car-card__eyebrow">@item.Brand @item.ModelName</p>
+                                    <h3>@item.CarName</h3>
+                                </div>
+                                <span class="status-badge @(item.Status == OrderWorkflow.CarStatusSold ? "status-badge--sold" : "status-badge--available")">
+                                    @item.Status
+                                </span>
+                            </div>
+                            <p class="cart-item-card__price">@item.Price.ToString("N0") VNĐ</p>
+                            @if (!item.CanOrder)
+                            {
+                                <p class="cart-item-card__warning">@item.AvailabilityMessage</p>
+                            }
+                            <div class="cart-item-card__actions">
+                                <a asp-controller="Cars" asp-action="Details" asp-route-id="@item.CarId" class="btn btn-outline-dark">Xem chi tiết</a>
+                                <form asp-action="Remove" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="carId" value="@item.CarId" />
+                                    <button type="submit" class="btn btn-outline-danger">Xóa khỏi giỏ</button>
+                                </form>
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+
+            <aside class="summary-panel">
+                <span class="section-kicker">Tóm tắt</span>
+                <h2>Đơn hàng của bạn</h2>
+                <div class="summary-row">
+                    <span>Số mẫu xe</span>
+                    <strong>@Model.Items.Count</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Tổng tạm tính</span>
+                    <strong>@Model.TotalAmount.ToString("N0") VNĐ</strong>
+                </div>
+                @if (!Model.CanCheckout)
+                {
+                    <p class="cart-item-card__warning">Có mẫu xe trong giỏ hiện chưa thể thanh toán. Vui lòng kiểm tra lại trước khi tiếp tục.</p>
+                }
+                <div class="summary-actions">
+                    @if (Model.CanCheckout)
+                    {
+                        <a asp-controller="Orders" asp-action="Checkout" class="btn btn-accent">Thanh toán mô phỏng</a>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-accent" disabled>Thanh toán mô phỏng</button>
+                    }
+                    <form asp-action="Clear" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline-light">Làm trống giỏ</button>
+                    </form>
+                </div>
+            </aside>
+        </div>
+    }
+</section>

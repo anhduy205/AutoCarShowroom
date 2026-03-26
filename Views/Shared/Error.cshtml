@@ -1,0 +1,36 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Lỗi hệ thống";
+}
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Hệ thống gặp sự cố</span>
+            <h1>Đã xảy ra lỗi trong quá trình xử lý yêu cầu của bạn</h1>
+        </div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark">Quay về trang chủ</a>
+    </div>
+
+    <div class="detail-panel">
+        <p class="mb-4">
+            Bạn có thể tải lại trang, kiểm tra thao tác vừa thực hiện hoặc quay về trang chủ để tiếp tục sử dụng showroom.
+        </p>
+
+        @if (Model.ShowRequestId)
+        {
+            <p>
+                <strong>Mã yêu cầu:</strong> <code>@Model.RequestId</code>
+            </p>
+        }
+
+        <h3 class="mt-4">Ghi chú cho quá trình kiểm thử</h3>
+        <p>
+            Nếu bạn đang chạy dự án ở môi trường phát triển, có thể bật chế độ <strong>Development</strong>
+            để xem thông tin lỗi chi tiết hơn khi debug.
+        </p>
+        <p class="mb-0">
+            Không nên bật chế độ này trên môi trường triển khai thật vì có thể làm lộ thông tin kỹ thuật nội bộ của hệ thống.
+        </p>
+    </div>
+</section>

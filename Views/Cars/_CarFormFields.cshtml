@@ -1,0 +1,90 @@
+@model CarFormViewModel
+
+<input asp-for="CurrentImagePath" type="hidden" />
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <label asp-for="CarName" class="form-label"></label>
+        <input asp-for="CarName" class="form-control" placeholder="Ví dụ: Toyota Camry 2.5Q" />
+        <span asp-validation-for="CarName" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="Brand" class="form-label"></label>
+        <input asp-for="Brand" class="form-control" placeholder="Ví dụ: Toyota, Honda, Mazda..." />
+        <span asp-validation-for="Brand" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="ModelName" class="form-label"></label>
+        <input asp-for="ModelName" class="form-control" placeholder="Ví dụ: Camry, CR-V, CX-5..." />
+        <span asp-validation-for="ModelName" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Price" class="form-label"></label>
+        <input asp-for="Price" class="form-control" type="number" min="0" step="0.01" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Year" class="form-label"></label>
+        <input asp-for="Year" class="form-control" type="number" min="1950" max="@(DateTime.Now.Year + 1)" />
+        <span asp-validation-for="Year" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="Color" class="form-label"></label>
+        <input asp-for="Color" class="form-control" placeholder="Ví dụ: Trắng ngọc, Đen, Xám..." />
+        <span asp-validation-for="Color" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="BodyType" class="form-label"></label>
+        <select asp-for="BodyType" class="form-select" asp-items="ViewBag.BodyTypes">
+            <option value="">Chọn loại xe</option>
+        </select>
+        <span asp-validation-for="BodyType" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="Status" class="form-label"></label>
+        <select asp-for="Status" class="form-select" asp-items="ViewBag.StatusOptions">
+            <option value="">Chọn trạng thái</option>
+        </select>
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="ImageFile" class="form-label"></label>
+        <input asp-for="ImageFile" class="form-control" type="file" accept=".jpg,.jpeg,.png,.webp,.gif" />
+        <div class="upload-help">Hỗ trợ tệp JPG, JPEG, PNG, WEBP, GIF. Dung lượng tối đa 5MB.</div>
+        <span asp-validation-for="ImageFile" class="text-danger"></span>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.CurrentImagePath))
+    {
+        <div class="col-12">
+            <div class="upload-preview">
+                <img src="@Model.CurrentImagePath" alt="@Model.CarName" class="upload-preview__image" />
+                <div>
+                    <span class="section-kicker">Ảnh hiện tại</span>
+                    <p class="mb-0 text-muted">Tải ảnh mới nếu bạn muốn thay đổi hình đang hiển thị trên trang showroom.</p>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="col-12">
+        <label asp-for="Specifications" class="form-label"></label>
+        <textarea asp-for="Specifications" class="form-control" rows="5" placeholder="Ví dụ: Động cơ 2.5L, hộp số tự động 8 cấp, 5 chỗ, ghế da, camera 360, điều hòa 2 vùng..."></textarea>
+        <span asp-validation-for="Specifications" class="text-danger"></span>
+    </div>
+
+    <div class="col-12">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="5" placeholder="Mô tả nổi bật về ngoại thất, nội thất, cảm giác lái và nhóm khách hàng phù hợp."></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+</div>

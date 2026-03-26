@@ -1,0 +1,109 @@
+@model Car
+
+@{
+    ViewData["Title"] = "Chi tiết xe";
+    var canOrder = OrderWorkflow.CanOrder(Model);
+    var statusClass = Model.Status switch
+    {
+        "Đã bán" => "status-badge status-badge--sold",
+        "Khuyến mãi" => "status-badge status-badge--promo",
+        _ => "status-badge status-badge--available"
+    };
+}
+
+<section class="detail-hero">
+    <div class="detail-hero__media">
+        <img src="@Model.Image" alt="@Model.CarName" class="detail-hero__image" />
+    </div>
+
+    <div class="detail-hero__content">
+        <span class="section-kicker">Thông tin mẫu xe</span>
+        <p class="detail-hero__eyebrow">@Model.Brand @Model.ModelName</p>
+        <h1>@Model.CarName</h1>
+        <div class="detail-hero__specs">
+            <span class="pill">@Model.BodyType</span>
+            <span class="pill">Màu @Model.Color</span>
+            <span class="pill">Đời @Model.Year</span>
+            <span class="@statusClass">@Model.Status</span>
+        </div>
+
+        <div class="price-banner">@Model.Price.ToString("N0") VNĐ</div>
+        <p class="detail-hero__description">@Model.Description</p>
+
+        <div class="detail-hero__actions">
+            <a asp-action="Index" class="btn btn-outline-dark">Quay lại bộ sưu tập</a>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-action="Edit" asp-route-id="@Model.CarID" class="btn btn-accent">Chỉnh sửa mẫu xe</a>
+                <a asp-action="Delete" asp-route-id="@Model.CarID" class="btn btn-outline-danger">Xóa xe</a>
+            }
+            else
+            {
+                @if (canOrder)
+                {
+                    <a asp-controller="Orders" asp-action="Checkout" asp-route-carId="@Model.CarID" class="btn btn-accent">Mua ngay</a>
+                    <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="carId" value="@Model.CarID" />
+                        <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                        <button type="submit" class="btn btn-outline-light">Thêm vào giỏ</button>
+                    </form>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-outline-light" disabled>Xe đã bán hoặc ngừng nhận đặt</button>
+                }
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Chi tiết</span>
+            <h2>Thông tin xe</h2>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="detail-list">
+                <div class="detail-list__item">
+                    <span>Hãng xe</span>
+                    <strong>@Model.Brand</strong>
+                </div>
+                <div class="detail-list__item">
+                    <span>Dòng xe</span>
+                    <strong>@Model.ModelName</strong>
+                </div>
+                <div class="detail-list__item">
+                    <span>Tên xe hiển thị</span>
+                    <strong>@Model.CarName</strong>
+                </div>
+                <div class="detail-list__item">
+                    <span>Loại xe</span>
+                    <strong>@Model.BodyType</strong>
+                </div>
+                <div class="detail-list__item">
+                    <span>Màu sắc</span>
+                    <strong>@Model.Color</strong>
+                </div>
+                <div class="detail-list__item">
+                    <span>Trạng thái</span>
+                    <strong>@Model.Status</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="spec-panel h-100">
+                <span class="section-kicker">Thông số kỹ thuật</span>
+                <p class="spec-panel__text">@Model.Specifications</p>
+
+                <span class="section-kicker mt-4">Mô tả nổi bật</span>
+                <p class="spec-panel__text">@Model.Description</p>
+            </div>
+        </div>
+    </div>
+</section>
