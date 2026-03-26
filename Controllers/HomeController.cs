@@ -28,28 +28,18 @@ namespace AutoCarShowroom.Controllers
                     visibleCarsQuery = visibleCarsQuery.Where(car => OrderWorkflow.PurchasableCarStatuses.Contains(car.Status));
                 }
 
-                var summary = await visibleCarsQuery
-                    .GroupBy(_ => 1)
-                    .Select(group => new
-                    {
-                        TotalCars = group.Count(),
-                        AveragePrice = group.Average(car => car.Price),
-                        NewestModelYear = group.Max(car => car.Year)
-                    })
-                    .FirstOrDefaultAsync();
-
-                var featuredCars = await visibleCarsQuery
-                    .OrderByDescending(car => car.Year)
-                    .ThenByDescending(car => car.Price)
-                    .Take(6)
-                    .ToListAsync();
+                var visibleCars = await visibleCarsQuery.ToListAsync();
 
                 var viewModel = new HomeViewModel
                 {
-                    FeaturedCars = featuredCars,
-                    TotalCars = summary?.TotalCars ?? 0,
-                    AveragePrice = summary?.AveragePrice ?? 0m,
-                    NewestModelYear = summary?.NewestModelYear ?? 0
+                    FeaturedCars = visibleCars
+                        .OrderByDescending(car => car.Year)
+                        .ThenByDescending(car => car.Price)
+                        .Take(6)
+                        .ToList(),
+                    TotalCars = visibleCars.Count,
+                    AveragePrice = visibleCars.Count == 0 ? 0m : visibleCars.Average(car => car.Price),
+                    NewestModelYear = visibleCars.Count == 0 ? 0 : visibleCars.Max(car => car.Year)
                 };
 
                 return View(viewModel);
@@ -57,7 +47,7 @@ namespace AutoCarShowroom.Controllers
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, "Không thể tải dữ liệu cho trang chủ showroom.");
-                ViewData["LoadError"] = "Chưa thể tải dữ liệu showroom. Vui lòng kiểm tra kết nối SQL Server và migration.";
+                ViewData["LoadError"] = "Chưa thể tải dữ liệu showroom. Vui lòng kiểm tra việc khởi tạo cơ sở dữ liệu.";
                 return View(new HomeViewModel());
             }
         }

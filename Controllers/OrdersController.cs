@@ -40,7 +40,7 @@ namespace AutoCarShowroom.Controllers
             }
             catch (Exception)
             {
-                TempData["ErrorMessage"] = "Trang thanh toán tạm thời chưa sẵn sàng vì hệ thống đơn hàng chưa kết nối được database hoặc chưa cập nhật đủ bảng.";
+                TempData["ErrorMessage"] = "Trang thanh toán tạm thời chưa sẵn sàng vì hệ thống đơn hàng chưa kết nối được cơ sở dữ liệu hoặc chưa cập nhật đủ bảng.";
                 return RedirectToCheckoutFallback(carId);
             }
         }
@@ -106,7 +106,7 @@ namespace AutoCarShowroom.Controllers
             }
             catch (Exception)
             {
-                TempData["ErrorMessage"] = "Chưa thể tạo đơn hàng vì hệ thống đơn hàng chưa sẵn sàng. Vui lòng kiểm tra lại kết nối database.";
+                TempData["ErrorMessage"] = "Chưa thể tạo đơn hàng vì hệ thống đơn hàng chưa sẵn sàng. Vui lòng kiểm tra lại kết nối cơ sở dữ liệu.";
                 return RedirectToCheckoutFallback(model.BuyNowCarId);
             }
         }
@@ -141,7 +141,7 @@ namespace AutoCarShowroom.Controllers
             }
             catch (Exception)
             {
-                TempData["ErrorMessage"] = "Chưa thể hiển thị thông tin đơn hàng vì database chưa sẵn sàng.";
+                TempData["ErrorMessage"] = "Chưa thể hiển thị thông tin đơn hàng vì cơ sở dữ liệu chưa sẵn sàng.";
                 return RedirectToAction("Index", "Cars");
             }
         }

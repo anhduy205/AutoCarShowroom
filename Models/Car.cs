@@ -45,14 +45,54 @@ namespace AutoCarShowroom.Models
         [Display(Name = "Hình ảnh")]
         public string Image { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Vui lòng nhập thông số kỹ thuật.")]
-        [Display(Name = "Thông số kỹ thuật")]
+        [Required(ErrorMessage = "Vui lòng nhập thông tin chung.")]
+        [Display(Name = "Thông tin chung")]
         [DataType(DataType.MultilineText)]
         public string Specifications { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Vui lòng nhập mô tả.")]
+        [Required(ErrorMessage = "Vui lòng nhập mô tả nổi bật.")]
         [Display(Name = "Mô tả nổi bật")]
         [DataType(DataType.MultilineText)]
         public string Description { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Vui lòng nhập thông tin động cơ và khung xe.")]
+        [Display(Name = "Động cơ & khung xe")]
+        [DataType(DataType.MultilineText)]
+        public string EngineAndChassis { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Vui lòng nhập thông tin ngoại thất.")]
+        [Display(Name = "Ngoại thất")]
+        [DataType(DataType.MultilineText)]
+        public string Exterior { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Vui lòng nhập thông tin nội thất.")]
+        [Display(Name = "Nội thất")]
+        [DataType(DataType.MultilineText)]
+        public string Interior { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Vui lòng nhập thông tin ghế.")]
+        [Display(Name = "Ghế")]
+        [DataType(DataType.MultilineText)]
+        public string Seats { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Vui lòng nhập thông tin tiện nghi.")]
+        [Display(Name = "Tiện nghi")]
+        [DataType(DataType.MultilineText)]
+        public string Convenience { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Vui lòng nhập thông tin an ninh và chống trộm.")]
+        [Display(Name = "An ninh / hệ thống chống trộm")]
+        [DataType(DataType.MultilineText)]
+        public string SecurityAndAntiTheft { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Vui lòng nhập thông tin an toàn chủ động.")]
+        [Display(Name = "An toàn chủ động")]
+        [DataType(DataType.MultilineText)]
+        public string ActiveSafety { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Vui lòng nhập thông tin an toàn bị động.")]
+        [Display(Name = "An toàn bị động")]
+        [DataType(DataType.MultilineText)]
+        public string PassiveSafety { get; set; } = string.Empty;
     }
 }

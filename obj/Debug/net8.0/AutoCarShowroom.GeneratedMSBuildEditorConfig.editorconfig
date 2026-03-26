@@ -15,43 +15,161 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v8.0
 build_property.RootNamespace = AutoCarShowroom
 build_property.RootNamespace = AutoCarShowroom
-build_property.ProjectDir = E:\AutoCarShowroom\
+build_property.ProjectDir = C:\Users\BEKING\source\repos\AutoCarShowroom\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = E:\AutoCarShowroom
+build_property.MSBuildProjectDirectory = C:\Users\BEKING\source\repos\AutoCarShowroom
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[E:/AutoCarShowroom/Views/Home/Index.cshtml]
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = TG9naW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Showroom.Web/Views/Admin/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = U2hvd3Jvb20uV2ViXFZpZXdzXEFkbWluXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Showroom.Web/Views/Admin/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = U2hvd3Jvb20uV2ViXFZpZXdzXEFkbWluXExvZ2luLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Showroom.Web/Views/Brands/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = U2hvd3Jvb20uV2ViXFZpZXdzXEJyYW5kc1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Showroom.Web/Views/Brands/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = U2hvd3Jvb20uV2ViXFZpZXdzXEJyYW5kc1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Showroom.Web/Views/Brands/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = U2hvd3Jvb20uV2ViXFZpZXdzXEJyYW5kc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Showroom.Web/Views/Brands/_BrandForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = U2hvd3Jvb20uV2ViXFZpZXdzXEJyYW5kc1xfQnJhbmRGb3JtLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Showroom.Web/Views/Cars/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = U2hvd3Jvb20uV2ViXFZpZXdzXENhcnNcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Showroom.Web/Views/Cars/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = U2hvd3Jvb20uV2ViXFZpZXdzXENhcnNcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Showroom.Web/Views/Cars/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = U2hvd3Jvb20uV2ViXFZpZXdzXENhcnNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Showroom.Web/Views/Cars/_CarForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = U2hvd3Jvb20uV2ViXFZpZXdzXENhcnNcX0NhckZvcm0uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Showroom.Web/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = U2hvd3Jvb20uV2ViXFZpZXdzXEhvbWVcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Showroom.Web/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = U2hvd3Jvb20uV2ViXFZpZXdzXEhvbWVcUHJpdmFjeS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Showroom.Web/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = U2hvd3Jvb20uV2ViXFZpZXdzXFNoYXJlZFxFcnJvci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Showroom.Web/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = U2hvd3Jvb20uV2ViXFZpZXdzXFNoYXJlZFxfVmFsaWRhdGlvblNjcmlwdHNQYXJ0aWFsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Showroom.Web/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = U2hvd3Jvb20uV2ViXFZpZXdzXF9WaWV3SW1wb3J0cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Showroom.Web/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = U2hvd3Jvb20uV2ViXFZpZXdzXF9WaWV3U3RhcnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Views/AdminOrders/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5PcmRlcnNcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Views/AdminOrders/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5PcmRlcnNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Views/Cars/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2Fyc1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Views/Cars/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2Fyc1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Views/Cars/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2Fyc1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Views/Cars/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2Fyc1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Views/Cars/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2Fyc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Views/Cars/_CarFormFields.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2Fyc1xfQ2FyRm9ybUZpZWxkcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Views/Cart/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FydFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AutoCarShowroom/Views/Home/Privacy.cshtml]
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AutoCarShowroom/Views/Shared/Error.cshtml]
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Views/Orders/Checkout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJzXENoZWNrb3V0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Views/Orders/Success.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJzXFN1Y2Nlc3MuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AutoCarShowroom/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AutoCarShowroom/Views/_ViewImports.cshtml]
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AutoCarShowroom/Views/_ViewStart.cshtml]
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AutoCarShowroom/Views/Shared/_Layout.cshtml]
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Showroom.Web/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = U2hvd3Jvb20uV2ViXFZpZXdzXFNoYXJlZFxfTGF5b3V0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = b-sjqdeiktu9
+
+[C:/Users/BEKING/source/repos/AutoCarShowroom/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-dsv9skhakm

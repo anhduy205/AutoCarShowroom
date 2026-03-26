@@ -9,9 +9,14 @@ obj/
 *.suo
 
 # Project-specific folders
-App_Data/
+App_Data/*
+!App_Data/AutoCarShowroom.db
 wwwroot/uploads/cars/
 artifacts/
+.appdata/
+.dotnet-cli/
+.nuget/
+build-verify-viet/
 
 # Logs
 *.log

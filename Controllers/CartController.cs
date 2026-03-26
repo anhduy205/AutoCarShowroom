@@ -29,7 +29,7 @@ namespace AutoCarShowroom.Controllers
             }
             catch (Exception)
             {
-                TempData["ErrorMessage"] = "Giỏ hàng tạm thời chưa sẵn sàng vì database chưa kết nối hoặc chưa cập nhật đủ bảng.";
+                TempData["ErrorMessage"] = "Giỏ hàng tạm thời chưa sẵn sàng vì cơ sở dữ liệu chưa kết nối hoặc chưa cập nhật đủ bảng.";
                 return View(new CartViewModel());
             }
         }

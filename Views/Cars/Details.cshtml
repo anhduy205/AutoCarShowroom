@@ -5,9 +5,22 @@
     var canOrder = OrderWorkflow.CanOrder(Model);
     var statusClass = Model.Status switch
     {
-        "Đã bán" => "status-badge status-badge--sold",
-        "Khuyến mãi" => "status-badge status-badge--promo",
+        var status when status == OrderWorkflow.CarStatusSold => "status-badge status-badge--sold",
+        var status when status == OrderWorkflow.CarStatusPromotion => "status-badge status-badge--promo",
         _ => "status-badge status-badge--available"
+    };
+
+    var detailSections = new[]
+    {
+        new { Title = "Thông tin chung", Content = Model.Specifications },
+        new { Title = "Động cơ & khung xe", Content = Model.EngineAndChassis },
+        new { Title = "Ngoại thất", Content = Model.Exterior },
+        new { Title = "Nội thất", Content = Model.Interior },
+        new { Title = "Ghế", Content = Model.Seats },
+        new { Title = "Tiện nghi", Content = Model.Convenience },
+        new { Title = "An ninh / hệ thống chống trộm", Content = Model.SecurityAndAntiTheft },
+        new { Title = "An toàn chủ động", Content = Model.ActiveSafety },
+        new { Title = "An toàn bị động", Content = Model.PassiveSafety }
     };
 }
 
@@ -37,22 +50,19 @@
                 <a asp-action="Edit" asp-route-id="@Model.CarID" class="btn btn-accent">Chỉnh sửa mẫu xe</a>
                 <a asp-action="Delete" asp-route-id="@Model.CarID" class="btn btn-outline-danger">Xóa xe</a>
             }
+            else if (canOrder)
+            {
+                <a asp-controller="Orders" asp-action="Checkout" asp-route-carId="@Model.CarID" class="btn btn-accent">Mua ngay</a>
+                <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="carId" value="@Model.CarID" />
+                    <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                    <button type="submit" class="btn btn-outline-light">Thêm vào giỏ</button>
+                </form>
+            }
             else
             {
-                @if (canOrder)
-                {
-                    <a asp-controller="Orders" asp-action="Checkout" asp-route-carId="@Model.CarID" class="btn btn-accent">Mua ngay</a>
-                    <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="carId" value="@Model.CarID" />
-                        <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
-                        <button type="submit" class="btn btn-outline-light">Thêm vào giỏ</button>
-                    </form>
-                }
-                else
-                {
-                    <button type="button" class="btn btn-outline-light" disabled>Xe đã bán hoặc ngừng nhận đặt</button>
-                }
+                <button type="button" class="btn btn-outline-light" disabled>Xe đã bán hoặc ngừng nhận đặt</button>
             }
         </div>
     </div>
@@ -62,12 +72,12 @@
     <div class="section-heading">
         <div>
             <span class="section-kicker">Chi tiết</span>
-            <h2>Thông tin xe</h2>
+            <h2>Hồ sơ mẫu xe</h2>
         </div>
     </div>
 
     <div class="row g-4">
-        <div class="col-lg-6">
+        <div class="col-lg-4">
             <div class="detail-list">
                 <div class="detail-list__item">
                     <span>Hãng xe</span>
@@ -96,14 +106,30 @@
             </div>
         </div>
 
-        <div class="col-lg-6">
-            <div class="spec-panel h-100">
-                <span class="section-kicker">Thông số kỹ thuật</span>
-                <p class="spec-panel__text">@Model.Specifications</p>
-
-                <span class="section-kicker mt-4">Mô tả nổi bật</span>
+        <div class="col-lg-8">
+            <div class="spec-panel spec-panel--summary h-100">
+                <span class="section-kicker">Mô tả nổi bật</span>
                 <p class="spec-panel__text">@Model.Description</p>
             </div>
         </div>
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Thông số</span>
+            <h2>Chi tiết từng hạng mục</h2>
+        </div>
+    </div>
+
+    <div class="detail-section-grid">
+        @foreach (var detailSection in detailSections)
+        {
+            <article class="detail-section-card">
+                <h3>@detailSection.Title</h3>
+                <p>@detailSection.Content</p>
+            </article>
+        }
     </div>
 </section>

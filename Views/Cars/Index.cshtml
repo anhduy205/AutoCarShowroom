@@ -14,8 +14,8 @@
         <p>Xem nhanh, lọc nhanh, chọn nhanh.</p>
         <div class="hero-showcase__tags">
             <span>@soLuongXe mẫu xe</span>
-            <span>Giao diện gọn</span>
-            <span>Responsive</span>
+            <span>Lọc theo hãng</span>
+            <span>Dễ trình bày</span>
         </div>
     </div>
 
@@ -98,8 +98,8 @@
             var canOrder = OrderWorkflow.CanOrder(car);
             var statusClass = car.Status switch
             {
-                "Đã bán" => "status-badge status-badge--sold",
-                "Khuyến mãi" => "status-badge status-badge--promo",
+                var status when status == OrderWorkflow.CarStatusSold => "status-badge status-badge--sold",
+                var status when status == OrderWorkflow.CarStatusPromotion => "status-badge status-badge--promo",
                 _ => "status-badge status-badge--available"
             };
 

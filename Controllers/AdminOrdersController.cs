@@ -30,7 +30,7 @@ namespace AutoCarShowroom.Controllers
             }
             catch (Exception)
             {
-                TempData["ErrorMessage"] = "Danh sách đơn hàng tạm thời chưa sẵn sàng vì database chưa kết nối hoặc chưa cập nhật đủ bảng.";
+                TempData["ErrorMessage"] = "Danh sách đơn hàng tạm thời chưa sẵn sàng vì cơ sở dữ liệu chưa kết nối hoặc chưa cập nhật đủ bảng.";
                 return View(Enumerable.Empty<Order>());
             }
         }
@@ -107,7 +107,7 @@ namespace AutoCarShowroom.Controllers
             }
             catch (Exception)
             {
-                TempData["ErrorMessage"] = "Chưa thể cập nhật đơn hàng vì database chưa sẵn sàng.";
+                TempData["ErrorMessage"] = "Chưa thể cập nhật đơn hàng vì cơ sở dữ liệu chưa sẵn sàng.";
                 return RedirectToAction(nameof(Index));
             }
         }

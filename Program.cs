@@ -1,4 +1,3 @@
-using System.IO;
 using AutoCarShowroom.Data;
 using AutoCarShowroom.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -12,9 +11,14 @@ namespace AutoCarShowroom
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            var dataProtectionDirectory = Path.Combine(builder.Environment.ContentRootPath, "App_Data", "DataProtectionKeys");
+            var seedOnly = args.Contains("--seed-only", StringComparer.OrdinalIgnoreCase);
+            var dataDirectory = Path.Combine(builder.Environment.ContentRootPath, "App_Data");
+            var dataProtectionDirectory = Path.Combine(dataDirectory, "DataProtectionKeys");
 
+            Directory.CreateDirectory(dataDirectory);
             Directory.CreateDirectory(dataProtectionDirectory);
+
+            AppDomain.CurrentDomain.SetData("DataDirectory", dataDirectory);
 
             builder.Logging.ClearProviders();
             builder.Logging.AddConsole();
@@ -33,6 +37,7 @@ namespace AutoCarShowroom
                 options.Cookie.IsEssential = true;
                 options.IdleTimeout = TimeSpan.FromHours(4);
             });
+
             builder.Services.Configure<AdminAccountOptions>(builder.Configuration.GetSection("AdminAccount"));
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -44,8 +49,12 @@ namespace AutoCarShowroom
                 });
             builder.Services.AddAuthorization();
 
+            var connectionStringTemplate = builder.Configuration.GetConnectionString("DefaultConnection")
+                ?? throw new InvalidOperationException("Missing DefaultConnection.");
+            var connectionString = connectionStringTemplate.Replace("|DataDirectory|", dataDirectory, StringComparison.OrdinalIgnoreCase);
+
             builder.Services.AddDbContext<ShowroomDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlite(connectionString));
 
             var app = builder.Build();
 
@@ -58,14 +67,36 @@ namespace AutoCarShowroom
                 try
                 {
                     var dbContext = services.GetRequiredService<ShowroomDbContext>();
-                    await dbContext.Database.MigrateAsync();
+                    await dbContext.Database.EnsureCreatedAsync();
                     await ShowroomDemoSeeder.InitializeAsync(services);
+
+                    if (seedOnly)
+                    {
+                        var carCount = await dbContext.Cars.CountAsync();
+                        var brandCount = await dbContext.Cars
+                            .Select(car => car.Brand)
+                            .Distinct()
+                            .CountAsync();
+                        var statusSummary = await dbContext.Cars
+                            .GroupBy(car => car.Status)
+                            .Select(group => new { Status = group.Key, Count = group.Count() })
+                            .OrderBy(item => item.Status)
+                            .ToListAsync();
+
+                        Console.WriteLine($"SeedSummary Cars={carCount} Brands={brandCount}");
+                        Console.WriteLine($"StatusSummary {string.Join(", ", statusSummary.Select(item => $"{item.Status}:{item.Count}"))}");
+                    }
                 }
                 catch (Exception ex)
                 {
                     var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogWarning(ex, "Unable to apply database migrations during startup.");
+                    logger.LogWarning(ex, "Unable to initialize database during startup.");
                 }
+            }
+
+            if (seedOnly)
+            {
+                return;
             }
 
             if (!app.Environment.IsDevelopment())

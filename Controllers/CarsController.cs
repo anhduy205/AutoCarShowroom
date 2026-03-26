@@ -10,16 +10,23 @@ namespace AutoCarShowroom.Controllers
     public class CarsController : Controller
     {
         private static readonly string[] AllowedImageExtensions = [".jpg", ".jpeg", ".png", ".webp", ".gif"];
-        private static readonly string[] VehicleBodyTypes = ["SUV", "Sedan", "Hatchback", "MPV", "Crossover", "Pickup", "Coupe", "Mui trần", "Khác"];
-        private static readonly string[] VehicleStatuses = ["Còn hàng", "Đã bán", "Khuyến mãi"];
+        private static readonly string[] VehicleBodyTypes = ["SUV", "Sedan", "Hatchback", "MPV", "Crossover", "Bán tải", "Coupe", "Mui trần", "Khác"];
+        private static readonly string[] VehicleStatuses =
+        [
+            OrderWorkflow.CarStatusAvailable,
+            OrderWorkflow.CarStatusSold,
+            OrderWorkflow.CarStatusPromotion
+        ];
+
         private static readonly PriceRangeOption[] PriceRangeOptions =
         [
             new("under_700", "Dưới 700 triệu", null, 700_000_000m),
             new("700_1000", "700 triệu - 1 tỷ", 700_000_000m, 1_000_000_000m),
-            new("1000_1500", "1 tỷ - 1.5 tỷ", 1_000_000_000m, 1_500_000_000m),
-            new("1500_2500", "1.5 tỷ - 2.5 tỷ", 1_500_000_000m, 2_500_000_000m),
-            new("above_2500", "Trên 2.5 tỷ", 2_500_000_000m, null)
+            new("1000_1500", "1 tỷ - 1,5 tỷ", 1_000_000_000m, 1_500_000_000m),
+            new("1500_2500", "1,5 tỷ - 2,5 tỷ", 1_500_000_000m, 2_500_000_000m),
+            new("above_2500", "Trên 2,5 tỷ", 2_500_000_000m, null)
         ];
+
         private const long MaxImageSizeInBytes = 5 * 1024 * 1024;
 
         private readonly ShowroomDbContext _context;
@@ -98,16 +105,18 @@ namespace AutoCarShowroom.Controllers
 
                 carsQuery = ApplyPriceRangeFilter(carsQuery, priceRange);
 
-                carsQuery = sortOrder switch
+                var cars = await carsQuery.ToListAsync();
+
+                cars = sortOrder switch
                 {
-                    "price_desc" => carsQuery.OrderByDescending(car => car.Price).ThenBy(car => car.CarName),
-                    "price_asc" => carsQuery.OrderBy(car => car.Price).ThenBy(car => car.CarName),
-                    "year_desc" => carsQuery.OrderByDescending(car => car.Year).ThenBy(car => car.CarName),
-                    "year_asc" => carsQuery.OrderBy(car => car.Year).ThenBy(car => car.CarName),
-                    _ => carsQuery.OrderBy(car => car.CarName)
+                    "price_desc" => cars.OrderByDescending(car => car.Price).ThenBy(car => car.CarName).ToList(),
+                    "price_asc" => cars.OrderBy(car => car.Price).ThenBy(car => car.CarName).ToList(),
+                    "year_desc" => cars.OrderByDescending(car => car.Year).ThenBy(car => car.CarName).ToList(),
+                    "year_asc" => cars.OrderBy(car => car.Year).ThenBy(car => car.CarName).ToList(),
+                    _ => cars.OrderBy(car => car.CarName).ToList()
                 };
 
-                return View(await carsQuery.ToListAsync());
+                return View(cars);
             }
             catch (Exception)
             {
@@ -148,7 +157,7 @@ namespace AutoCarShowroom.Controllers
             var viewModel = new CarFormViewModel
             {
                 Year = DateTime.Now.Year,
-                Status = VehicleStatuses[0]
+                Status = OrderWorkflow.CarStatusAvailable
             };
 
             PopulateFormOptions(viewModel.BodyType, viewModel.Status);
@@ -187,7 +196,15 @@ namespace AutoCarShowroom.Controllers
                     Status = model.Status,
                     Image = savedImagePath,
                     Specifications = model.Specifications,
-                    Description = model.Description
+                    Description = model.Description,
+                    EngineAndChassis = model.EngineAndChassis,
+                    Exterior = model.Exterior,
+                    Interior = model.Interior,
+                    Seats = model.Seats,
+                    Convenience = model.Convenience,
+                    SecurityAndAntiTheft = model.SecurityAndAntiTheft,
+                    ActiveSafety = model.ActiveSafety,
+                    PassiveSafety = model.PassiveSafety
                 };
 
                 _context.Add(car);
@@ -266,6 +283,14 @@ namespace AutoCarShowroom.Controllers
                 car.Status = model.Status;
                 car.Specifications = model.Specifications;
                 car.Description = model.Description;
+                car.EngineAndChassis = model.EngineAndChassis;
+                car.Exterior = model.Exterior;
+                car.Interior = model.Interior;
+                car.Seats = model.Seats;
+                car.Convenience = model.Convenience;
+                car.SecurityAndAntiTheft = model.SecurityAndAntiTheft;
+                car.ActiveSafety = model.ActiveSafety;
+                car.PassiveSafety = model.PassiveSafety;
 
                 if (model.ImageFile != null)
                 {
@@ -343,12 +368,12 @@ namespace AutoCarShowroom.Controllers
                 _context.Cars.Remove(car);
                 await _context.SaveChangesAsync();
                 DeleteUploadedImage(imagePath);
-                TempData["SuccessMessage"] = "Đã xoá xe thành công.";
+                TempData["SuccessMessage"] = "Đã xóa xe thành công.";
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateException)
             {
-                TempData["ErrorMessage"] = "Không thể xoá xe ở thời điểm hiện tại.";
+                TempData["ErrorMessage"] = "Không thể xóa xe ở thời điểm hiện tại.";
                 return RedirectToAction(nameof(Delete), new { id });
             }
         }
@@ -426,6 +451,14 @@ namespace AutoCarShowroom.Controllers
                 Status = car.Status,
                 Specifications = car.Specifications,
                 Description = car.Description,
+                EngineAndChassis = car.EngineAndChassis,
+                Exterior = car.Exterior,
+                Interior = car.Interior,
+                Seats = car.Seats,
+                Convenience = car.Convenience,
+                SecurityAndAntiTheft = car.SecurityAndAntiTheft,
+                ActiveSafety = car.ActiveSafety,
+                PassiveSafety = car.PassiveSafety,
                 CurrentImagePath = car.Image
             };
         }

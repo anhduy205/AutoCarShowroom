@@ -11,7 +11,7 @@
         <span class="section-kicker">Showroom ô tô</span>
         <h1>Chọn mẫu xe đẹp, rõ giá, xem nhanh.</h1>
         <p class="hero-showcase__description">
-            Giao diện gọn, trực quan và dễ demo.
+            Giao diện gọn, trực quan và dễ demo cho bài thuyết trình của bạn.
         </p>
 
         <div class="hero-showcase__actions">
@@ -38,8 +38,8 @@
         {
             var statusClass = xeNoiBat.Status switch
             {
-                "Đã bán" => "status-badge status-badge--sold",
-                "Khuyến mãi" => "status-badge status-badge--promo",
+                var status when status == OrderWorkflow.CarStatusSold => "status-badge status-badge--sold",
+                var status when status == OrderWorkflow.CarStatusPromotion => "status-badge status-badge--promo",
                 _ => "status-badge status-badge--available"
             };
 
@@ -66,7 +66,7 @@
                 <div class="feature-card__overlay">
                     <span class="feature-card__badge">Showroom</span>
                     <h2>Sẵn sàng trưng bày mẫu xe đầu tiên</h2>
-                    <p>Đăng nhập quản trị để thêm dữ liệu và bắt đầu hoàn thiện bài đồ án của bạn.</p>
+                    <p>Đăng nhập quản trị để thêm dữ liệu và hoàn thiện luồng demo cho đồ án của bạn.</p>
                 </div>
             </div>
         }
@@ -115,8 +115,8 @@
                 var canOrder = OrderWorkflow.CanOrder(car);
                 var statusClass = car.Status switch
                 {
-                    "Đã bán" => "status-badge status-badge--sold",
-                    "Khuyến mãi" => "status-badge status-badge--promo",
+                    var status when status == OrderWorkflow.CarStatusSold => "status-badge status-badge--sold",
+                    var status when status == OrderWorkflow.CarStatusPromotion => "status-badge status-badge--promo",
                     _ => "status-badge status-badge--available"
                 };
 
@@ -181,17 +181,17 @@
         <article class="service-card">
             <span class="service-card__number">01</span>
             <h3>Ảnh lớn</h3>
-            <p>Nhìn xe rõ ngay.</p>
+            <p>Nhìn xe rõ ngay trên màn hình.</p>
         </article>
         <article class="service-card">
             <span class="service-card__number">02</span>
             <h3>Lọc nhanh</h3>
-            <p>Tìm xe dễ hơn.</p>
+            <p>Tìm xe dễ hơn theo hãng, giá và năm.</p>
         </article>
         <article class="service-card">
             <span class="service-card__number">03</span>
             <h3>Đặt xe nhanh</h3>
-            <p>Giỏ hàng và checkout mô phỏng.</p>
+            <p>Có giỏ hàng và luồng thanh toán mô phỏng.</p>
         </article>
     </div>
 </section>

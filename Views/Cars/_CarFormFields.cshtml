@@ -12,13 +12,13 @@
 
     <div class="col-md-4">
         <label asp-for="Brand" class="form-label"></label>
-        <input asp-for="Brand" class="form-control" placeholder="Ví dụ: Toyota, Honda, Mazda..." />
+        <input asp-for="Brand" class="form-control" placeholder="Ví dụ: Toyota, Honda, Ferrari..." />
         <span asp-validation-for="Brand" class="text-danger"></span>
     </div>
 
     <div class="col-md-4">
         <label asp-for="ModelName" class="form-label"></label>
-        <input asp-for="ModelName" class="form-control" placeholder="Ví dụ: Camry, CR-V, CX-5..." />
+        <input asp-for="ModelName" class="form-control" placeholder="Ví dụ: Camry, CR-V, Revuelto..." />
         <span asp-validation-for="ModelName" class="text-danger"></span>
     </div>
 
@@ -36,7 +36,7 @@
 
     <div class="col-md-4">
         <label asp-for="Color" class="form-label"></label>
-        <input asp-for="Color" class="form-control" placeholder="Ví dụ: Trắng ngọc, Đen, Xám..." />
+        <input asp-for="Color" class="form-control" placeholder="Ví dụ: Trắng ngọc, Đen, Đỏ..." />
         <span asp-validation-for="Color" class="text-danger"></span>
     </div>
 
@@ -77,14 +77,69 @@
     }
 
     <div class="col-12">
-        <label asp-for="Specifications" class="form-label"></label>
-        <textarea asp-for="Specifications" class="form-control" rows="5" placeholder="Ví dụ: Động cơ 2.5L, hộp số tự động 8 cấp, 5 chỗ, ghế da, camera 360, điều hòa 2 vùng..."></textarea>
-        <span asp-validation-for="Specifications" class="text-danger"></span>
+        <div class="form-section-title">
+            <span class="section-kicker">Nội dung chi tiết</span>
+            <h3>Bộ thông tin chi tiết của xe</h3>
+        </div>
     </div>
 
     <div class="col-12">
         <label asp-for="Description" class="form-label"></label>
-        <textarea asp-for="Description" class="form-control" rows="5" placeholder="Mô tả nổi bật về ngoại thất, nội thất, cảm giác lái và nhóm khách hàng phù hợp."></textarea>
+        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Mô tả nhanh về định vị sản phẩm, nhóm khách hàng phù hợp và điểm nổi bật chính."></textarea>
         <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="col-12">
+        <label asp-for="Specifications" class="form-label"></label>
+        <textarea asp-for="Specifications" class="form-control" rows="4" placeholder="Tổng quan mẫu xe, số chỗ, phân khúc, phong cách sử dụng và giá bán tham khảo."></textarea>
+        <span asp-validation-for="Specifications" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="EngineAndChassis" class="form-label"></label>
+        <textarea asp-for="EngineAndChassis" class="form-control" rows="4" placeholder="Động cơ, hộp số, dẫn động, khung gầm và cảm giác vận hành tổng quát."></textarea>
+        <span asp-validation-for="EngineAndChassis" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Exterior" class="form-label"></label>
+        <textarea asp-for="Exterior" class="form-control" rows="4" placeholder="Thiết kế đầu xe, mâm, đèn, phong cách tổng thể và điểm nhận diện ngoại thất."></textarea>
+        <span asp-validation-for="Exterior" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Interior" class="form-label"></label>
+        <textarea asp-for="Interior" class="form-control" rows="4" placeholder="Bảng táp-lô, vật liệu, màn hình, không gian cabin và cảm giác ngồi."></textarea>
+        <span asp-validation-for="Interior" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Seats" class="form-label"></label>
+        <textarea asp-for="Seats" class="form-control" rows="4" placeholder="Số ghế, chất liệu, chỉnh điện/chỉnh cơ, hàng ghế sau và độ thoải mái."></textarea>
+        <span asp-validation-for="Seats" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Convenience" class="form-label"></label>
+        <textarea asp-for="Convenience" class="form-control" rows="4" placeholder="Điều hòa, giải trí, kết nối, sạc, cửa cốp/cửa trượt điện hoặc các tiện ích nổi bật khác."></textarea>
+        <span asp-validation-for="Convenience" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="SecurityAndAntiTheft" class="form-label"></label>
+        <textarea asp-for="SecurityAndAntiTheft" class="form-control" rows="4" placeholder="Khóa thông minh, immobilizer, báo động, cảm biến và các lớp bảo vệ cơ bản."></textarea>
+        <span asp-validation-for="SecurityAndAntiTheft" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="ActiveSafety" class="form-label"></label>
+        <textarea asp-for="ActiveSafety" class="form-control" rows="4" placeholder="ABS, cân bằng điện tử, giữ làn, cảnh báo va chạm, camera, cảm biến, ADAS..."></textarea>
+        <span asp-validation-for="ActiveSafety" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="PassiveSafety" class="form-label"></label>
+        <textarea asp-for="PassiveSafety" class="form-control" rows="4" placeholder="Khung xe, túi khí, ISOFIX, phân bổ lực va chạm và các hạng mục an toàn bị động."></textarea>
+        <span asp-validation-for="PassiveSafety" class="text-danger"></span>
     </div>
 </div>
