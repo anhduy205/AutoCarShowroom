@@ -1,41 +1,43 @@
 # AutoCarShowroom
 
-Do an mon hoc xay dung website showroom xe bang ASP.NET Core MVC va Entity Framework Core.
+Đồ án môn học xây dựng website showroom ô tô bằng ASP.NET Core MVC và Entity Framework Core.
 
-## Chuc nang hien co
+## Chức năng hiện có
 
-- Xem danh sach xe cong khai, tim kiem theo ten, loc theo nam va sap xep theo gia/nam.
-- Loc du lieu theo hang xe de tach nhom xe pho thong va cac hang sieu xe.
-- Xem chi tiet tung mau xe trong showroom.
-- Dang nhap admin bang cookie authentication de truy cap chuc nang quan tri.
-- Them, sua, xoa xe trong he thong.
-- Upload anh xe that vao `wwwroot/uploads/cars`.
-- Tu dong seed danh muc lon gom 8 hang pho bien tai Viet Nam va 2 hang sieu xe de demo showroom.
-- Ho tro anh that cho cac dong xe seed san trong `wwwroot/uploads/catalog`.
+- Xem danh sách xe công khai, tìm kiếm theo tên, lọc theo hãng, năm và khoảng giá.
+- Xem chi tiết từng mẫu xe trong showroom.
+- Đăng nhập quản trị bằng cookie authentication để truy cập chức năng quản lý.
+- Thêm, sửa, xóa xe trong hệ thống.
+- Upload ảnh xe thật vào `wwwroot/uploads/cars`.
+- Tự động seed danh mục lớn gồm xe phổ thông và siêu xe để demo showroom.
+- Đi kèm sẵn file database SQLite trong `App_Data/AutoCarShowroom.db`.
 
-## Tai khoan admin mac dinh
+## Tài khoản admin mặc định
 
 - Username: `admin`
 - Password: `Admin@123`
 
-Ban co the doi tai khoan trong file [appsettings.json](/E:/AutoCarShowroom/appsettings.json).
+Bạn có thể đổi tài khoản trong file [appsettings.json](/C:/Users/BEKING/source/repos/AutoCarShowroom/appsettings.json).
 
-## Huong dan chay
+## Hướng dẫn chạy
 
-1. Kiem tra lai chuoi ket noi SQL Server trong [appsettings.json](/C:/Users/BEKING/source/repos/AutoCarShowroom/appsettings.json). Mac dinh dang tro toi `.\SQLEXPRESS`.
-2. Chay `dotnet build`.
-3. Chay `dotnet run`.
-4. Mo `https://localhost:7232` hoac `http://localhost:5090`.
+1. Chạy `dotnet restore`.
+2. Chạy `dotnet build`.
+3. Chạy `dotnet run --launch-profile http`.
+4. Mở `http://localhost:5090`.
 
-## Cap nhat anh xe seed
+Nếu muốn chạy HTTPS, dùng profile `https` trong `launchSettings.json`.
 
-- Neu can tai lai bo anh that, chay `powershell -ExecutionPolicy Bypass -File .\scripts\download-seed-images.ps1`.
-- Danh sach nguon anh da tai se duoc luu tai `wwwroot/uploads/catalog/sources.json`.
+## Ghi chú database
 
-## Noi dung co the trinh bay khi bao cao
+- Project hiện dùng SQLite file, không còn phụ thuộc `.\SQLEXPRESS`.
+- File database mẫu nằm ở `App_Data/AutoCarShowroom.db`.
+- Khi khởi động, ứng dụng sẽ tự tạo thư mục dữ liệu nếu chưa có và tự seed lại danh mục xe mẫu.
 
-- Kien truc MVC gom `Models`, `Views`, `Controllers`.
-- Entity Framework Core duoc dung de thao tac va migration database.
-- Khu admin duoc bao ve boi cookie authentication.
-- Hinh anh xe duoc upload va luu trong `wwwroot/uploads/cars`.
-- He thong co du lieu mau san de demo ngay sau khi chay.
+## Nội dung có thể trình bày khi báo cáo
+
+- Kiến trúc MVC gồm `Models`, `Views`, `Controllers`.
+- Entity Framework Core dùng để thao tác dữ liệu.
+- Khu admin được bảo vệ bởi cookie authentication.
+- Hình ảnh xe được upload và lưu trong `wwwroot/uploads/cars`.
+- Hệ thống có dữ liệu mẫu sẵn để demo ngay sau khi chạy.
