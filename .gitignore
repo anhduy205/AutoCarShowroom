@@ -16,6 +16,7 @@ artifacts/
 .appdata/
 .dotnet-cli/
 .nuget/
+.ef-tools/
 build-verify-viet/
 
 # Logs

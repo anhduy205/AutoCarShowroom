@@ -67,7 +67,7 @@ namespace AutoCarShowroom
                 try
                 {
                     var dbContext = services.GetRequiredService<ShowroomDbContext>();
-                    await dbContext.Database.EnsureCreatedAsync();
+                    await dbContext.Database.MigrateAsync();
                     await ShowroomDemoSeeder.InitializeAsync(services);
 
                     if (seedOnly)
