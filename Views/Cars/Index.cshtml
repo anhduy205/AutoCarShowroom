@@ -4,18 +4,18 @@
 @{
     ViewData["Title"] = "Bộ sưu tập xe";
     var currentSearch = ViewData["CurrentSearch"] as string;
-    var soLuongXe = Model.Count();
+    var totalCars = Model.Count();
 }
 
 <section class="inventory-hero">
     <div class="inventory-hero__copy">
         <span class="section-kicker">Bộ sưu tập</span>
         <h1>Kho xe đang có tại showroom</h1>
-        <p>Xem nhanh, lọc nhanh, chọn nhanh.</p>
+        <p>Xem nhanh, lọc nhanh, mua xe hoặc đặt lịch ngay trên từng mẫu xe.</p>
         <div class="hero-showcase__tags">
-            <span>@soLuongXe mẫu xe</span>
+            <span>@totalCars mẫu xe</span>
             <span>Lọc theo hãng</span>
-            <span>Dễ trình bày</span>
+            <span>Đặt lịch dễ dàng</span>
         </div>
     </div>
 
@@ -24,14 +24,14 @@
         @if (User.Identity?.IsAuthenticated == true)
         {
             <strong>Bạn đang ở chế độ quản trị</strong>
-            <p>Sẵn sàng thêm hoặc sửa xe.</p>
+            <p>Sẵn sàng thêm, sửa và quản lý xe.</p>
             <a asp-action="Create" class="btn btn-accent">Đăng xe mới</a>
         }
         else
         {
             <strong>Khách tham khảo</strong>
-            <p>Xem xe, thêm vào giỏ và thanh toán mô phỏng.</p>
-            <a asp-controller="Cart" asp-action="Index" class="btn btn-accent">Mở giỏ hàng</a>
+            <p>Chọn xe phù hợp rồi mua trực tiếp hoặc đặt lịch xem xe.</p>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-accent">Về trang chủ</a>
         }
     </div>
 </section>
@@ -122,24 +122,20 @@
                             <span class="car-card__price">@car.Price.ToString("N0") VNĐ</span>
                         </div>
                         <div class="car-card__actions">
-                            <a asp-action="Details" asp-route-id="@car.CarID" class="btn btn-accent">Xem chi tiết</a>
+                            <a asp-action="Details" asp-route-id="@car.CarID" class="btn btn-outline-dark">Xem chi tiết</a>
                             @if (User.Identity?.IsAuthenticated == true)
                             {
-                                <a asp-action="Edit" asp-route-id="@car.CarID" class="btn btn-outline-dark">Sửa</a>
+                                <a asp-action="Edit" asp-route-id="@car.CarID" class="btn btn-accent">Sửa</a>
                                 <a asp-action="Delete" asp-route-id="@car.CarID" class="btn btn-outline-danger">Xóa</a>
                             }
                             else if (canOrder)
                             {
-                                <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="carId" value="@car.CarID" />
-                                    <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
-                                    <button type="submit" class="btn btn-outline-dark">Thêm vào giỏ</button>
-                                </form>
+                                <a asp-controller="Orders" asp-action="Checkout" asp-route-carId="@car.CarID" class="btn btn-accent">Mua xe</a>
+                                <a asp-controller="Bookings" asp-action="Create" asp-route-carId="@car.CarID" class="btn btn-outline-dark">Đặt lịch</a>
                             }
                             else
                             {
-                                <button type="button" class="btn btn-outline-dark" disabled>Ngừng nhận đặt</button>
+                                <button type="button" class="btn btn-outline-dark" disabled>Ngừng nhận khách</button>
                             }
                         </div>
                     </div>
@@ -159,7 +155,7 @@ else
         }
         else
         {
-            <a asp-controller="Cart" asp-action="Index" class="btn btn-accent">Xem giỏ hàng</a>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-accent">Về trang chủ</a>
         }
     </div>
 }

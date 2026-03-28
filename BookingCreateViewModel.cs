@@ -1,9 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using AutoCarShowroom.Models;
 
 namespace AutoCarShowroom.ViewModels
 {
-    public class CheckoutViewModel
+    public class BookingCreateViewModel
     {
         public int CarId { get; set; }
 
@@ -23,17 +22,12 @@ namespace AutoCarShowroom.ViewModels
         [Display(Name = "Email")]
         public string Email { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Vui lòng nhập địa chỉ nhận thông tin.")]
-        [Display(Name = "Địa chỉ")]
-        public string Address { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Vui lòng chọn ngày giờ hẹn.")]
+        [Display(Name = "Ngày giờ hẹn")]
+        [DataType(DataType.DateTime)]
+        public DateTime AppointmentAt { get; set; } = DateTime.Now.Date.AddDays(1).AddHours(9);
 
         [Display(Name = "Ghi chú")]
         public string? Note { get; set; }
-
-        [Required(ErrorMessage = "Vui lòng chọn phương thức thanh toán.")]
-        [Display(Name = "Phương thức thanh toán")]
-        public string PaymentMethod { get; set; } = OrderWorkflow.PaymentMethodSimulation;
-
-        public decimal TotalAmount => Car.Price;
     }
 }

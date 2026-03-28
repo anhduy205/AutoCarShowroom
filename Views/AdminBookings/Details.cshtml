@@ -1,0 +1,91 @@
+@model AdminBookingDetailViewModel
+
+@{
+    ViewData["Title"] = "Chi tiết lịch hẹn";
+}
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Lịch hẹn</span>
+            <h1>@Model.Booking.BookingCode</h1>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-light">Quay lại danh sách lịch</a>
+    </div>
+
+    <div class="checkout-layout">
+        <div class="checkout-panel">
+            <span class="section-kicker">Thông tin khách hàng</span>
+            <div class="detail-list mt-4">
+                <div class="detail-list__item">
+                    <span>Họ và tên</span>
+                    <strong>@Model.Booking.CustomerName</strong>
+                </div>
+                <div class="detail-list__item">
+                    <span>Số điện thoại</span>
+                    <strong>@Model.Booking.PhoneNumber</strong>
+                </div>
+                <div class="detail-list__item">
+                    <span>Email</span>
+                    <strong>@Model.Booking.Email</strong>
+                </div>
+                <div class="detail-list__item">
+                    <span>Ngày giờ hẹn</span>
+                    <strong>@Model.Booking.AppointmentAt.ToString("dd/MM/yyyy HH:mm")</strong>
+                </div>
+                <div class="detail-list__item">
+                    <span>Mẫu xe</span>
+                    <strong>@Model.Booking.CarName</strong>
+                </div>
+                <div class="detail-list__item">
+                    <span>Ghi chú khách</span>
+                    <strong>@(string.IsNullOrWhiteSpace(Model.Booking.Note) ? "Không có" : Model.Booking.Note)</strong>
+                </div>
+            </div>
+        </div>
+
+        <aside class="summary-panel">
+            <span class="section-kicker">Cập nhật trạng thái</span>
+            <form asp-action="UpdateStatus" method="post" class="app-form mt-4">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Booking.BookingId" />
+                <label class="form-label" for="bookingStatus">Trạng thái lịch hẹn</label>
+                <select id="bookingStatus" name="bookingStatus" class="form-select">
+                    @foreach (var status in Model.BookingStatusOptions)
+                    {
+                        <option value="@status" selected="@(status == Model.Booking.BookingStatus ? "selected" : null)">@status</option>
+                    }
+                </select>
+                <label class="form-label mt-4" for="adminNote">Ghi chú quản trị</label>
+                <textarea id="adminNote" name="adminNote" class="form-control" rows="5" placeholder="Ghi nhận kết quả tư vấn, khả năng chốt sale, lý do không bán được...">@Model.Booking.AdminNote</textarea>
+                <div class="summary-row mt-4">
+                    <span>Giá tham khảo</span>
+                    <strong>@Model.Booking.QuotedPrice.ToString("N0") VNĐ</strong>
+                </div>
+                <div class="summary-actions">
+                    <button type="submit" class="btn btn-accent">Lưu trạng thái</button>
+                </div>
+            </form>
+        </aside>
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Mẫu xe</span>
+            <h2>Xe khách đã chọn</h2>
+        </div>
+    </div>
+
+    <div class="checkout-items">
+        <article class="checkout-item">
+            <img src="@Model.Booking.CarImage" alt="@Model.Booking.CarName" class="checkout-item__image" />
+            <div class="checkout-item__content">
+                <h3>@Model.Booking.CarName</h3>
+                <p class="cart-item-card__price">@Model.Booking.QuotedPrice.ToString("N0") VNĐ</p>
+                <a asp-controller="Cars" asp-action="Details" asp-route-id="@Model.Booking.CarId" class="btn btn-outline-light btn-sm">Xem xe</a>
+            </div>
+        </article>
+    </div>
+</section>

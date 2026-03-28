@@ -1,0 +1,58 @@
+@model BookingSuccessViewModel
+
+@{
+    ViewData["Title"] = "Đặt lịch thành công";
+}
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Thành công</span>
+            <h1>Lịch hẹn của bạn đã được ghi nhận</h1>
+        </div>
+        <a asp-controller="Cars" asp-action="Index" class="btn btn-outline-light">Xem thêm xe khác</a>
+    </div>
+
+    <div class="success-layout">
+        <div class="detail-list">
+            <div class="detail-list__item">
+                <span>Mã lịch hẹn</span>
+                <strong>@Model.Booking.BookingCode</strong>
+            </div>
+            <div class="detail-list__item">
+                <span>Khách hàng</span>
+                <strong>@Model.Booking.CustomerName</strong>
+            </div>
+            <div class="detail-list__item">
+                <span>Số điện thoại</span>
+                <strong>@Model.Booking.PhoneNumber</strong>
+            </div>
+            <div class="detail-list__item">
+                <span>Email</span>
+                <strong>@Model.Booking.Email</strong>
+            </div>
+            <div class="detail-list__item">
+                <span>Ngày giờ hẹn</span>
+                <strong>@Model.Booking.AppointmentAt.ToString("dd/MM/yyyy HH:mm")</strong>
+            </div>
+            <div class="detail-list__item">
+                <span>Trạng thái</span>
+                <strong>@Model.Booking.BookingStatus</strong>
+            </div>
+        </div>
+
+        <div class="summary-panel">
+            <span class="section-kicker">Mẫu xe đã chọn</span>
+            <div class="checkout-items mt-3">
+                <article class="checkout-item">
+                    <img src="@Model.Booking.CarImage" alt="@Model.Booking.CarName" class="checkout-item__image" />
+                    <div>
+                        <h3>@Model.Booking.CarName</h3>
+                        <p class="cart-item-card__price">@Model.Booking.QuotedPrice.ToString("N0") VNĐ</p>
+                    </div>
+                </article>
+            </div>
+            <p class="checkout-note">Showroom sẽ liên hệ với bạn để xác nhận lại lịch hẹn và hỗ trợ thêm thông tin.</p>
+        </div>
+    </div>
+</section>

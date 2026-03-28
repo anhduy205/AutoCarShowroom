@@ -1,0 +1,148 @@
+@model RevenueDashboardViewModel
+
+@{
+    ViewData["Title"] = "Quản lý doanh thu";
+}
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Quản trị</span>
+            <h1>Quản lý doanh thu</h1>
+        </div>
+        <a asp-controller="Cars" asp-action="Index" class="btn btn-outline-light">Quay lại kho xe</a>
+    </div>
+
+    <div class="metrics-strip">
+        <article class="metric-card">
+            <span class="metric-card__label">Tổng doanh thu</span>
+            <strong>@Model.TotalRevenue.ToString("N0") VNĐ</strong>
+            <p>Tổng giá trị đã ghi nhận.</p>
+        </article>
+        <article class="metric-card">
+            <span class="metric-card__label">Số giao dịch</span>
+            <strong>@Model.TotalTransactions</strong>
+            <p>Bản ghi doanh thu hiện có.</p>
+        </article>
+        <article class="metric-card">
+            <span class="metric-card__label">Nguồn chính</span>
+            <strong>@Model.OrderRevenueCount đơn / @Model.BookingRevenueCount booking</strong>
+            <p>Phân loại theo nguồn phát sinh.</p>
+        </article>
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Thêm mới</span>
+            <h2>Ghi nhận doanh thu thủ công</h2>
+        </div>
+    </div>
+
+    <form asp-action="Create" method="post" class="app-form">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label asp-for="Form.Amount" class="form-label"></label>
+                <input asp-for="Form.Amount" class="form-control" />
+                <span asp-validation-for="Form.Amount" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Form.ReceivedAt" class="form-label"></label>
+                <input asp-for="Form.ReceivedAt" asp-format="{0:yyyy-MM-ddTHH:mm}" type="datetime-local" class="form-control" />
+                <span asp-validation-for="Form.ReceivedAt" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Form.SourceType" class="form-label"></label>
+                <select asp-for="Form.SourceType" asp-items="ViewBag.SourceTypes" class="form-select"></select>
+                <span asp-validation-for="Form.SourceType" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Form.OrderId" class="form-label"></label>
+                <select asp-for="Form.OrderId" asp-items="ViewBag.OrderOptions" class="form-select">
+                    <option value="">Không gắn đơn mua</option>
+                </select>
+                <span asp-validation-for="Form.OrderId" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Form.BookingId" class="form-label"></label>
+                <select asp-for="Form.BookingId" asp-items="ViewBag.BookingOptions" class="form-select">
+                    <option value="">Không gắn lịch hẹn</option>
+                </select>
+                <span asp-validation-for="Form.BookingId" class="text-danger"></span>
+            </div>
+            <div class="col-12">
+                <label asp-for="Form.Note" class="form-label"></label>
+                <textarea asp-for="Form.Note" class="form-control" rows="4" placeholder="Ghi chú thêm về khoản doanh thu này..."></textarea>
+                <span asp-validation-for="Form.Note" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="summary-actions mt-4">
+            <button type="submit" class="btn btn-accent">Lưu doanh thu</button>
+        </div>
+    </form>
+</section>
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Lịch sử</span>
+            <h2>Doanh thu gần đây</h2>
+        </div>
+    </div>
+
+    @if (Model.Records.Any())
+    {
+        <div class="table-shell">
+            <table class="app-table">
+                <thead>
+                    <tr>
+                        <th>Ngày ghi nhận</th>
+                        <th>Nguồn</th>
+                        <th>Tham chiếu</th>
+                        <th>Số tiền</th>
+                        <th>Ghi chú</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var record in Model.Records)
+                    {
+                        <tr>
+                            <td>@record.ReceivedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@record.SourceType</td>
+                            <td>
+                                @if (record.Order != null)
+                                {
+                                    <strong>@record.Order.OrderCode</strong>
+                                }
+                                else if (record.Booking != null)
+                                {
+                                    <strong>@record.Booking.BookingCode</strong>
+                                }
+                                else
+                                {
+                                    <span>Khác</span>
+                                }
+                            </td>
+                            <td>@record.Amount.ToString("N0") VNĐ</td>
+                            <td>@(string.IsNullOrWhiteSpace(record.Note) ? "Không có" : record.Note)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <h2>Chưa có doanh thu nào</h2>
+            <p>Hãy thêm bản ghi doanh thu đầu tiên để bắt đầu theo dõi.</p>
+        </div>
+    }
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

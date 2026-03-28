@@ -1,6 +1,6 @@
 namespace AutoCarShowroom.ViewModels
 {
-    public class CartItemViewModel
+    public class PurchaseCarSummaryViewModel
     {
         public int CarId { get; set; }
 
@@ -16,7 +16,7 @@ namespace AutoCarShowroom.ViewModels
 
         public decimal Price { get; set; }
 
-        public bool CanOrder { get; set; }
+        public bool CanPurchase { get; set; }
 
         public string AvailabilityMessage { get; set; } = string.Empty;
     }

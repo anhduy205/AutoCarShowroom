@@ -1,14 +1,14 @@
 @model IEnumerable<Order>
 
 @{
-    ViewData["Title"] = "Quản lý đơn hàng";
+    ViewData["Title"] = "Quản lý đơn mua xe";
 }
 
 <section class="section-block">
     <div class="section-heading">
         <div>
             <span class="section-kicker">Quản trị</span>
-            <h1>Danh sách đơn hàng</h1>
+            <h1>Danh sách đơn mua xe</h1>
         </div>
         <a asp-controller="Cars" asp-action="Index" class="btn btn-outline-light">Quay lại kho xe</a>
     </div>
@@ -21,7 +21,7 @@
                     <tr>
                         <th>Mã đơn</th>
                         <th>Khách hàng</th>
-                        <th>Số xe</th>
+                        <th>Mẫu xe</th>
                         <th>Tổng tiền</th>
                         <th>Thanh toán</th>
                         <th>Trạng thái</th>
@@ -32,13 +32,17 @@
                 <tbody>
                     @foreach (var order in Model)
                     {
+                        var item = order.Items.FirstOrDefault();
+
                         <tr>
                             <td><strong>@order.OrderCode</strong></td>
                             <td>
                                 <strong>@order.CustomerName</strong>
                                 <div class="table-subtitle">@order.PhoneNumber</div>
                             </td>
-                            <td>@order.Items.Count</td>
+                            <td>
+                                <strong>@(item?.CarName ?? "Chưa có dữ liệu")</strong>
+                            </td>
                             <td>@order.TotalAmount.ToString("N0") VNĐ</td>
                             <td>@order.PaymentStatus</td>
                             <td>@order.OrderStatus</td>
@@ -55,8 +59,8 @@
     else
     {
         <div class="empty-state">
-            <h2>Chưa có đơn hàng nào</h2>
-            <p>Đơn hàng của khách sẽ hiển thị tại đây sau khi thanh toán mô phỏng.</p>
+            <h2>Chưa có đơn mua xe nào</h2>
+            <p>Đơn mua xe của khách sẽ hiển thị tại đây sau khi thanh toán mô phỏng.</p>
         </div>
     }
 </section>

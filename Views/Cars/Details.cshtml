@@ -52,17 +52,12 @@
             }
             else if (canOrder)
             {
-                <a asp-controller="Orders" asp-action="Checkout" asp-route-carId="@Model.CarID" class="btn btn-accent">Mua ngay</a>
-                <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="carId" value="@Model.CarID" />
-                    <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
-                    <button type="submit" class="btn btn-outline-light">Thêm vào giỏ</button>
-                </form>
+                <a asp-controller="Orders" asp-action="Checkout" asp-route-carId="@Model.CarID" class="btn btn-accent">Mua xe</a>
+                <a asp-controller="Bookings" asp-action="Create" asp-route-carId="@Model.CarID" class="btn btn-outline-light">Đặt lịch xem xe</a>
             }
             else
             {
-                <button type="button" class="btn btn-outline-light" disabled>Xe đã bán hoặc ngừng nhận đặt</button>
+                <button type="button" class="btn btn-outline-light" disabled>Xe đã bán hoặc ngừng nhận khách</button>
             }
         </div>
     </div>

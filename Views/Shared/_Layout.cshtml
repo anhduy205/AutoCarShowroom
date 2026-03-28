@@ -11,7 +11,6 @@
 <body>
     @{
         var isAdmin = User.Identity?.IsAuthenticated == true;
-        var cartCount = isAdmin ? 0 : Context.Session.GetCartCarIds().Count;
     }
     <header>
         <nav class="navbar navbar-expand-lg app-navbar">
@@ -20,32 +19,32 @@
                     <span class="navbar-brand__title">AutoCarShowroom</span>
                     <span class="navbar-brand__subtitle">Showroom ô tô trực tuyến</span>
                 </a>
-                <button class="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Bật menu điều hướng">
+                <button class="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Bật menu điều hướng">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse justify-content-between">
                     <ul class="navbar-nav gap-lg-3">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Trang chủ</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Cars" asp-action="Index">Bộ sưu tập xe</a>
+                            <a class="nav-link" asp-controller="Cars" asp-action="Index">Bộ sưu tập xe</a>
                         </li>
                         @if (isAdmin)
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="AdminOrders" asp-action="Index">Đơn hàng</a>
+                                <a class="nav-link" asp-controller="AdminOrders" asp-action="Index">Đơn mua xe</a>
                             </li>
-                        }
-                        else
-                        {
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Cart" asp-action="Index">Giỏ hàng</a>
+                                <a class="nav-link" asp-controller="AdminBookings" asp-action="Index">Khách đặt lịch</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="AdminRevenue" asp-action="Index">Doanh thu</a>
                             </li>
                         }
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Giới thiệu đồ án</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Privacy">Giới thiệu đồ án</a>
                         </li>
                     </ul>
 
@@ -53,8 +52,7 @@
                         @if (isAdmin)
                         {
                             <span class="admin-chip">Quản trị viên: @(User.Identity?.Name ?? "Admin")</span>
-                            <a class="btn btn-outline-light" asp-controller="AdminOrders" asp-action="Index">Quản lý đơn</a>
-                            <a class="btn btn-accent" asp-area="" asp-controller="Cars" asp-action="Create">Đăng xe mới</a>
+                            <a class="btn btn-accent" asp-controller="Cars" asp-action="Create">Đăng xe mới</a>
                             <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
                                 @Html.AntiForgeryToken()
                                 <button type="submit" class="btn btn-outline-light">Đăng xuất</button>
@@ -62,11 +60,7 @@
                         }
                         else
                         {
-                            <a class="btn btn-outline-light" asp-controller="Cart" asp-action="Index">
-                                Giỏ hàng
-                                <span class="nav-count">@cartCount</span>
-                            </a>
-                            <a class="btn btn-accent" asp-area="" asp-controller="Account" asp-action="Login">Đăng nhập quản trị</a>
+                            <a class="btn btn-accent" asp-controller="Account" asp-action="Login">Đăng nhập quản trị</a>
                         }
                     </div>
                 </div>
@@ -100,7 +94,7 @@
                 <strong>AutoCarShowroom</strong>
                 <p class="mb-0">Website showroom ô tô phục vụ đồ án môn học.</p>
             </div>
-            <a asp-area="" asp-controller="Home" asp-action="Privacy">Xem thông tin hệ thống</a>
+            <a asp-controller="Home" asp-action="Privacy">Xem thông tin hệ thống</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

@@ -1,13 +1,14 @@
 @model AdminOrderDetailViewModel
 
 @{
-    ViewData["Title"] = "Chi tiết đơn hàng";
+    ViewData["Title"] = "Chi tiết đơn mua xe";
+    var item = Model.Order.Items.FirstOrDefault();
 }
 
 <section class="section-block">
     <div class="section-heading">
         <div>
-            <span class="section-kicker">Đơn hàng</span>
+            <span class="section-kicker">Đơn mua xe</span>
             <h1>@Model.Order.OrderCode</h1>
         </div>
         <a asp-action="Index" class="btn btn-outline-light">Quay lại danh sách đơn</a>
@@ -76,13 +77,13 @@
     <div class="section-heading">
         <div>
             <span class="section-kicker">Mẫu xe</span>
-            <h2>Xe nằm trong đơn</h2>
+            <h2>Xe nằm trong đơn mua</h2>
         </div>
     </div>
 
-    <div class="checkout-items">
-        @foreach (var item in Model.Order.Items)
-        {
+    @if (item != null)
+    {
+        <div class="checkout-items">
             <article class="checkout-item">
                 <img src="@item.CarImage" alt="@item.CarName" class="checkout-item__image" />
                 <div class="checkout-item__content">
@@ -94,6 +95,13 @@
                     }
                 </div>
             </article>
-        }
-    </div>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <h3>Chưa có mẫu xe trong đơn</h3>
+            <p>Dữ liệu chi tiết mẫu xe chưa được lưu đầy đủ.</p>
+        </div>
+    }
 </section>

@@ -15,6 +15,10 @@ namespace AutoCarShowroom.Models
 
         public DbSet<OrderItem> OrderItems { get; set; }
 
+        public DbSet<Booking> Bookings { get; set; }
+
+        public DbSet<RevenueRecord> RevenueRecords { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -41,6 +45,36 @@ namespace AutoCarShowroom.Models
                 entity.HasOne(item => item.Car)
                     .WithMany()
                     .HasForeignKey(item => item.CarId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<Booking>(entity =>
+            {
+                entity.HasIndex(booking => booking.BookingCode)
+                    .IsUnique();
+
+                entity.Property(booking => booking.QuotedPrice)
+                    .HasColumnType("decimal(18,2)");
+
+                entity.HasOne(booking => booking.Car)
+                    .WithMany()
+                    .HasForeignKey(booking => booking.CarId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<RevenueRecord>(entity =>
+            {
+                entity.Property(record => record.Amount)
+                    .HasColumnType("decimal(18,2)");
+
+                entity.HasOne(record => record.Order)
+                    .WithMany()
+                    .HasForeignKey(record => record.OrderId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(record => record.Booking)
+                    .WithMany()
+                    .HasForeignKey(record => record.BookingId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
         }

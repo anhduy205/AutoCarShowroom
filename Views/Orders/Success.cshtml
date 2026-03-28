@@ -1,14 +1,15 @@
 @model OrderSuccessViewModel
 
 @{
-    ViewData["Title"] = "Đặt hàng thành công";
+    ViewData["Title"] = "Mua xe thành công";
+    var item = Model.Items.FirstOrDefault();
 }
 
 <section class="section-block">
     <div class="section-heading">
         <div>
             <span class="section-kicker">Hoàn tất</span>
-            <h1>Đơn đặt xe đã được ghi nhận</h1>
+            <h1>Đơn mua xe đã được ghi nhận</h1>
         </div>
         <a asp-controller="Cars" asp-action="Index" class="btn btn-outline-light">Xem thêm xe khác</a>
     </div>
@@ -16,7 +17,7 @@
     <div class="success-layout">
         <div class="detail-list">
             <div class="detail-list__item">
-                <span>Mã đơn hàng</span>
+                <span>Mã đơn mua</span>
                 <strong>@Model.Order.OrderCode</strong>
             </div>
             <div class="detail-list__item">
@@ -42,10 +43,10 @@
         </div>
 
         <div class="summary-panel">
-            <span class="section-kicker">Mẫu xe trong đơn</span>
-            <div class="checkout-items mt-3">
-                @foreach (var item in Model.Items)
-                {
+            <span class="section-kicker">Mẫu xe</span>
+            @if (item != null)
+            {
+                <div class="checkout-items mt-3">
                     <article class="checkout-item">
                         <img src="@item.CarImage" alt="@item.CarName" class="checkout-item__image" />
                         <div>
@@ -53,9 +54,9 @@
                             <p class="cart-item-card__price">@item.UnitPrice.ToString("N0") VNĐ</p>
                         </div>
                     </article>
-                }
-            </div>
-            <p class="checkout-note">Quản trị viên sẽ tiếp tục kiểm tra và cập nhật trạng thái đơn hàng trong hệ thống.</p>
+                </div>
+            }
+            <p class="checkout-note">Quản trị viên sẽ tiếp tục kiểm tra và cập nhật trạng thái đơn mua xe trong hệ thống.</p>
         </div>
     </div>
 </section>

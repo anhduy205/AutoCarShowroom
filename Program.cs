@@ -28,15 +28,7 @@ namespace AutoCarShowroom
                 .PersistKeysToFileSystem(new DirectoryInfo(dataProtectionDirectory))
                 .SetApplicationName("AutoCarShowroom");
 
-            builder.Services.AddDistributedMemoryCache();
             builder.Services.AddControllersWithViews();
-            builder.Services.AddSession(options =>
-            {
-                options.Cookie.Name = ".AutoCarShowroom.Session";
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-                options.IdleTimeout = TimeSpan.FromHours(4);
-            });
 
             builder.Services.Configure<AdminAccountOptions>(builder.Configuration.GetSection("AdminAccount"));
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -108,7 +100,6 @@ namespace AutoCarShowroom
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseSession();
             app.UseRouting();
 
             app.UseAuthentication();

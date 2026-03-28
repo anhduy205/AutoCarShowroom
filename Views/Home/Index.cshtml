@@ -3,15 +3,15 @@
 
 @{
     ViewData["Title"] = "Trang chủ";
-    var xeNoiBat = Model.FeaturedCars.FirstOrDefault();
+    var featuredCar = Model.FeaturedCars.FirstOrDefault();
 }
 
 <section class="hero-showcase">
     <div class="hero-showcase__copy">
         <span class="section-kicker">Showroom ô tô</span>
-        <h1>Chọn mẫu xe đẹp, rõ giá, xem nhanh.</h1>
+        <h1>Chọn mẫu xe đẹp, rõ giá, mua nhanh hoặc đặt lịch dễ dàng.</h1>
         <p class="hero-showcase__description">
-            Giao diện gọn, trực quan và dễ demo cho bài thuyết trình của bạn.
+            Website tập trung vào trải nghiệm xem xe, mua xe trực tiếp và đặt lịch hẹn với showroom.
         </p>
 
         <div class="hero-showcase__actions">
@@ -22,21 +22,21 @@
             }
             else
             {
-                <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-dark btn-lg">Mở giỏ hàng</a>
+                <a asp-controller="Account" asp-action="Login" class="btn btn-outline-dark btn-lg">Đăng nhập quản trị</a>
             }
         </div>
 
         <div class="hero-showcase__tags">
-            <span>SUV</span>
-            <span>Sedan</span>
-            <span>MPV</span>
+            <span>Mua xe trực tiếp</span>
+            <span>Đặt lịch hẹn</span>
+            <span>Quản lý doanh thu</span>
         </div>
     </div>
 
     <div class="hero-showcase__visual">
-        @if (xeNoiBat != null)
+        @if (featuredCar != null)
         {
-            var statusClass = xeNoiBat.Status switch
+            var statusClass = featuredCar.Status switch
             {
                 var status when status == OrderWorkflow.CarStatusSold => "status-badge status-badge--sold",
                 var status when status == OrderWorkflow.CarStatusPromotion => "status-badge status-badge--promo",
@@ -44,18 +44,18 @@
             };
 
             <article class="feature-card">
-                <img src="@xeNoiBat.Image" alt="@xeNoiBat.CarName" class="feature-card__image" />
+                <img src="@featuredCar.Image" alt="@featuredCar.CarName" class="feature-card__image" />
                 <div class="feature-card__overlay">
-                    <span class="feature-card__badge">@xeNoiBat.Brand @xeNoiBat.ModelName</span>
-                    <h2>@xeNoiBat.CarName</h2>
+                    <span class="feature-card__badge">@featuredCar.Brand @featuredCar.ModelName</span>
+                    <h2>@featuredCar.CarName</h2>
                     <div class="feature-card__meta">
-                        <span class="pill">@xeNoiBat.BodyType</span>
-                        <span class="pill">Màu @xeNoiBat.Color</span>
-                        <span class="@statusClass">@xeNoiBat.Status</span>
+                        <span class="pill">@featuredCar.BodyType</span>
+                        <span class="pill">Màu @featuredCar.Color</span>
+                        <span class="@statusClass">@featuredCar.Status</span>
                     </div>
                     <div class="feature-card__footer">
-                        <strong>@xeNoiBat.Price.ToString("N0") VNĐ</strong>
-                        <a asp-controller="Cars" asp-action="Details" asp-route-id="@xeNoiBat.CarID" class="btn btn-light">Xem chi tiết</a>
+                        <strong>@featuredCar.Price.ToString("N0") VNĐ</strong>
+                        <a asp-controller="Cars" asp-action="Details" asp-route-id="@featuredCar.CarID" class="btn btn-light">Xem chi tiết</a>
                     </div>
                 </div>
             </article>
@@ -138,19 +138,15 @@
                                 <span class="car-card__price">@car.Price.ToString("N0") VNĐ</span>
                             </div>
                             <div class="car-card__actions">
-                                <a asp-controller="Cars" asp-action="Details" asp-route-id="@car.CarID" class="btn btn-accent">Xem xe</a>
+                                <a asp-controller="Cars" asp-action="Details" asp-route-id="@car.CarID" class="btn btn-outline-dark">Xem xe</a>
                                 @if (User.Identity?.IsAuthenticated == true)
                                 {
-                                    <a asp-controller="Cars" asp-action="Edit" asp-route-id="@car.CarID" class="btn btn-outline-dark">Chỉnh sửa</a>
+                                    <a asp-controller="Cars" asp-action="Edit" asp-route-id="@car.CarID" class="btn btn-accent">Chỉnh sửa</a>
                                 }
                                 else if (canOrder)
                                 {
-                                    <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="carId" value="@car.CarID" />
-                                        <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
-                                        <button type="submit" class="btn btn-outline-dark">Thêm vào giỏ</button>
-                                    </form>
+                                    <a asp-controller="Orders" asp-action="Checkout" asp-route-carId="@car.CarID" class="btn btn-accent">Mua xe</a>
+                                    <a asp-controller="Bookings" asp-action="Create" asp-route-carId="@car.CarID" class="btn btn-outline-dark">Đặt lịch</a>
                                 }
                             </div>
                         </div>
@@ -190,8 +186,8 @@
         </article>
         <article class="service-card">
             <span class="service-card__number">03</span>
-            <h3>Đặt xe nhanh</h3>
-            <p>Có giỏ hàng và luồng thanh toán mô phỏng.</p>
+            <h3>Linh hoạt</h3>
+            <p>Khách có thể mua xe trực tiếp hoặc đặt lịch xem xe.</p>
         </article>
     </div>
 </section>

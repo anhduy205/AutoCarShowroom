@@ -1,14 +1,14 @@
-@model CheckoutViewModel
+@model BookingCreateViewModel
 
 @{
-    ViewData["Title"] = "Mua xe";
+    ViewData["Title"] = "Đặt lịch xem xe";
 }
 
 <section class="section-block">
     <div class="section-heading">
         <div>
-            <span class="section-kicker">Thanh toán</span>
-            <h1>Mua xe trực tiếp</h1>
+            <span class="section-kicker">Đặt lịch</span>
+            <h1>Đặt lịch xem xe</h1>
         </div>
         <a asp-controller="Cars" asp-action="Details" asp-route-id="@Model.CarId" class="btn btn-outline-light">Quay lại xe</a>
     </div>
@@ -16,7 +16,7 @@
     <div class="checkout-layout">
         <div class="checkout-panel">
             <span class="section-kicker">Thông tin khách hàng</span>
-            <form asp-action="Checkout" method="post" class="app-form mt-4">
+            <form asp-action="Create" method="post" class="app-form mt-4">
                 @Html.AntiForgeryToken()
                 <input asp-for="CarId" type="hidden" />
 
@@ -39,31 +39,25 @@
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="PaymentMethod" class="form-label"></label>
-                        <select asp-for="PaymentMethod" asp-items="ViewBag.PaymentMethods" class="form-select"></select>
-                        <span asp-validation-for="PaymentMethod" class="text-danger"></span>
-                    </div>
-                    <div class="col-12">
-                        <label asp-for="Address" class="form-label"></label>
-                        <input asp-for="Address" class="form-control" />
-                        <span asp-validation-for="Address" class="text-danger"></span>
+                        <label asp-for="AppointmentAt" class="form-label"></label>
+                        <input asp-for="AppointmentAt" asp-format="{0:yyyy-MM-ddTHH:mm}" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="AppointmentAt" class="text-danger"></span>
                     </div>
                     <div class="col-12">
                         <label asp-for="Note" class="form-label"></label>
-                        <textarea asp-for="Note" class="form-control" rows="4" placeholder="Ví dụ: ưu tiên liên hệ buổi chiều, cần hỗ trợ thủ tục ngân hàng..."></textarea>
+                        <textarea asp-for="Note" class="form-control" rows="4" placeholder="Ví dụ: muốn xem xe vào buổi sáng, cần tư vấn trả góp..."></textarea>
                         <span asp-validation-for="Note" class="text-danger"></span>
                     </div>
                 </div>
 
                 <div class="checkout-submit">
-                    <button type="submit" class="btn btn-accent">Xác nhận mua xe</button>
+                    <button type="submit" class="btn btn-accent">Xác nhận đặt lịch</button>
                 </div>
             </form>
         </div>
 
         <aside class="summary-panel">
-            <span class="section-kicker">Tóm tắt xe</span>
-            <h2>Mẫu xe đang thanh toán</h2>
+            <span class="section-kicker">Mẫu xe đã chọn</span>
             <div class="checkout-items">
                 <article class="checkout-item">
                     <img src="@Model.Car.Image" alt="@Model.Car.CarName" class="checkout-item__image" />
@@ -71,18 +65,10 @@
                         <p class="car-card__eyebrow">@Model.Car.Brand @Model.Car.ModelName</p>
                         <h3>@Model.Car.CarName</h3>
                         <p class="cart-item-card__price">@Model.Car.Price.ToString("N0") VNĐ</p>
-                        @if (!string.IsNullOrWhiteSpace(Model.Car.AvailabilityMessage))
-                        {
-                            <p class="checkout-note">@Model.Car.AvailabilityMessage</p>
-                        }
                     </div>
                 </article>
             </div>
-            <div class="summary-row">
-                <span>Tổng thanh toán</span>
-                <strong>@Model.TotalAmount.ToString("N0") VNĐ</strong>
-            </div>
-            <p class="checkout-note">Sau khi xác nhận, hệ thống sẽ tạo đơn mua xe để quản trị viên tiếp tục xử lý.</p>
+            <p class="checkout-note">Quản trị viên sẽ xem lịch hẹn của bạn và chủ động liên hệ xác nhận.</p>
         </aside>
     </div>
 </section>

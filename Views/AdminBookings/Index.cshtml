@@ -1,0 +1,63 @@
+@model IEnumerable<Booking>
+
+@{
+    ViewData["Title"] = "Quản lý khách đặt lịch";
+}
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Quản trị</span>
+            <h1>Danh sách khách đặt lịch</h1>
+        </div>
+        <a asp-controller="Cars" asp-action="Index" class="btn btn-outline-light">Quay lại kho xe</a>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="table-shell">
+            <table class="app-table">
+                <thead>
+                    <tr>
+                        <th>Mã lịch</th>
+                        <th>Khách hàng</th>
+                        <th>Mẫu xe</th>
+                        <th>Ngày giờ hẹn</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var booking in Model)
+                    {
+                        <tr>
+                            <td><strong>@booking.BookingCode</strong></td>
+                            <td>
+                                <strong>@booking.CustomerName</strong>
+                                <div class="table-subtitle">@booking.PhoneNumber</div>
+                            </td>
+                            <td>
+                                <strong>@booking.CarName</strong>
+                                <div class="table-subtitle">@booking.Email</div>
+                            </td>
+                            <td>@booking.AppointmentAt.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@booking.BookingStatus</td>
+                            <td>@booking.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@booking.BookingId" class="btn btn-outline-light btn-sm">Chi tiết</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <h2>Chưa có lịch hẹn nào</h2>
+            <p>Khách đặt lịch xem xe sẽ hiển thị tại đây.</p>
+        </div>
+    }
+</section>
