@@ -342,15 +342,22 @@ namespace AutoCarShowroom.Data
         private static string? TryGetCatalogImagePath(string webRootPath, string brand, string modelName)
         {
             var fileBaseName = Slugify($"{brand}-{modelName}");
-            var uploadFolder = Path.Combine(webRootPath, "uploads", "catalog");
-
-            foreach (var extension in new[] { ".jpg", ".jpeg", ".png", ".webp" })
+            var imageFolders = new[]
             {
-                var filePath = Path.Combine(uploadFolder, $"{fileBaseName}{extension}");
+                (PhysicalPath: Path.Combine(webRootPath, "images", "catalog"), WebPath: "/images/catalog"),
+                (PhysicalPath: Path.Combine(webRootPath, "uploads", "catalog"), WebPath: "/uploads/catalog")
+            };
 
-                if (File.Exists(filePath))
+            foreach (var (physicalPath, webPath) in imageFolders)
+            {
+                foreach (var extension in new[] { ".jpg", ".jpeg", ".png", ".webp" })
                 {
-                    return $"/uploads/catalog/{fileBaseName}{extension}";
+                    var filePath = Path.Combine(physicalPath, $"{fileBaseName}{extension}");
+
+                    if (File.Exists(filePath))
+                    {
+                        return $"{webPath}/{fileBaseName}{extension}";
+                    }
                 }
             }
 

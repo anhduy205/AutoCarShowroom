@@ -41,16 +41,16 @@ namespace AutoCarShowroom
                 });
             builder.Services.AddAuthorization();
 
-            var connectionStringTemplate = builder.Configuration.GetConnectionString("DefaultConnection")
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                 ?? throw new InvalidOperationException("Missing DefaultConnection.");
-            var connectionString = connectionStringTemplate.Replace("|DataDirectory|", dataDirectory, StringComparison.OrdinalIgnoreCase);
 
             builder.Services.AddDbContext<ShowroomDbContext>(options =>
-                options.UseSqlite(connectionString));
+                options.UseSqlServer(connectionString));
 
             var app = builder.Build();
 
             Directory.CreateDirectory(Path.Combine(app.Environment.WebRootPath, "uploads", "cars"));
+            Directory.CreateDirectory(Path.Combine(app.Environment.WebRootPath, "images", "catalog"));
 
             using (var scope = app.Services.CreateScope())
             {

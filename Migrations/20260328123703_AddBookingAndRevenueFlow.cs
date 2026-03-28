@@ -15,21 +15,21 @@ namespace AutoCarShowroom.Migrations
                 name: "Bookings",
                 columns: table => new
                 {
-                    BookingId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    BookingCode = table.Column<string>(type: "TEXT", maxLength: 40, nullable: false),
-                    CarId = table.Column<int>(type: "INTEGER", nullable: false),
-                    CarName = table.Column<string>(type: "TEXT", nullable: false),
-                    CarImage = table.Column<string>(type: "TEXT", nullable: false),
+                    BookingId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BookingCode = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    CarId = table.Column<int>(type: "int", nullable: false),
+                    CarName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CarImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     QuotedPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CustomerName = table.Column<string>(type: "TEXT", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "TEXT", nullable: false),
-                    Email = table.Column<string>(type: "TEXT", nullable: false),
-                    AppointmentAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Note = table.Column<string>(type: "TEXT", nullable: true),
-                    BookingStatus = table.Column<string>(type: "TEXT", nullable: false),
-                    AdminNote = table.Column<string>(type: "TEXT", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    CustomerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AppointmentAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BookingStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AdminNote = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -46,14 +46,14 @@ namespace AutoCarShowroom.Migrations
                 name: "RevenueRecords",
                 columns: table => new
                 {
-                    RevenueRecordId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    RevenueRecordId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ReceivedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    SourceType = table.Column<string>(type: "TEXT", nullable: false),
-                    OrderId = table.Column<int>(type: "INTEGER", nullable: true),
-                    BookingId = table.Column<int>(type: "INTEGER", nullable: true),
-                    Note = table.Column<string>(type: "TEXT", nullable: true)
+                    ReceivedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SourceType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrderId = table.Column<int>(type: "int", nullable: true),
+                    BookingId = table.Column<int>(type: "int", nullable: true),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

@@ -1,5 +1,5 @@
 param(
-    [string]$OutputDir = (Join-Path $PSScriptRoot "..\wwwroot\uploads\catalog"),
+    [string]$OutputDir = (Join-Path $PSScriptRoot "..\wwwroot\images\catalog"),
     [int]$ThumbnailWidth = 1600
 )
 

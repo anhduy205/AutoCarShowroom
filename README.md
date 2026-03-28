@@ -1,43 +1,46 @@
 # AutoCarShowroom
 
-Đồ án môn học xây dựng website showroom ô tô bằng ASP.NET Core MVC và Entity Framework Core.
+Do an mon hoc xay dung website showroom o to bang ASP.NET Core MVC va Entity Framework Core.
 
-## Chức năng hiện có
+## Chuc nang hien co
 
-- Xem danh sách xe công khai, tìm kiếm theo tên, lọc theo hãng, năm và khoảng giá.
-- Xem chi tiết từng mẫu xe trong showroom.
-- Đăng nhập quản trị bằng cookie authentication để truy cập chức năng quản lý.
-- Thêm, sửa, xóa xe trong hệ thống.
-- Upload ảnh xe thật vào `wwwroot/uploads/cars`.
-- Tự động seed danh mục lớn gồm xe phổ thông và siêu xe để demo showroom.
-- Đi kèm sẵn file database SQLite trong `App_Data/AutoCarShowroom.db`.
+- Xem danh sach xe cong khai, tim kiem theo ten, loc theo hang, nam va khoang gia.
+- Xem chi tiet tung mau xe voi thong tin chung, dong co, ngoai that, noi that, ghe, tien nghi va cac nhom an toan.
+- Dang nhap quan tri bang cookie authentication de truy cap chuc nang quan ly.
+- Them, sua, xoa xe trong he thong.
+- Upload anh xe that vao `wwwroot/uploads/cars`.
+- Tu dong seed danh muc lon gom xe pho thong va sieu xe de demo showroom.
+- Anh seed that duoc luu trong `wwwroot/images/catalog`.
+- Project duoc cau hinh de chay voi SQL Server `.\SQLEXPRESS`.
 
-## Tài khoản admin mặc định
+## Tai khoan admin mac dinh
 
 - Username: `admin`
 - Password: `Admin@123`
 
-Bạn có thể đổi tài khoản trong file [appsettings.json](/C:/Users/BEKING/source/repos/AutoCarShowroom/appsettings.json).
+Ban co the doi tai khoan trong [appsettings.json](/C:/Users/BEKING/source/repos/AutoCarShowroom/appsettings.json).
 
-## Hướng dẫn chạy
+## Huong dan chay
 
-1. Chạy `dotnet restore`.
-2. Chạy `dotnet build`.
-3. Chạy `dotnet run --launch-profile http`.
-4. Mở `http://localhost:5090`.
+1. Dam bao may da co SQL Server instance `.\SQLEXPRESS`.
+2. Chay `dotnet restore`.
+3. Chay `dotnet build`.
+4. Chay `Update-Database` hoac `dotnet run --launch-profile http`.
+5. Mo `http://localhost:5090`.
 
-Nếu muốn chạy HTTPS, dùng profile `https` trong `launchSettings.json`.
+Ung dung se tu `Migrate()` va seed lai du lieu neu database chua co danh muc xe.
 
-## Ghi chú database
+## Ghi chu database va hinh anh
 
-- Project hiện dùng SQLite file, không còn phụ thuộc `.\SQLEXPRESS`.
-- File database mẫu nằm ở `App_Data/AutoCarShowroom.db`.
-- Khi khởi động, ứng dụng sẽ tự tạo thư mục dữ liệu nếu chưa có và tự seed lại danh mục xe mẫu.
+- Project hien dung SQL Server qua chuoi ket noi trong [appsettings.json](/C:/Users/BEKING/source/repos/AutoCarShowroom/appsettings.json).
+- Du lieu xe duoc seed vao database `AutoCarShowroomDb`.
+- Anh that cua cac mau xe nam trong [wwwroot/images/catalog](/C:/Users/BEKING/source/repos/AutoCarShowroom/wwwroot/images/catalog).
+- Thu muc `wwwroot/images` chi dung de luu file tinh nhu anh; du lieu bang xe van nam trong SQL Server thong qua migration va seeder.
 
-## Nội dung có thể trình bày khi báo cáo
+## Noi dung co the trinh bay khi bao cao
 
-- Kiến trúc MVC gồm `Models`, `Views`, `Controllers`.
-- Entity Framework Core dùng để thao tác dữ liệu.
-- Khu admin được bảo vệ bởi cookie authentication.
-- Hình ảnh xe được upload và lưu trong `wwwroot/uploads/cars`.
-- Hệ thống có dữ liệu mẫu sẵn để demo ngay sau khi chạy.
+- Kien truc MVC gom `Models`, `Views`, `Controllers`.
+- Entity Framework Core dung de thao tac du lieu voi SQL Server.
+- Khu admin duoc bao ve boi cookie authentication.
+- Hinh anh xe duoc luu trong `wwwroot/images/catalog` va `wwwroot/uploads/cars`.
+- He thong co du lieu mau san de demo ngay sau khi chay.
