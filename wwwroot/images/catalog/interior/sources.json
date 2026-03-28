@@ -1,0 +1,402 @@
+﻿[
+    {
+        "slug":  "toyota-vios",
+        "query":  "Toyota Vios interior",
+        "pageTitle":  "File:Toyota Vios GR-S interior (20221019).jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:Toyota_Vios_GR-S_interior_(20221019).jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Toyota_Vios_GR-S_interior_%2820221019%29.jpg/1920px-Toyota_Vios_GR-S_interior_%2820221019%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\toyota-vios.jpg"
+    },
+    {
+        "slug":  "toyota-corolla-cross",
+        "query":  "Toyota Corolla Cross interior",
+        "pageTitle":  "File:Toyota Corolla Cross 1.8 G interior 20221019.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:Toyota_Corolla_Cross_1.8_G_interior_20221019.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Toyota_Corolla_Cross_1.8_G_interior_20221019.jpg/1920px-Toyota_Corolla_Cross_1.8_G_interior_20221019.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\toyota-corolla-cross.jpg"
+    },
+    {
+        "slug":  "toyota-innova-cross",
+        "query":  "Toyota Innova interior",
+        "pageTitle":  "File:2015 Toyota Kijang Innova (GUN142R) 2.4 Q AT (2015-12-05) interior view.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:2015_Toyota_Kijang_Innova_(GUN142R)_2.4_Q_AT_(2015-12-05)_interior_view.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/2015_Toyota_Kijang_Innova_%28GUN142R%29_2.4_Q_AT_%282015-12-05%29_interior_view.jpg/1920px-2015_Toyota_Kijang_Innova_%28GUN142R%29_2.4_Q_AT_%282015-12-05%29_interior_view.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\toyota-innova-cross.jpg"
+    },
+    {
+        "slug":  "toyota-fortuner",
+        "query":  "Toyota Fortuner interior",
+        "pageTitle":  "File:Toyota Fortuner LTD 4x2 interior 20221019.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:Toyota_Fortuner_LTD_4x2_interior_20221019.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Toyota_Fortuner_LTD_4x2_interior_20221019.jpg/1920px-Toyota_Fortuner_LTD_4x2_interior_20221019.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\toyota-fortuner.jpg"
+    },
+    {
+        "slug":  "toyota-camry",
+        "query":  "Toyota Camry interior",
+        "pageTitle":  "File:2021 Toyota Camry 2.5 Hybrid AXVH71R interior (20211117).jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:2021_Toyota_Camry_2.5_Hybrid_AXVH71R_interior_(20211117).jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/2021_Toyota_Camry_2.5_Hybrid_AXVH71R_interior_%2820211117%29.jpg/1920px-2021_Toyota_Camry_2.5_Hybrid_AXVH71R_interior_%2820211117%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\toyota-camry.jpg"
+    },
+    {
+        "slug":  "hyundai-accent",
+        "query":  "Hyundai Accent interior",
+        "pageTitle":  "File:Hyundai Accent SR Interior (4433419473).jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:Hyundai_Accent_SR_Interior_(4433419473).jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Hyundai_Accent_SR_Interior_%284433419473%29.jpg/1920px-Hyundai_Accent_SR_Interior_%284433419473%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\hyundai-accent.jpg"
+    },
+    {
+        "slug":  "hyundai-creta",
+        "query":  "Hyundai Creta interior",
+        "pageTitle":  "File:Hyundai Creta SU2 1.5 GLS - interior view.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:Hyundai_Creta_SU2_1.5_GLS_-_interior_view.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Hyundai_Creta_SU2_1.5_GLS_-_interior_view.jpg/1920px-Hyundai_Creta_SU2_1.5_GLS_-_interior_view.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\hyundai-creta.jpg"
+    },
+    {
+        "slug":  "hyundai-tucson",
+        "query":  "Hyundai Tucson interior",
+        "pageTitle":  "File:Hyundai Tucson Inspiration NX4 Gray Interior (4).jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:Hyundai_Tucson_Inspiration_NX4_Gray_Interior_(4).jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Hyundai_Tucson_Inspiration_NX4_Gray_Interior_%284%29.jpg/1920px-Hyundai_Tucson_Inspiration_NX4_Gray_Interior_%284%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\hyundai-tucson.jpg"
+    },
+    {
+        "slug":  "hyundai-santa-fe",
+        "query":  "Hyundai Santa Fe interior",
+        "pageTitle":  "File:Hyundai Santa Fe interior.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:Hyundai_Santa_Fe_interior.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/d/db/Hyundai_Santa_Fe_interior.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\hyundai-santa-fe.jpg"
+    },
+    {
+        "slug":  "hyundai-stargazer-x",
+        "query":  "Hyundai Stargazer interior",
+        "pageTitle":  "File:Hyundai Stargazer X 2024 (interior).jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:Hyundai_Stargazer_X_2024_(interior).jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Hyundai_Stargazer_X_2024_%28interior%29.jpg/1920px-Hyundai_Stargazer_X_2024_%28interior%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\hyundai-stargazer-x.jpg"
+    },
+    {
+        "slug":  "kia-k3",
+        "query":  "Kia Forte interior",
+        "pageTitle":  "File:Kia Forte 2014 interior MIAS.JPG",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:Kia_Forte_2014_interior_MIAS.JPG",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Kia_Forte_2014_interior_MIAS.JPG/1920px-Kia_Forte_2014_interior_MIAS.JPG",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\kia-k3.jpg"
+    },
+    {
+        "slug":  "kia-seltos",
+        "query":  "Kia Seltos interior",
+        "pageTitle":  "File:2020 Kia Seltos SX - Interior 2.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:2020_Kia_Seltos_SX_-_Interior_2.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/8/84/2020_Kia_Seltos_SX_-_Interior_2.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\kia-seltos.jpg"
+    },
+    {
+        "slug":  "kia-sportage",
+        "query":  "Kia Sportage interior",
+        "pageTitle":  "File:KIA SPORTAGE ACE (KIA SPORTAGE (NP) FACELIFT) INTERIOR.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:KIA_SPORTAGE_ACE_(KIA_SPORTAGE_(NP)_FACELIFT)_INTERIOR.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/KIA_SPORTAGE_ACE_%28KIA_SPORTAGE_%28NP%29_FACELIFT%29_INTERIOR.jpg/1920px-KIA_SPORTAGE_ACE_%28KIA_SPORTAGE_%28NP%29_FACELIFT%29_INTERIOR.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\kia-sportage.jpg"
+    },
+    {
+        "slug":  "kia-sorento",
+        "query":  "Kia Sorento interior",
+        "pageTitle":  "File:2024 Kia Sorento interior.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:2024_Kia_Sorento_interior.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/2024_Kia_Sorento_interior.jpg/1920px-2024_Kia_Sorento_interior.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\kia-sorento.jpg"
+    },
+    {
+        "slug":  "kia-carnival",
+        "query":  "Kia Carnival interior",
+        "pageTitle":  "File:Kia Carnival 2.2 SX 2023 (interior).jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:Kia_Carnival_2.2_SX_2023_(interior).jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Kia_Carnival_2.2_SX_2023_%28interior%29.jpg/1920px-Kia_Carnival_2.2_SX_2023_%28interior%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\kia-carnival.jpg"
+    },
+    {
+        "slug":  "ford-territory",
+        "query":  "Ford Territory interior",
+        "pageTitle":  "File:Ford Territory (Equator Sport) Titanium 2023 interior.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:Ford_Territory_(Equator_Sport)_Titanium_2023_interior.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Ford_Territory_%28Equator_Sport%29_Titanium_2023_interior.jpg/1920px-Ford_Territory_%28Equator_Sport%29_Titanium_2023_interior.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\ford-territory.jpg"
+    },
+    {
+        "slug":  "ford-everest",
+        "query":  "Ford Everest interior",
+        "pageTitle":  "File:Ford Everest U704 2.0 Bi-Turbo Titanium+ 4x4 interior 01.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:Ford_Everest_U704_2.0_Bi-Turbo_Titanium%2B_4x4_interior_01.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Ford_Everest_U704_2.0_Bi-Turbo_Titanium%2B_4x4_interior_01.jpg/1920px-Ford_Everest_U704_2.0_Bi-Turbo_Titanium%2B_4x4_interior_01.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\ford-everest.jpg"
+    },
+    {
+        "slug":  "ford-ranger",
+        "query":  "Ford Ranger interior",
+        "pageTitle":  "File:2024 Ford Ranger interior.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:2024_Ford_Ranger_interior.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/2024_Ford_Ranger_interior.jpg/1920px-2024_Ford_Ranger_interior.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\ford-ranger.jpg"
+    },
+    {
+        "slug":  "ford-transit",
+        "query":  "Ford Transit interior",
+        "pageTitle":  "File:Interior of JMC Ford Transit V363C BEV (20230904120143).jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:Interior_of_JMC_Ford_Transit_V363C_BEV_(20230904120143).jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Interior_of_JMC_Ford_Transit_V363C_BEV_%2820230904120143%29.jpg/1920px-Interior_of_JMC_Ford_Transit_V363C_BEV_%2820230904120143%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\ford-transit.jpg"
+    },
+    {
+        "slug":  "ford-explorer",
+        "query":  "Ford Explorer interior",
+        "pageTitle":  "File:2005 Ford Explorer SportTrac Adrenalin Edition interior.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:2005_Ford_Explorer_SportTrac_Adrenalin_Edition_interior.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/9/9e/2005_Ford_Explorer_SportTrac_Adrenalin_Edition_interior.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\ford-explorer.jpg"
+    },
+    {
+        "slug":  "mazda-mazda3",
+        "query":  "Mazda3 interior",
+        "pageTitle":  "File:2018 Mazda3 Interior.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:2018_Mazda3_Interior.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/2018_Mazda3_Interior.jpg/1920px-2018_Mazda3_Interior.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\mazda-mazda3.jpg"
+    },
+    {
+        "slug":  "mazda-cx-3",
+        "query":  "Mazda CX-3 interior",
+        "pageTitle":  "File:2017 Mazda CX-3 Interior.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:2017_Mazda_CX-3_Interior.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/2017_Mazda_CX-3_Interior.jpg/1920px-2017_Mazda_CX-3_Interior.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\mazda-cx-3.jpg"
+    },
+    {
+        "slug":  "mazda-cx-5",
+        "query":  "Mazda CX-5 interior",
+        "pageTitle":  "File:Mazda CX-5 XD Retro Sports Edition 2WD (3DA-KF2P) interior.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:Mazda_CX-5_XD_Retro_Sports_Edition_2WD_(3DA-KF2P)_interior.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Mazda_CX-5_XD_Retro_Sports_Edition_2WD_%283DA-KF2P%29_interior.jpg/1920px-Mazda_CX-5_XD_Retro_Sports_Edition_2WD_%283DA-KF2P%29_interior.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\mazda-cx-5.jpg"
+    },
+    {
+        "slug":  "mazda-cx-8",
+        "query":  "Mazda CX-8 interior",
+        "pageTitle":  "File:2024 Mazda CX-8 2.5 Signature interior.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:2024_Mazda_CX-8_2.5_Signature_interior.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/2024_Mazda_CX-8_2.5_Signature_interior.jpg/1920px-2024_Mazda_CX-8_2.5_Signature_interior.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\mazda-cx-8.jpg"
+    },
+    {
+        "slug":  "mazda-bt-50",
+        "query":  "Mazda BT-50 interior",
+        "pageTitle":  "File:Sierra Madre News 1922-04-21 (IA csie 000814).pdf",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:Sierra_Madre_News_1922-04-21_(IA_csie_000814).pdf",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Sierra_Madre_News_1922-04-21_%28IA_csie_000814%29.pdf/page1-1920px-Sierra_Madre_News_1922-04-21_%28IA_csie_000814%29.pdf.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\mazda-bt-50.jpg"
+    },
+    {
+        "slug":  "honda-city",
+        "query":  "Honda City interior",
+        "pageTitle":  "File:Honda City Turbo II interior.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:Honda_City_Turbo_II_interior.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Honda_City_Turbo_II_interior.jpg/1920px-Honda_City_Turbo_II_interior.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\honda-city.jpg"
+    },
+    {
+        "slug":  "honda-civic",
+        "query":  "Honda Civic interior",
+        "pageTitle":  "File:1994 Honda Civic coupe interior.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:1994_Honda_Civic_coupe_interior.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/1994_Honda_Civic_coupe_interior.jpg/1920px-1994_Honda_Civic_coupe_interior.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\honda-civic.jpg"
+    },
+    {
+        "slug":  "honda-hr-v",
+        "query":  "Honda HR-V interior",
+        "pageTitle":  "File:HONDA HR-V (THIRD GENERATION, CHINA) INTERIOR (2).jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:HONDA_HR-V_(THIRD_GENERATION,_CHINA)_INTERIOR_(2).jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/HONDA_HR-V_%28THIRD_GENERATION%2C_CHINA%29_INTERIOR_%282%29.jpg/1920px-HONDA_HR-V_%28THIRD_GENERATION%2C_CHINA%29_INTERIOR_%282%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\honda-hr-v.jpg"
+    },
+    {
+        "slug":  "honda-cr-v",
+        "query":  "Honda CR-V interior",
+        "pageTitle":  "File:Honda CR-V 4th gen interior.png",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:Honda_CR-V_4th_gen_interior.png",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Honda_CR-V_4th_gen_interior.png/1920px-Honda_CR-V_4th_gen_interior.png",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\honda-cr-v.png"
+    },
+    {
+        "slug":  "honda-br-v",
+        "query":  "Honda BR-V interior",
+        "pageTitle":  "File:2021 Honda BR-V Prestige with Honda Sensing (Indonesia) interior 02.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:2021_Honda_BR-V_Prestige_with_Honda_Sensing_(Indonesia)_interior_02.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/2021_Honda_BR-V_Prestige_with_Honda_Sensing_%28Indonesia%29_interior_02.jpg/1920px-2021_Honda_BR-V_Prestige_with_Honda_Sensing_%28Indonesia%29_interior_02.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\honda-br-v.jpg"
+    },
+    {
+        "slug":  "mitsubishi-xforce",
+        "query":  "Mitsubishi Xforce interior",
+        "pageTitle":  "File:2023 Mitsubishi Xforce Ultimate (Indonesia) interior 01.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:2023_Mitsubishi_Xforce_Ultimate_(Indonesia)_interior_01.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/2023_Mitsubishi_Xforce_Ultimate_%28Indonesia%29_interior_01.jpg/1920px-2023_Mitsubishi_Xforce_Ultimate_%28Indonesia%29_interior_01.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\mitsubishi-xforce.jpg"
+    },
+    {
+        "slug":  "mitsubishi-xpander",
+        "query":  "Mitsubishi Xpander interior",
+        "pageTitle":  "File:2020 Mitsubishi Xpander Cross interior (Vietnam).png",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:2020_Mitsubishi_Xpander_Cross_interior_(Vietnam).png",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/2/28/2020_Mitsubishi_Xpander_Cross_interior_%28Vietnam%29.png",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\mitsubishi-xpander.png"
+    },
+    {
+        "slug":  "mitsubishi-pajero-sport",
+        "query":  "Mitsubishi Pajero Sport interior",
+        "pageTitle":  "File:MITSUBISHI PAJERO SPORT INTERIOR China.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:MITSUBISHI_PAJERO_SPORT_INTERIOR_China.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/MITSUBISHI_PAJERO_SPORT_INTERIOR_China.jpg/1920px-MITSUBISHI_PAJERO_SPORT_INTERIOR_China.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\mitsubishi-pajero-sport.jpg"
+    },
+    {
+        "slug":  "mitsubishi-triton",
+        "query":  "Mitsubishi Triton interior",
+        "pageTitle":  "File:Mitsubishi Triton interior (Thailand).jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:Mitsubishi_Triton_interior_(Thailand).jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/6/6c/Mitsubishi_Triton_interior_%28Thailand%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\mitsubishi-triton.jpg"
+    },
+    {
+        "slug":  "vinfast-vf-3",
+        "query":  "VinFast VF 3 interior",
+        "pageTitle":  "File:2025 VinFast VF 3 interior.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:2025_VinFast_VF_3_interior.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/2025_VinFast_VF_3_interior.jpg/1920px-2025_VinFast_VF_3_interior.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\vinfast-vf-3.jpg"
+    },
+    {
+        "slug":  "vinfast-vf-5",
+        "query":  "VinFast VF 5 interior",
+        "pageTitle":  "File:2025 VinFast VF 5 interior.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:2025_VinFast_VF_5_interior.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/2025_VinFast_VF_5_interior.jpg/1920px-2025_VinFast_VF_5_interior.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\vinfast-vf-5.jpg"
+    },
+    {
+        "slug":  "vinfast-vf-6",
+        "query":  "VinFast VF 6 interior",
+        "pageTitle":  "File:2024 VinFast VF 5 (Indonesia) interior.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:2024_VinFast_VF_5_(Indonesia)_interior.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/2024_VinFast_VF_5_%28Indonesia%29_interior.jpg/1920px-2024_VinFast_VF_5_%28Indonesia%29_interior.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\vinfast-vf-6.jpg"
+    },
+    {
+        "slug":  "vinfast-vf-7",
+        "query":  "VinFast VF 7 interior",
+        "pageTitle":  "File:2025 VinFast VF 5 interior.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:2025_VinFast_VF_5_interior.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/2025_VinFast_VF_5_interior.jpg/1920px-2025_VinFast_VF_5_interior.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\vinfast-vf-7.jpg"
+    },
+    {
+        "slug":  "vinfast-vf-8",
+        "query":  "VinFast VF 8 interior",
+        "pageTitle":  "File:2024 VinFast VF 5 (Indonesia) interior.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:2024_VinFast_VF_5_(Indonesia)_interior.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/2024_VinFast_VF_5_%28Indonesia%29_interior.jpg/1920px-2024_VinFast_VF_5_%28Indonesia%29_interior.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\vinfast-vf-8.jpg"
+    },
+    {
+        "slug":  "ferrari-296-gtb",
+        "query":  "Ferrari 296 GTB interior",
+        "pageTitle":  "File:Ferrari 296 GTB, BAS 24, Brussels (P1170221-RR).jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:Ferrari_296_GTB,_BAS_24,_Brussels_(P1170221-RR).jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Ferrari_296_GTB%2C_BAS_24%2C_Brussels_%28P1170221-RR%29.jpg/1920px-Ferrari_296_GTB%2C_BAS_24%2C_Brussels_%28P1170221-RR%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\ferrari-296-gtb.jpg"
+    },
+    {
+        "slug":  "lamborghini-revuelto",
+        "query":  "Lamborghini Revuelto interior",
+        "pageTitle":  "File:Lamborghini Revuelto (53877996613).jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:Lamborghini_Revuelto_(53877996613).jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Lamborghini_Revuelto_%2853877996613%29.jpg/1920px-Lamborghini_Revuelto_%2853877996613%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\lamborghini-revuelto.jpg"
+    },
+    {
+        "slug":  "lamborghini-urus-se",
+        "query":  "Lamborghini Urus interior",
+        "pageTitle":  "File:Lamborghini Urus, BAS 24, Brussels (P1170506).jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:Lamborghini_Urus,_BAS_24,_Brussels_(P1170506).jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Lamborghini_Urus%2C_BAS_24%2C_Brussels_%28P1170506%29.jpg/1920px-Lamborghini_Urus%2C_BAS_24%2C_Brussels_%28P1170506%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\lamborghini-urus-se.jpg"
+    },
+    {
+        "slug":  "lamborghini-huracan-sto",
+        "query":  "Lamborghini Huracan STO interior",
+        "pageTitle":  "File:Lamborghini Huracan STO, BAS 24, Brussels (P1170232).jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:Lamborghini_Huracan_STO,_BAS_24,_Brussels_(P1170232).jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Lamborghini_Huracan_STO%2C_BAS_24%2C_Brussels_%28P1170232%29.jpg/1920px-Lamborghini_Huracan_STO%2C_BAS_24%2C_Brussels_%28P1170232%29.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\lamborghini-huracan-sto.jpg"
+    },
+    {
+        "slug":  "lamborghini-huracan-sterrato",
+        "query":  "Lamborghini Huracan Sterrato interior",
+        "pageTitle":  "File:2023 Lamborghini Huracán Sterrato in Grigio Hati with roofrack, rear left.jpg",
+        "pageUrl":  "https://commons.wikimedia.org/wiki/File:2023_Lamborghini_Hurac%C3%A1n_Sterrato_in_Grigio_Hati_with_roofrack,_rear_left.jpg",
+        "imageUrl":  "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/2023_Lamborghini_Hurac%C3%A1n_Sterrato_in_Grigio_Hati_with_roofrack%2C_rear_left.jpg/1920px-2023_Lamborghini_Hurac%C3%A1n_Sterrato_in_Grigio_Hati_with_roofrack%2C_rear_left.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\lamborghini-huracan-sterrato.jpg"
+    },
+    {
+        "slug":  "mitsubishi-attrage",
+        "query":  "manual-source",
+        "pageTitle":  "ZigWheels",
+        "pageUrl":  "https://www.zigwheels.vn/en/new-cars/mitsubishi/attrage/images",
+        "imageUrl":  "https://imgcdn.zigwheels.vn/large/gallery/interior/19/139/mitsubishi-attrage-center-console-814025.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\mitsubishi-attrage.jpg"
+    },
+    {
+        "slug":  "ferrari-sf90-spider",
+        "query":  "manual-source",
+        "pageTitle":  "OTO",
+        "pageUrl":  "https://www.oto.com/en/mobil-baru/ferrari/sf90-spider/gambar",
+        "imageUrl":  "https://imgcdn.oto.com/large/gallery/interior/10/2637/ferrari-sf90-spider-dashboard-view-794010.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\ferrari-sf90-spider.jpg"
+    },
+    {
+        "slug":  "ferrari-12cilindri",
+        "query":  "manual-source",
+        "pageTitle":  "Motor1",
+        "pageUrl":  "https://www.motor1.com/news/719173/ferrari-12cilindri-interior-technology/",
+        "imageUrl":  "https://cdn.motor1.com/images/mgl/Qe3Qj0/s1/ferrari-12cilindri.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\ferrari-12cilindri.jpg"
+    },
+    {
+        "slug":  "ferrari-purosangue",
+        "query":  "manual-source",
+        "pageTitle":  "Motor1",
+        "pageUrl":  "https://www.motor1.com/reviews/655963/2023-ferrari-purosangue-first-drive/",
+        "imageUrl":  "https://cdn.motor1.com/images/mgl/y2NBrG/s1/2023-ferrari-purosangue-interior.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\ferrari-purosangue.jpg"
+    },
+    {
+        "slug":  "ferrari-f80",
+        "query":  "manual-source",
+        "pageTitle":  "Car and Driver",
+        "pageUrl":  "https://www.caranddriver.com/photos/g65351444/2026-ferrari-f80-drive-interior-gallery/",
+        "imageUrl":  "https://hips.hearstapps.com/hmg-prod/images/2026-ferrari-f80-105-686e832c381b9.jpg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\ferrari-f80.jpg"
+    },
+    {
+        "slug":  "lamborghini-temerario",
+        "query":  "manual-source",
+        "pageTitle":  "CarWale",
+        "pageUrl":  "https://www.carwale.com/lamborghini-cars/temerario/images/",
+        "imageUrl":  "https://imgd.aeplcdn.com/1056x594/n/cw/ec/200535/temerario-interior-dashboard.jpeg",
+        "localFile":  "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\wwwroot\\images\\catalog\\interior\\lamborghini-temerario.jpeg"
+    }
+]

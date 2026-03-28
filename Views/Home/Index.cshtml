@@ -1,24 +1,23 @@
-@using System.Linq
-@model HomeViewModel
+@model AutoCarShowroom.ViewModels.HomeViewModel
 
 @{
     ViewData["Title"] = "Trang chủ";
-    var featuredCar = Model.FeaturedCars.FirstOrDefault();
+    var heroLine = Model.HeroLine;
 }
 
 <section class="hero-showcase">
     <div class="hero-showcase__copy">
-        <span class="section-kicker">Showroom ô tô</span>
-        <h1>Chọn mẫu xe đẹp, rõ giá, mua nhanh hoặc đặt lịch dễ dàng.</h1>
+        <span class="section-kicker">Showroom theo dòng xe</span>
+        <h1>Xem theo dòng xe trước, chọn đúng phiên bản bạn muốn sau.</h1>
         <p class="hero-showcase__description">
-            Website tập trung vào trải nghiệm xem xe, mua xe trực tiếp và đặt lịch hẹn với showroom.
+            Giao diện mới gom xe theo từng dòng để bạn bấm vào một dòng, chọn phiên bản mong muốn rồi xem thông số, hình toàn cảnh và buồng lái rõ ràng hơn.
         </p>
 
         <div class="hero-showcase__actions">
-            <a asp-controller="Cars" asp-action="Index" class="btn btn-accent btn-lg">Khám phá kho xe</a>
+            <a asp-controller="Cars" asp-action="Index" class="btn btn-accent btn-lg">Khám phá các dòng xe</a>
             @if (User.Identity?.IsAuthenticated == true)
             {
-                <a asp-controller="Cars" asp-action="Create" class="btn btn-outline-dark btn-lg">Đăng mẫu xe mới</a>
+                <a asp-controller="Cars" asp-action="Create" class="btn btn-outline-dark btn-lg">Đăng phiên bản mới</a>
             }
             else
             {
@@ -27,35 +26,35 @@
         </div>
 
         <div class="hero-showcase__tags">
-            <span>Mua xe trực tiếp</span>
-            <span>Đặt lịch hẹn</span>
-            <span>Quản lý doanh thu</span>
+            <span>@Model.TotalCars phiên bản</span>
+            <span>@Model.TotalLines dòng xe</span>
+            <span>Hình ảnh và thông số gọn hơn</span>
         </div>
     </div>
 
     <div class="hero-showcase__visual">
-        @if (featuredCar != null)
+        @if (heroLine != null)
         {
-            var statusClass = featuredCar.Status switch
-            {
-                var status when status == OrderWorkflow.CarStatusSold => "status-badge status-badge--sold",
-                var status when status == OrderWorkflow.CarStatusPromotion => "status-badge status-badge--promo",
-                _ => "status-badge status-badge--available"
-            };
-
             <article class="feature-card">
-                <img src="@featuredCar.Image" alt="@featuredCar.CarName" class="feature-card__image" />
+                <img src="@heroLine.Image" alt="@heroLine.DisplayName" class="feature-card__image" />
                 <div class="feature-card__overlay">
-                    <span class="feature-card__badge">@featuredCar.Brand @featuredCar.ModelName</span>
-                    <h2>@featuredCar.CarName</h2>
+                    <span class="feature-card__badge">@heroLine.Brand · @heroLine.BodyType</span>
+                    <h2>@heroLine.DisplayName</h2>
                     <div class="feature-card__meta">
-                        <span class="pill">@featuredCar.BodyType</span>
-                        <span class="pill">Màu @featuredCar.Color</span>
-                        <span class="@statusClass">@featuredCar.Status</span>
+                        <span class="pill">@heroLine.VariantCount phiên bản</span>
+                        <span class="pill">@heroLine.NewestYear</span>
                     </div>
+                    <p>@heroLine.Highlight</p>
                     <div class="feature-card__footer">
-                        <strong>@featuredCar.Price.ToString("N0") VNĐ</strong>
-                        <a asp-controller="Cars" asp-action="Details" asp-route-id="@featuredCar.CarID" class="btn btn-light">Xem chi tiết</a>
+                        <strong>@heroLine.PriceFrom.ToString("N0") - @heroLine.PriceTo.ToString("N0") VNĐ</strong>
+                        <a asp-controller="Cars"
+                           asp-action="Line"
+                           asp-route-brand="@heroLine.Brand"
+                           asp-route-modelName="@heroLine.ModelName"
+                           asp-route-variantId="@heroLine.RepresentativeCarId"
+                           class="btn btn-light">
+                            Xem dòng xe
+                        </a>
                     </div>
                 </div>
             </article>
@@ -64,9 +63,9 @@
         {
             <div class="feature-card feature-card--placeholder">
                 <div class="feature-card__overlay">
-                    <span class="feature-card__badge">Showroom</span>
-                    <h2>Sẵn sàng trưng bày mẫu xe đầu tiên</h2>
-                    <p>Đăng nhập quản trị để thêm dữ liệu và hoàn thiện luồng demo cho đồ án của bạn.</p>
+                    <span class="feature-card__badge">AutoCarShowroom</span>
+                    <h2>Showroom đã sẵn sàng để trưng bày</h2>
+                    <p>Chỉ cần seed dữ liệu hoặc đăng nhập quản trị để thêm các dòng xe đầu tiên.</p>
                 </div>
             </div>
         }
@@ -75,19 +74,19 @@
 
 <section class="metrics-strip">
     <article class="metric-card">
-        <span class="metric-card__label">Số lượng xe</span>
+        <span class="metric-card__label">Tổng phiên bản</span>
         <strong>@Model.TotalCars</strong>
-        <p>Đang trưng bày.</p>
+        <p>Đang có trong cơ sở dữ liệu.</p>
     </article>
     <article class="metric-card">
-        <span class="metric-card__label">Giá trung bình</span>
-        <strong>@Model.AveragePrice.ToString("N0") VNĐ</strong>
-        <p>Mốc tham khảo.</p>
+        <span class="metric-card__label">Tổng dòng xe</span>
+        <strong>@Model.TotalLines</strong>
+        <p>Hiển thị theo nhóm, dễ xem hơn.</p>
     </article>
     <article class="metric-card">
         <span class="metric-card__label">Đời xe mới nhất</span>
         <strong>@(Model.NewestModelYear == 0 ? "--" : Model.NewestModelYear)</strong>
-        <p>Phiên bản mới.</p>
+        <p>Phiên bản mới cập nhật.</p>
     </article>
 </section>
 
@@ -102,56 +101,39 @@
     <div class="section-heading">
         <div>
             <span class="section-kicker">Nổi bật</span>
-            <h2>Mẫu xe đáng xem</h2>
+            <h2>Các dòng xe đáng xem</h2>
         </div>
         <a asp-controller="Cars" asp-action="Index" class="btn btn-outline-light">Xem toàn bộ danh mục</a>
     </div>
 
-    @if (Model.FeaturedCars.Any())
+    @if (Model.FeaturedLines.Any())
     {
-        <div class="row g-4">
-            @foreach (var car in Model.FeaturedCars)
+        <div class="line-grid line-grid--compact">
+            @foreach (var line in Model.FeaturedLines)
             {
-                var canOrder = OrderWorkflow.CanOrder(car);
-                var statusClass = car.Status switch
-                {
-                    var status when status == OrderWorkflow.CarStatusSold => "status-badge status-badge--sold",
-                    var status when status == OrderWorkflow.CarStatusPromotion => "status-badge status-badge--promo",
-                    _ => "status-badge status-badge--available"
-                };
-
-                <div class="col-md-6 col-xl-4">
-                    <article class="car-card h-100">
-                        <img src="@car.Image" alt="@car.CarName" class="car-card__image" />
-                        <div class="car-card__body">
-                            <div class="car-card__meta">
-                                <div class="car-card__tag-group">
-                                    <span class="pill">@car.BodyType</span>
-                                    <span class="pill">@car.Year</span>
-                                </div>
-                                <span class="@statusClass">@car.Status</span>
-                            </div>
-                            <p class="car-card__eyebrow">@car.Brand @car.ModelName</p>
-                            <h3>@car.CarName</h3>
-                            <p class="car-card__subtitle">Màu sắc: @car.Color</p>
-                            <div class="car-card__meta">
-                                <span class="car-card__price">@car.Price.ToString("N0") VNĐ</span>
-                            </div>
-                            <div class="car-card__actions">
-                                <a asp-controller="Cars" asp-action="Details" asp-route-id="@car.CarID" class="btn btn-outline-dark">Xem xe</a>
-                                @if (User.Identity?.IsAuthenticated == true)
-                                {
-                                    <a asp-controller="Cars" asp-action="Edit" asp-route-id="@car.CarID" class="btn btn-accent">Chỉnh sửa</a>
-                                }
-                                else if (canOrder)
-                                {
-                                    <a asp-controller="Orders" asp-action="Checkout" asp-route-carId="@car.CarID" class="btn btn-accent">Mua xe</a>
-                                    <a asp-controller="Bookings" asp-action="Create" asp-route-carId="@car.CarID" class="btn btn-outline-dark">Đặt lịch</a>
-                                }
-                            </div>
+                <article class="line-card line-card--compact">
+                    <div class="line-card__media">
+                        <img src="@line.Image" alt="@line.DisplayName" class="line-card__image" />
+                    </div>
+                    <div class="line-card__body">
+                        <div class="line-card__meta">
+                            <span class="pill">@line.BodyType</span>
+                            <span class="pill">@line.VariantCount phiên bản</span>
                         </div>
-                    </article>
-                </div>
+                        <p class="car-card__eyebrow">@line.Brand</p>
+                        <h3>@line.ModelName</h3>
+                        <p class="line-card__highlight">@line.Highlight</p>
+                        <strong>@line.PriceFrom.ToString("N0") - @line.PriceTo.ToString("N0") VNĐ</strong>
+                        <a asp-controller="Cars"
+                           asp-action="Line"
+                           asp-route-brand="@line.Brand"
+                           asp-route-modelName="@line.ModelName"
+                           asp-route-variantId="@line.RepresentativeCarId"
+                           class="btn btn-outline-dark">
+                            Xem dòng xe
+                        </a>
+                    </div>
+                </article>
             }
         </div>
     }
@@ -159,8 +141,7 @@
     {
         <div class="empty-state empty-state--dark">
             <h3>Chưa có dữ liệu showroom</h3>
-            <p>Đăng nhập để thêm xe.</p>
-            <a asp-controller="Account" asp-action="Login" class="btn btn-accent">Đăng nhập ngay</a>
+            <p>Chạy seed dữ liệu hoặc đăng nhập để bổ sung xe vào hệ thống.</p>
         </div>
     }
 </section>
@@ -169,25 +150,25 @@
     <div class="section-heading">
         <div>
             <span class="section-kicker">Điểm mạnh</span>
-            <h2>Gọn, rõ, dễ dùng</h2>
+            <h2>Luồng xem xe dễ hơn trước</h2>
         </div>
     </div>
 
     <div class="service-grid">
         <article class="service-card">
             <span class="service-card__number">01</span>
-            <h3>Ảnh lớn</h3>
-            <p>Nhìn xe rõ ngay trên màn hình.</p>
+            <h3>Theo dòng xe</h3>
+            <p>Không còn dàn hàng loạt phiên bản trên một trang dài và rối.</p>
         </article>
         <article class="service-card">
             <span class="service-card__number">02</span>
-            <h3>Lọc nhanh</h3>
-            <p>Tìm xe dễ hơn theo hãng, giá và năm.</p>
+            <h3>Theo phiên bản</h3>
+            <p>Bấm vào từng bản để xem ngay khác biệt cấu hình, giá bán và nội dung chi tiết.</p>
         </article>
         <article class="service-card">
             <span class="service-card__number">03</span>
-            <h3>Linh hoạt</h3>
-            <p>Khách có thể mua xe trực tiếp hoặc đặt lịch xem xe.</p>
+            <h3>Theo hình ảnh</h3>
+            <p>Có thông số, hình toàn cảnh và buồng lái để phần trình bày đồ án nhìn giống website hãng xe hơn.</p>
         </article>
     </div>
 </section>

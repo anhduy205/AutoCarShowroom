@@ -106,24 +106,44 @@ namespace AutoCarShowroom.Controllers
                 carsQuery = ApplyPriceRangeFilter(carsQuery, priceRange);
 
                 var cars = await carsQuery.ToListAsync();
+                var lines = CarShowcaseMapper.BuildLineCards(cars, sortOrder);
 
-                cars = sortOrder switch
+                return View(new CarCatalogIndexViewModel
                 {
-                    "price_desc" => cars.OrderByDescending(car => car.Price).ThenBy(car => car.CarName).ToList(),
-                    "price_asc" => cars.OrderBy(car => car.Price).ThenBy(car => car.CarName).ToList(),
-                    "year_desc" => cars.OrderByDescending(car => car.Year).ThenBy(car => car.CarName).ToList(),
-                    "year_asc" => cars.OrderBy(car => car.Year).ThenBy(car => car.CarName).ToList(),
-                    _ => cars.OrderBy(car => car.CarName).ToList()
-                };
-
-                return View(cars);
+                    Lines = lines,
+                    TotalLines = lines.Count,
+                    TotalVariants = cars.Count
+                });
             }
             catch (Exception)
             {
                 PopulateFilterOptions(Array.Empty<string>(), Array.Empty<int>(), GetVisibleStatusesForCurrentUser(), brand, bodyType, status, priceRange, year, sortOrder);
                 ViewData["LoadError"] = "Không thể tải danh sách xe. Vui lòng kiểm tra kết nối cơ sở dữ liệu.";
-                return View(new List<Car>());
+                return View(new CarCatalogIndexViewModel());
             }
+        }
+
+        public async Task<IActionResult> Line(string? brand, string? modelName, int? variantId)
+        {
+            if (string.IsNullOrWhiteSpace(brand) || string.IsNullOrWhiteSpace(modelName))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var lineCars = await GetVisibleCarsQuery()
+                .Where(car => car.Brand == brand && car.ModelName == modelName)
+                .ToListAsync();
+
+            if (lineCars.Count == 0)
+            {
+                return NotFound();
+            }
+
+            var allVisibleCars = await GetVisibleCarsQuery().ToListAsync();
+            var allLines = CarShowcaseMapper.BuildLineCards(allVisibleCars, "name");
+            var viewModel = CarShowcaseMapper.BuildLineView(lineCars, variantId, allLines);
+
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -148,7 +168,12 @@ namespace AutoCarShowroom.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(car);
+            return RedirectToAction(nameof(Line), new
+            {
+                brand = car.Brand,
+                modelName = car.ModelName,
+                variantId = car.CarID
+            });
         }
 
         [Authorize(Roles = "Admin")]

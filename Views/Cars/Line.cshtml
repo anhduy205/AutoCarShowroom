@@ -1,0 +1,234 @@
+@model AutoCarShowroom.ViewModels.CarLineViewModel
+
+@{
+    ViewData["Title"] = Model.DisplayName;
+    var selected = Model.SelectedVariant;
+    var selectedStatusClass = selected.Status switch
+    {
+        var status when status == OrderWorkflow.CarStatusSold => "status-badge status-badge--sold",
+        var status when status == OrderWorkflow.CarStatusPromotion => "status-badge status-badge--promo",
+        _ => "status-badge status-badge--available"
+    };
+}
+
+<section class="line-hero">
+    <div class="line-hero__copy">
+        <span class="section-kicker">Trang dòng xe</span>
+        <p class="detail-hero__eyebrow">@Model.Brand · @Model.BodyType</p>
+        <h1>@Model.DisplayName</h1>
+        <p class="line-hero__variant-name">@selected.VariantName</p>
+        <p class="line-hero__intro">@Model.Intro</p>
+
+        <div class="hero-showcase__tags">
+            <span>@Model.VariantCount phiên bản</span>
+            <span>@selected.Year</span>
+            <span>@selected.Color</span>
+            <span class="@selectedStatusClass">@selected.Status</span>
+        </div>
+
+        <div class="line-hero__price">
+            <strong>@selected.Price.ToString("N0") VNĐ</strong>
+            <span>Khoảng giá toàn dòng: @Model.PriceFrom.ToString("N0") - @Model.PriceTo.ToString("N0") VNĐ</span>
+        </div>
+
+        <p class="detail-hero__description">@selected.Summary</p>
+        <p class="line-hero__difference">@selected.DifferenceNote</p>
+
+        <div class="detail-hero__actions">
+            <a asp-action="Index" class="btn btn-outline-dark">Quay lại danh mục dòng xe</a>
+
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-action="Edit" asp-route-id="@selected.CarId" class="btn btn-accent">Sửa phiên bản đang chọn</a>
+            }
+            else if (selected.CanOrder)
+            {
+                <a asp-controller="Orders" asp-action="Checkout" asp-route-carId="@selected.CarId" class="btn btn-accent">Mua phiên bản này</a>
+                <a asp-controller="Bookings" asp-action="Create" asp-route-carId="@selected.CarId" class="btn btn-outline-light">Đặt lịch xem xe</a>
+            }
+        </div>
+    </div>
+
+    <div class="line-hero__media">
+        <img src="@selected.Image" alt="@selected.FullName" class="line-hero__image" />
+
+        <div class="line-hero__floating-card">
+            <span class="line-hero__floating-label">Phiên bản đang xem</span>
+            <strong>@selected.FullName</strong>
+            <p>@Model.Highlight</p>
+        </div>
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Phiên bản</span>
+            <h2>Chọn phiên bản trong cùng dòng xe</h2>
+        </div>
+    </div>
+
+    <div class="variant-rail" data-variant-rail>
+        @foreach (var variant in Model.Variants)
+        {
+            var variantStatusClass = variant.Status switch
+            {
+                var status when status == OrderWorkflow.CarStatusSold => "status-badge status-badge--sold",
+                var status when status == OrderWorkflow.CarStatusPromotion => "status-badge status-badge--promo",
+                _ => "status-badge status-badge--available"
+            };
+
+            <a asp-action="Line"
+               asp-route-brand="@Model.Brand"
+               asp-route-modelName="@Model.ModelName"
+               asp-route-variantId="@variant.CarId"
+               class="variant-card @(variant.IsSelected ? "is-selected" : string.Empty)">
+                <img src="@variant.Image" alt="@variant.FullName" class="variant-card__image" />
+                <div class="variant-card__body">
+                    <div class="variant-card__meta">
+                        <span class="pill">@variant.Year</span>
+                        <span class="pill">@variant.Color</span>
+                    </div>
+                    <h3>@variant.VariantName</h3>
+                    <p>@variant.Summary</p>
+                    <span class="@variantStatusClass">@variant.Status</span>
+                    <strong>@variant.Price.ToString("N0") VNĐ</strong>
+                </div>
+            </a>
+        }
+    </div>
+</section>
+
+<section class="section-block tech-sheet">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Thông số kỹ thuật</span>
+            <h2>Bảng thông số ngắn gọn, đủ để trình bày</h2>
+        </div>
+    </div>
+
+    <div class="tech-sheet__layout">
+        <div class="tech-sheet__visual">
+            <img src="@selected.Image" alt="@selected.FullName" class="tech-sheet__image" />
+            <div class="tech-sheet__dimension-strip">
+                <div class="tech-sheet__dimension">
+                    <span>Cao</span>
+                    <strong>@Model.TechnicalSheet.HeightText</strong>
+                </div>
+                <div class="tech-sheet__dimension">
+                    <span>Chiều dài cơ sở</span>
+                    <strong>@Model.TechnicalSheet.WheelbaseText</strong>
+                </div>
+                <div class="tech-sheet__dimension">
+                    <span>Dài</span>
+                    <strong>@Model.TechnicalSheet.LengthText</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="tech-sheet__table">
+            @foreach (var item in Model.TechnicalSheet.Items)
+            {
+                <div class="tech-sheet__row">
+                    <span>@item.Label</span>
+                    <strong>@item.Value</strong>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Hình ảnh</span>
+            <h2>Hình ảnh của dòng xe</h2>
+        </div>
+    </div>
+
+    <div class="gallery-tabs">
+        @for (var index = 0; index < Model.GalleryTabs.Count; index++)
+        {
+            var tab = Model.GalleryTabs[index];
+            <button type="button"
+                    class="gallery-tabs__button @(index == 0 ? "is-active" : string.Empty)"
+                    data-gallery-tab="@tab.Id">
+                @tab.Label
+            </button>
+        }
+    </div>
+
+    @for (var index = 0; index < Model.GalleryTabs.Count; index++)
+    {
+        var tab = Model.GalleryTabs[index];
+        <div class="gallery-panel @(index == 0 ? "is-active" : string.Empty)" data-gallery-panel="@tab.Id">
+            <div class="gallery-mosaic">
+                @foreach (var tile in tab.Tiles)
+                {
+                    <figure class="gallery-tile @tile.CssClass">
+                        <img src="@tile.Image" alt="@tile.Label" class="gallery-tile__image" />
+                        <figcaption class="gallery-tile__caption">
+                            <strong>@tile.Label</strong>
+                            <span>@tile.Caption</span>
+                        </figcaption>
+                    </figure>
+                }
+            </div>
+        </div>
+    }
+</section>
+
+<section class="section-block">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker">Điểm nổi bật</span>
+            <h2>Điểm khác biệt của phiên bản đang chọn</h2>
+        </div>
+    </div>
+
+    <div class="feature-stack">
+        @foreach (var feature in Model.FeatureSections)
+        {
+            <article class="feature-stack__card">
+                <h3>@feature.Title</h3>
+                <p>@feature.Summary</p>
+            </article>
+        }
+    </div>
+</section>
+
+@if (Model.RelatedLines.Any())
+{
+    <section class="section-block section-block--dark">
+        <div class="section-heading">
+            <div>
+                <span class="section-kicker">Dòng xe liên quan</span>
+                <h2>Xem thêm các dòng khác</h2>
+            </div>
+        </div>
+
+        <div class="line-grid line-grid--compact">
+            @foreach (var line in Model.RelatedLines)
+            {
+                <article class="line-card line-card--compact">
+                    <div class="line-card__media">
+                        <img src="@line.Image" alt="@line.DisplayName" class="line-card__image" />
+                    </div>
+                    <div class="line-card__body">
+                        <p class="car-card__eyebrow">@line.Brand</p>
+                        <h3>@line.ModelName</h3>
+                        <p class="line-card__highlight">@line.Highlight</p>
+                        <strong>@line.PriceFrom.ToString("N0") - @line.PriceTo.ToString("N0") VNĐ</strong>
+                        <a asp-action="Line"
+                           asp-route-brand="@line.Brand"
+                           asp-route-modelName="@line.ModelName"
+                           asp-route-variantId="@line.RepresentativeCarId"
+                           class="btn btn-outline-dark">
+                            Xem dòng xe
+                        </a>
+                    </div>
+                </article>
+            }
+        </div>
+    </section>
+}

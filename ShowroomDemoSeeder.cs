@@ -215,8 +215,8 @@ namespace AutoCarShowroom.Data
                 CarName = fullName,
                 Price = variant.Price,
                 Year = variant.Year,
-                Color = variant.Color,
-                BodyType = model.BodyType,
+                Color = ToDisplayColor(variant.Color),
+                BodyType = NormalizeBodyType(model.BodyType),
                 Status = variant.Status,
                 Image = ResolveSeedImage(webRootPath, model.Brand, model.ModelName),
                 Specifications = BuildGeneralInformation(model, variant, fullName),
@@ -234,68 +234,68 @@ namespace AutoCarShowroom.Data
 
         private static string BuildGeneralInformation(ModelSeed model, VariantSeed variant, string fullName)
         {
-            return $"{fullName} la mau {model.Segment}, than xe {GetBodyTypeDescription(model.BodyType)}, mau {variant.Color}, doi {variant.Year}. Mau xe huong toi {model.Usage}, gia tham khao {variant.Price:N0} VNĐ va phu hop de dua len web showroom co du thong tin mo ta.";
+            return $"{fullName} là mẫu {GetBodyTypeDescription(model.BodyType)}, màu {ToDisplayColor(variant.Color)}, đời {variant.Year}. Phiên bản này hướng tới {GetTargetCustomer(model)}, có giá tham khảo {FormatCurrency(variant.Price)} và phù hợp để trưng bày trên website showroom với đầy đủ thông tin cơ bản.";
         }
 
         private static string BuildDescription(ModelSeed model, VariantSeed variant, string fullName)
         {
             var statusNote = variant.Status == OrderWorkflow.CarStatusPromotion
-                ? "Phien ban nay dang duoc gan nhan khuyen mai de de nhan biet tren web."
-                : "Phien ban nay dang o trang thai con hang de phuc vu demo quy trinh mua xe.";
+                ? "Phiên bản này đang được gắn nhãn khuyến mãi để người xem dễ nhận biết trên giao diện."
+                : "Phiên bản này đang ở trạng thái còn hàng để phục vụ quy trình xem xe và đặt mua.";
 
-            return $"{fullName} noi bat voi {model.Highlight}. Cau hinh {variant.Name} giu duoc tinh cach cua dong xe, dong thoi de tiep can cho nhu cau {model.Usage}. {statusNote}";
+            return $"{fullName} nổi bật với {GetShowcaseCharacter(model.BodyType, variant.Price)}. Cấu hình {variant.Name} vẫn giữ bản sắc của dòng xe, đồng thời phù hợp cho {GetTargetCustomer(model)}. {statusNote}";
         }
 
         private static string BuildEngineAndChassis(ModelSeed model, VariantSeed variant)
         {
-            return $"{model.Powertrain}. Khung gam duoc can chinh theo huong {GetChassisTone(model.BodyType)}, giup xe phu hop hon voi dieu kien van hanh tai Viet Nam. Phien ban {variant.Name} uu tien cam giac lai {GetDrivingTone(model.BodyType)} va do on dinh phu hop voi nhom khach hang muc tieu.";
+            return $"{TranslatePowertrain(model.Powertrain)}. Khung gầm được cân chỉnh theo hướng {GetChassisTone(model.BodyType)}, giúp xe phù hợp hơn với điều kiện vận hành tại Việt Nam. Phiên bản {variant.Name} ưu tiên cảm giác lái {GetDrivingTone(model.BodyType)} và độ ổn định tốt trong quá trình sử dụng hằng ngày.";
         }
 
         private static string BuildExterior(ModelSeed model, VariantSeed variant)
         {
-            return $"Ngoai that theo ngon ngu thiet ke {GetExteriorTone(model.BodyType)}, nhan manh dac trung {model.Highlight}. Mau {variant.Color} giup xe len hinh dep hon tren giao dien showroom, de lam noi bat dau xe, bo mam, cum den va tong the than xe.";
+            return $"Ngoại thất theo ngôn ngữ thiết kế {GetExteriorTone(model.BodyType)}. Màu {ToDisplayColor(variant.Color)} giúp {model.ModelName} nổi bật hơn ở phần đầu xe, bộ mâm, cụm đèn và tổng thể thân xe khi trưng bày tại showroom.";
         }
 
         private static string BuildInterior(ModelSeed model, VariantSeed variant)
         {
-            return $"Khoang cabin duoc bo tri theo huong {GetInteriorTone(model.Segment)}, de quan sat va de thao tac trong qua trinh su dung hang ngay. Cac be mat noi that, bang tablo va man hinh trung tam duoc mo ta theo phong cach hop voi phien ban {variant.Name} va tam gia {variant.Price:N0} VNĐ.";
+            return $"Khoang cabin được bố trí theo hướng {GetInteriorTone(model.Segment)}, dễ quan sát và dễ thao tác trong quá trình sử dụng hằng ngày. Bảng tablo, màn hình trung tâm và các bề mặt tiếp xúc được mô tả theo phong cách phù hợp với phiên bản {variant.Name} và tầm giá {FormatCurrency(variant.Price)}.";
         }
 
         private static string BuildSeats(ModelSeed model, VariantSeed variant)
         {
-            return $"Cau hinh ghe {model.Seating}. Cach bo tri hang ghe uu tien {GetSeatTone(model.BodyType, model.Seating)}, phu hop cho {model.Usage}. Tren phien ban {variant.Name}, chat lieu va kha nang gap/chinh ghe duoc mo ta theo huong de dung, de tiep can va phuc vu trai nghiem ngoi dai hon.";
+            return $"Cấu hình ghế {NormalizeSeating(model.Seating)}. Cách bố trí hàng ghế ưu tiên {GetSeatTone(model.BodyType, model.Seating)}, phù hợp cho {GetTargetCustomer(model)}. Trên phiên bản {variant.Name}, khả năng gập/chỉnh ghế được định hướng theo tiêu chí dễ dùng và thoải mái khi đi xa.";
         }
 
         private static string BuildConvenience(ModelSeed model, VariantSeed variant)
         {
-            return $"Trang bi tien nghi tap trung vao {GetConvenienceTone(model.BodyType, variant.Price)}, bao gom man hinh giai tri, ket noi dien thoai, dieu hoa, cong sac, camera va cac tinh nang ho tro su dung co ban. Voi cac mau gia cao hon, xe duoc dinh huong them cop dien, ghe chinh dien, am thanh tot hon hoac goi cong nghe theo tinh cach cua dong xe.";
+            return $"Trang bị tiện nghi tập trung vào {GetConvenienceTone(model.BodyType, variant.Price)}, bao gồm màn hình giải trí, kết nối điện thoại, điều hòa, cổng sạc, camera và các tính năng hỗ trợ sử dụng cơ bản. Với các phiên bản giá cao hơn, xe được định hướng thêm các tiện ích nâng tầm trải nghiệm như ghế chỉnh điện, cốp điện hoặc gói công nghệ riêng của từng dòng.";
         }
 
         private static string BuildSecurity(ModelSeed model, VariantSeed variant)
         {
             var securityTone = variant.Price >= 2500000000m
-                ? "he thong khoa thong minh, immobilizer, bao dong va giam sat xe theo huong cao cap hon"
-                : "khoa thong minh, immobilizer, bao dong co ban va cac lop bao ve de dung";
+                ? "hệ thống khóa thông minh, immobilizer, báo động và giám sát xe theo hướng cao cấp hơn"
+                : "khóa thông minh, immobilizer, báo động cơ bản và các lớp bảo vệ dễ dùng";
 
-            return $"Xe duoc bo tri {securityTone}. Nhom tinh nang an ninh duoc xay dung de phu hop voi vai tro cua {model.ModelName}, giup nguoi dung yen tam hon khi dung xe hang ngay, gui xe lau hon hoac trung bay tai showroom.";
+            return $"Xe được bố trí {securityTone}. Nhóm tính năng an ninh được xây dựng để phù hợp với vai trò của {model.ModelName}, giúp người dùng yên tâm hơn khi sử dụng xe hằng ngày, gửi xe lâu hơn hoặc trưng bày tại showroom.";
         }
 
         private static string BuildActiveSafety(ModelSeed model, VariantSeed variant)
         {
-            return $"Goi an toan chu dong gom {GetActiveSafetyPackage(model.BodyType, variant.Price)}. Cach mo ta nay giup trang chi tiet xe co du thong tin nhu mot web ban xe, dong thoi van giu o muc tong quan va de hieu cho do an.";
+            return $"Gói an toàn chủ động gồm {GetActiveSafetyPackage(model.BodyType, variant.Price)}. Cách mô tả này giúp trang chi tiết xe có đủ thông tin như một website bán xe, đồng thời vẫn gọn và dễ hiểu cho đồ án.";
         }
 
         private static string BuildPassiveSafety(ModelSeed model, VariantSeed variant)
         {
             var airbags = GetAirbagCount(variant.Price, model.BodyType);
             var bodyShell = variant.Price >= 15000000000m
-                ? "khung than xe vat lieu hieu nang cao va vung bao ve nguoi ngoi"
-                : "khung than xe cung vung, vung hap thu luc va day dai 3 diem";
+                ? "khung thân xe vật liệu hiệu năng cao và vùng bảo vệ người ngồi"
+                : "khung thân xe cứng vững, vùng hấp thụ lực và dây đai 3 điểm";
             var familyFeature = model.BodyType is "SUV" or "MPV" or "Crossover"
-                ? "co them moc ghe tre em ISOFIX va nhan manh su on dinh cho nhom gia dinh"
-                : "duy tri cac trang bi co ban huong toi bao ve nguoi ngoi";
+                ? "có thêm móc ghế trẻ em ISOFIX và nhấn mạnh sự ổn định cho nhóm gia đình"
+                : "duy trì các trang bị cơ bản hướng tới bảo vệ người ngồi";
 
-            return $"An toan bi dong gom {bodyShell}, {airbags} tui khi tuy tam gia va cau hinh, cung voi tua dau, day dai an toan va cac diem gia co khoang hanh khach. Mau xe nay {familyFeature}.";
+            return $"An toàn bị động gồm {bodyShell}, {airbags} túi khí tùy tầm giá và cấu hình, cùng tựa đầu, dây đai an toàn và các điểm gia cố khoang hành khách. Mẫu xe này {familyFeature}.";
         }
 
         private static void ApplySeedValues(Car target, Car source)
@@ -451,67 +451,188 @@ namespace AutoCarShowroom.Data
                 .Replace("'", "&apos;", StringComparison.Ordinal);
         }
 
-        private static string GetBodyTypeDescription(string bodyType)
+        private static string NormalizeBodyType(string bodyType)
         {
             return bodyType switch
             {
-                "SUV" => "dang SUV gam cao",
-                "Sedan" => "dang sedan 4 cua",
-                "Hatchback" => "dang hatchback nho gon",
-                "MPV" => "dang MPV linh hoat cho gia dinh",
-                "Crossover" => "dang crossover da dung",
-                "Bán tải" => "dang pickup phuc vu cong viec va da ngoai",
-                "Coupe" => "dang coupe hieu nang cao",
-                "Mui trần" => "dang mui tran nhan manh trai nghiem",
-                _ => "dang xe da muc dich"
+                "BÃ¡n táº£i" => "Bán tải",
+                "Mui tráº§n" => "Mui trần",
+                "KhÃ¡c" => "Khác",
+                _ => bodyType
+            };
+        }
+
+        private static string ToDisplayColor(string color)
+        {
+            return color switch
+            {
+                "Trang" => "Trắng",
+                "Trang ngoc" => "Trắng ngọc",
+                "Bac" => "Bạc",
+                "Bac kim" => "Bạc kim",
+                "Den" => "Đen",
+                "Do" => "Đỏ",
+                "Do do" => "Đỏ đô",
+                "Do Rosso Corsa" => "Đỏ Rosso Corsa",
+                "Do Bordeaux" => "Đỏ Bordeaux",
+                "Do Carbon" => "Đỏ Carbon",
+                "Xanh" => "Xanh",
+                "Xanh duong" => "Xanh dương",
+                "Xanh reu" => "Xanh rêu",
+                "Xanh than" => "Xanh than",
+                "Xanh Blu Pozzi" => "Xanh Blu Pozzi",
+                "Xam" => "Xám",
+                "Nau" => "Nâu",
+                "Nau dong" => "Nâu đồng",
+                "Nau cat" => "Nâu cát",
+                "Cam" => "Cam",
+                "Cam Arancio" => "Cam Arancio",
+                "Vang" => "Vàng",
+                "Vang cat" => "Vàng cát",
+                "Vang Giallo Modena" => "Vàng Giallo Modena",
+                _ => color
+            };
+        }
+
+        private static string NormalizeSeating(string seating)
+        {
+            return seating
+                .Replace(" cho", " chỗ", StringComparison.OrdinalIgnoreCase)
+                .Replace(" hoac ", " hoặc ", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string FormatCurrency(decimal price)
+        {
+            return $"{price:N0} VNĐ";
+        }
+
+        private static string GetTargetCustomer(ModelSeed model)
+        {
+            var bodyType = NormalizeBodyType(model.BodyType);
+            var isPremiumLine = model.Variants.Max(variant => variant.Price) >= 1_000_000_000m;
+
+            return bodyType switch
+            {
+                "SUV" => model.Seating.Contains("7", StringComparison.OrdinalIgnoreCase)
+                    ? "gia đình cần xe gầm cao rộng rãi cho nhiều hành trình"
+                    : "khách hàng cần xe gầm cao cân bằng giữa đi phố và đi xa",
+                "Sedan" => isPremiumLine
+                    ? "khách hàng ưu tiên sự lịch lãm, êm ái và hình ảnh chỉn chu"
+                    : "người mua xe lần đầu hoặc gia đình nhỏ cần sedan dễ sử dụng",
+                "Hatchback" => "người dùng đô thị cần xe nhỏ gọn, linh hoạt và cá tính",
+                "MPV" => "gia đình đông thành viên hoặc người cần xe chở nhiều người",
+                "Crossover" => "gia đình trẻ cần xe gầm cao gọn gàng để đi lại hằng ngày",
+                "Bán tải" => "người cần xe vừa phục vụ công việc vừa đi lại cuối tuần",
+                "Coupe" => isPremiumLine
+                    ? "người chơi xe yêu thích cảm giác lái và giá trị trưng bày"
+                    : "khách hàng muốn kiểu dáng thể thao và cảm xúc sau vô-lăng",
+                "Mui trần" => "người yêu trải nghiệm mui mở và phong cách nổi bật",
+                _ => "doanh nghiệp cần xe phục vụ vận chuyển hoặc đưa đón"
+            };
+        }
+
+        private static string GetShowcaseCharacter(string bodyType, decimal price)
+        {
+            return NormalizeBodyType(bodyType) switch
+            {
+                "SUV" => "thân xe đầm chắc, khoảng sáng gầm hợp lý và dáng đứng nổi bật",
+                "Sedan" => price >= 1_000_000_000m
+                    ? "phong thái lịch lãm, vận hành êm và khoang lái gọn gàng"
+                    : "sự cân bằng giữa êm ái, tiết kiệm và dễ điều khiển",
+                "Hatchback" => "kích thước gọn, xoay trở linh hoạt và hình ảnh trẻ trung",
+                "MPV" => "không gian rộng, cách bố trí linh hoạt và sự tiện dụng cho gia đình",
+                "Crossover" => "thiết kế hiện đại, tầm quan sát tốt và khả năng đi lại đa dụng",
+                "Bán tải" => "ngoại hình nam tính, khả năng chở hàng tốt và phong cách đồng hành",
+                "Coupe" => price >= 8_000_000_000m
+                    ? "dáng coupe thấp rộng, cảm giác tốc độ rõ và sức hút trưng bày rất cao"
+                    : "phom coupe thể thao, thấp và tập trung nhiều vào người lái",
+                "Mui trần" => "trải nghiệm mui mở giàu cảm xúc và hình ảnh trình diễn nổi bật",
+                _ => "sự thực dụng, rõ ràng và hiệu quả trong quá trình sử dụng"
+            };
+        }
+
+        private static string TranslatePowertrain(string powertrain)
+        {
+            return powertrain
+                .Replace("Mo to dien", "Mô tơ điện", StringComparison.OrdinalIgnoreCase)
+                .Replace("Dong co", "Động cơ", StringComparison.OrdinalIgnoreCase)
+                .Replace("hop so", "hộp số", StringComparison.OrdinalIgnoreCase)
+                .Replace("xang", "xăng", StringComparison.OrdinalIgnoreCase)
+                .Replace("san", "sàn", StringComparison.OrdinalIgnoreCase)
+                .Replace("hoac", "hoặc", StringComparison.OrdinalIgnoreCase)
+                .Replace("tuy phien ban", "tùy phiên bản", StringComparison.OrdinalIgnoreCase)
+                .Replace("dan dong", "dẫn động", StringComparison.OrdinalIgnoreCase)
+                .Replace("cau truoc", "cầu trước", StringComparison.OrdinalIgnoreCase)
+                .Replace("cau sau", "cầu sau", StringComparison.OrdinalIgnoreCase)
+                .Replace("ly hop kep", "ly hợp kép", StringComparison.OrdinalIgnoreCase)
+                .Replace("dung tich lon", "dung tích lớn", StringComparison.OrdinalIgnoreCase)
+                .Replace("hieu nang cao", "hiệu năng cao", StringComparison.OrdinalIgnoreCase)
+                .Replace("dinh cao", "đỉnh cao", StringComparison.OrdinalIgnoreCase)
+                .Replace("don cap", "đơn cấp", StringComparison.OrdinalIgnoreCase)
+                .Replace("co AWD", "có AWD", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string GetBodyTypeDescription(string bodyType)
+        {
+            return NormalizeBodyType(bodyType) switch
+            {
+                "SUV" => "dáng SUV gầm cao",
+                "Sedan" => "dáng sedan 4 cửa",
+                "Hatchback" => "dáng hatchback nhỏ gọn",
+                "MPV" => "dáng MPV linh hoạt cho gia đình",
+                "Crossover" => "dáng crossover đa dụng",
+                "Bán tải" => "dáng bán tải phục vụ công việc và dã ngoại",
+                "Coupe" => "dáng coupe hiệu năng cao",
+                "Mui trần" => "dáng mui trần nhấn mạnh trải nghiệm mở",
+                _ => "dáng xe đa mục đích"
             };
         }
 
         private static string GetDrivingTone(string bodyType)
         {
-            return bodyType switch
+            return NormalizeBodyType(bodyType) switch
             {
-                "SUV" => "dam chac va tam nhin cao",
-                "Sedan" => "em va on dinh",
-                "Hatchback" => "linh hoat trong pho",
-                "MPV" => "nhe nhang va de lam quen",
-                "Crossover" => "can bang giua de lai va su da dung",
-                "Bán tải" => "ben bi, co luc keo va hop nhieu mat duong",
-                "Coupe" => "nhanh, sat mat duong va phan hoi truc dien",
-                "Mui trần" => "cam xuc va huong toi trai nghiem mo",
-                _ => "de tiep can"
+                "SUV" => "đầm chắc và tầm nhìn cao",
+                "Sedan" => "êm và ổn định",
+                "Hatchback" => "linh hoạt trong phố",
+                "MPV" => "nhẹ nhàng và dễ làm quen",
+                "Crossover" => "cân bằng giữa dễ lái và sự đa dụng",
+                "Bán tải" => "bền bỉ, có lực kéo và hợp nhiều mặt đường",
+                "Coupe" => "nhanh, sát mặt đường và phản hồi trực diện",
+                "Mui trần" => "cảm xúc và hướng tới trải nghiệm mở",
+                _ => "dễ tiếp cận"
             };
         }
 
         private static string GetChassisTone(string bodyType)
         {
-            return bodyType switch
+            return NormalizeBodyType(bodyType) switch
             {
-                "SUV" => "dam than, on dinh than xe va hop duong truong",
-                "Sedan" => "em ai va can bang giua thoai mai voi kha nang om cua",
-                "Hatchback" => "nho gon, phan hoi nhanh va de xoay so",
-                "MPV" => "de chiu cho nhieu hanh khach va linh hoat hang ghe",
-                "Crossover" => "vang chac, tam sat thoang va hop nhieu kieu hanh trinh",
-                "Bán tải" => "gan bo, tai trong tot va ben bi cho cong viec",
-                "Coupe" => "thap, cung va uu tien kha nang bam duong",
-                "Mui trần" => "thap, the thao va huong toi trai nghiem mo",
-                _ => "thuc dung va de bao tri"
+                "SUV" => "đầm thân, ổn định thân xe và hợp đường trường",
+                "Sedan" => "êm ái và cân bằng giữa thoải mái với khả năng ôm cua",
+                "Hatchback" => "nhỏ gọn, phản hồi nhanh và dễ xoay sở",
+                "MPV" => "dễ chịu cho nhiều hành khách và linh hoạt hàng ghế",
+                "Crossover" => "vững chắc, tầm quan sát thoáng và hợp nhiều kiểu hành trình",
+                "Bán tải" => "gân guốc, tải trọng tốt và bền bỉ cho công việc",
+                "Coupe" => "thấp, cứng và ưu tiên khả năng bám đường",
+                "Mui trần" => "thấp, thể thao và hướng tới trải nghiệm mở",
+                _ => "thực dụng và dễ bảo trì"
             };
         }
 
         private static string GetExteriorTone(string bodyType)
         {
-            return bodyType switch
+            return NormalizeBodyType(bodyType) switch
             {
-                "SUV" => "manh khoi va tam the cao",
-                "Sedan" => "thanh lich va can doi",
-                "Hatchback" => "tre trung, gon gang",
-                "MPV" => "thuc dung, de nhan biet",
-                "Crossover" => "hien dai va da dung",
-                "Bán tải" => "nam tinh va co chat dong hanh",
-                "Coupe" => "thap, rong, nhan manh toc do",
-                "Mui trần" => "quyen ru va huong su kien",
-                _ => "gon va ro rang"
+                "SUV" => "mạnh khối và tư thế cao",
+                "Sedan" => "thanh lịch và cân đối",
+                "Hatchback" => "trẻ trung, gọn gàng",
+                "MPV" => "thực dụng, dễ nhận biết",
+                "Crossover" => "hiện đại và đa dụng",
+                "Bán tải" => "nam tính và có chất đồng hành",
+                "Coupe" => "thấp, rộng và nhấn mạnh tốc độ",
+                "Mui trần" => "quyến rũ và hướng sự kiện",
+                _ => "gọn và rõ ràng"
             };
         }
 
@@ -519,27 +640,27 @@ namespace AutoCarShowroom.Data
         {
             return segment switch
             {
-                var value when value.Contains("hypercar", StringComparison.OrdinalIgnoreCase) => "tap trung manh vao nguoi lai va tri an gia tri suu tam",
-                var value when value.Contains("sieu xe", StringComparison.OrdinalIgnoreCase) => "thap, om nguoi va huong toi trai nghiem",
-                var value when value.Contains("cao cap", StringComparison.OrdinalIgnoreCase) => "sang, de ngoi lau va hop tiep khach",
-                var value when value.Contains("SUV", StringComparison.OrdinalIgnoreCase) => "rong, de buoc vao va de quan sat",
-                var value when value.Contains("MPV", StringComparison.OrdinalIgnoreCase) => "linh hoat, thoang va de thao tac cho nhieu nguoi",
-                _ => "gon gang, hien dai va de su dung"
+                var value when value.Contains("hypercar", StringComparison.OrdinalIgnoreCase) => "tập trung mạnh vào người lái và tri ân giá trị sưu tầm",
+                var value when value.Contains("sieu xe", StringComparison.OrdinalIgnoreCase) => "thấp, ôm người và hướng tới trải nghiệm",
+                var value when value.Contains("cao cap", StringComparison.OrdinalIgnoreCase) => "sang, dễ ngồi lâu và hợp tiếp khách",
+                var value when value.Contains("SUV", StringComparison.OrdinalIgnoreCase) => "rộng, dễ bước vào và dễ quan sát",
+                var value when value.Contains("MPV", StringComparison.OrdinalIgnoreCase) => "linh hoạt, thoáng và dễ thao tác cho nhiều người",
+                _ => "gọn gàng, hiện đại và dễ sử dụng"
             };
         }
 
         private static string GetSeatTone(string bodyType, string seating)
         {
-            return bodyType switch
+            return NormalizeBodyType(bodyType) switch
             {
                 "SUV" => seating.Contains("7", StringComparison.OrdinalIgnoreCase)
-                    ? "hang 2 va hang 3 de chia nguoi, gap/gap dien linh hoat"
-                    : "ghe truoc thoang, hang sau de duoi chan cho gia dinh",
-                "MPV" => "ba hang ghe linh hoat, de gap va de buoc vao",
-                "Bán tải" => "hang ghe truoc va sau can bang cho cong viec va di xa",
-                "Coupe" => "ghe truoc om nguoi, uu tien vi tri lai",
-                "Mui trần" => "ghe truoc om va nhan manh trai nghiem lai mo",
-                _ => "khoang ngoi de tiep can, phu hop nhieu doi tuong su dung"
+                    ? "hàng 2 và hàng 3 dễ chia người, gập hoặc gập điện linh hoạt"
+                    : "ghế trước thoáng, hàng sau đủ để chân cho gia đình",
+                "MPV" => "ba hàng ghế linh hoạt, dễ gập và dễ bước vào",
+                "Bán tải" => "hàng ghế trước và sau cân bằng cho công việc lẫn đi xa",
+                "Coupe" => "ghế trước ôm người, ưu tiên vị trí lái",
+                "Mui trần" => "ghế trước ôm và nhấn mạnh trải nghiệm lái mở",
+                _ => "khoang ngồi dễ tiếp cận, phù hợp nhiều đối tượng sử dụng"
             };
         }
 
@@ -547,42 +668,42 @@ namespace AutoCarShowroom.Data
         {
             if (price >= 15000000000m)
             {
-                return "cum dieu khien hieu nang cao, giao dien xe sang va cac tinh nang su kien";
+                return "cụm điều khiển hiệu năng cao, giao diện xe sang và các tính năng phục vụ trưng bày hoặc sự kiện";
             }
 
             if (price >= 2000000000m)
             {
-                return "man hinh lon, camera 360, ghe chinh dien, am thanh va dieu hoa da vung";
+                return "màn hình lớn, camera 360, ghế chỉnh điện, âm thanh tốt và điều hòa đa vùng";
             }
 
             if (price >= 900000000m)
             {
-                return bodyType == "MPV"
-                    ? "dieu hoa nhieu vung, ghe sau de chiu, cua/cua cop dien va camera"
-                    : "man hinh trung tam, ket noi thong minh, dieu hoa tu dong, camera va de xe";
+                return NormalizeBodyType(bodyType) == "MPV"
+                    ? "điều hòa nhiều vùng, ghế sau dễ chịu, cửa hoặc cốp điện và camera hỗ trợ"
+                    : "màn hình trung tâm, kết nối thông minh, điều hòa tự động, camera và hỗ trợ đỗ xe";
             }
 
-            return "cac tinh nang co ban nhu man hinh, Bluetooth, dieu hoa, cong sac va camera/cam bien";
+            return "các tính năng cơ bản như màn hình, Bluetooth, điều hòa, cổng sạc và camera hoặc cảm biến";
         }
 
         private static string GetActiveSafetyPackage(string bodyType, decimal price)
         {
             if (price >= 15000000000m)
             {
-                return "phanh hieu nang cao, kiem soat luc keo, can bang dien tu, camera/cam bien va cac chuong trinh lai theo tinh huong";
+                return "phanh hiệu năng cao, kiểm soát lực kéo, cân bằng điện tử, camera hoặc cảm biến và các chế độ lái theo tình huống";
             }
 
             if (price >= 1200000000m)
             {
-                return "ABS, EBD, BA, can bang dien tu, ho tro khoi hanh ngang doc, camera 360, canh bao diem mu, giu lan va ga tu dong thich ung tuy phien ban";
+                return "ABS, EBD, BA, cân bằng điện tử, hỗ trợ khởi hành ngang dốc, camera 360, cảnh báo điểm mù, giữ làn và ga tự động thích ứng tùy phiên bản";
             }
 
             if (price >= 700000000m)
             {
-                return "ABS, EBD, BA, can bang dien tu, ho tro khoi hanh ngang doc, camera lui, cam bien va mot so tinh nang ADAS co ban";
+                return "ABS, EBD, BA, cân bằng điện tử, hỗ trợ khởi hành ngang dốc, camera lùi, cảm biến và một số tính năng ADAS cơ bản";
             }
 
-            return "ABS, EBD, BA, can bang dien tu, camera lui va cac he thong can thiep phanh/co ban";
+            return "ABS, EBD, BA, cân bằng điện tử, camera lùi và các hệ thống can thiệp phanh cơ bản";
         }
 
         private static int GetAirbagCount(decimal price, string bodyType)

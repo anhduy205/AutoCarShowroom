@@ -10,11 +10,17 @@
         "projectUniqueName": "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\AutoCarShowroom.csproj",
         "projectName": "AutoCarShowroom",
         "projectPath": "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\AutoCarShowroom.csproj",
-        "packagesPath": "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\.nuget\\packages",
+        "packagesPath": "C:\\Users\\BEKING\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\NuGet.Config"
+          "C:\\Users\\BEKING\\source\\repos\\AutoCarShowroom\\NuGet.Config",
+          "C:\\Users\\BEKING\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"

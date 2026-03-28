@@ -1,6 +1,7 @@
 param(
     [string]$OutputDir = (Join-Path $PSScriptRoot "..\wwwroot\images\catalog"),
-    [int]$ThumbnailWidth = 1600
+    [int]$ThumbnailWidth = 1600,
+    [int]$InteriorWidth = 1600
 )
 
 Set-StrictMode -Version Latest
@@ -69,10 +70,12 @@ $entries = @(
 )
 
 $headers = @{
-    "User-Agent" = "AutoCarShowroom seed image downloader/1.0"
+    "User-Agent" = "AutoCarShowroom seed image downloader/2.0"
 }
 
+$interiorDir = Join-Path $OutputDir "interior"
 New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null
+New-Item -ItemType Directory -Path $interiorDir -Force | Out-Null
 
 function Invoke-WithRetry {
     param(
@@ -99,26 +102,6 @@ function Invoke-WithRetry {
     }
 }
 
-function Get-ThumbnailCandidate {
-    param(
-        [string]$Query,
-        [int]$Width
-    )
-
-    $encodedQuery = [Uri]::EscapeDataString($Query)
-    $requestUrl = "https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=$encodedQuery&prop=pageimages|info&inprop=url&piprop=thumbnail&pithumbsize=$Width&format=json&gsrlimit=5&origin=*"
-    $response = Invoke-WithRetry -Operation "Search '$Query'" -Action {
-        Invoke-RestMethod -Uri $requestUrl -Headers $headers -TimeoutSec 60
-    }
-
-    if (-not $response.query.pages) {
-        return $null
-    }
-
-    $pages = $response.query.pages.PSObject.Properties.Value | Sort-Object index
-    return $pages | Where-Object { $_.thumbnail.source } | Select-Object -First 1
-}
-
 function Get-FileExtension {
     param([string]$ImageUrl)
 
@@ -129,78 +112,212 @@ function Get-FileExtension {
     return ".jpg"
 }
 
-function Remove-ExistingSlugFiles {
-    param([string]$Slug)
+function Resolve-ExistingSlugFile {
+    param(
+        [string]$Directory,
+        [string]$Slug
+    )
 
-    Get-ChildItem -Path $OutputDir -File -ErrorAction SilentlyContinue |
+    return Get-ChildItem -Path $Directory -File -ErrorAction SilentlyContinue |
+        Where-Object { $_.BaseName -eq $Slug } |
+        Select-Object -First 1
+}
+
+function Remove-ExistingSlugFiles {
+    param(
+        [string]$Directory,
+        [string]$Slug
+    )
+
+    Get-ChildItem -Path $Directory -File -ErrorAction SilentlyContinue |
         Where-Object { $_.BaseName -eq $Slug } |
         Remove-Item -Force
 }
 
-$results = New-Object System.Collections.Generic.List[object]
-$failures = New-Object System.Collections.Generic.List[string]
+function Get-OverviewCandidate {
+    param(
+        [string[]]$Queries,
+        [int]$Width
+    )
+
+    foreach ($query in $Queries) {
+        $encodedQuery = [Uri]::EscapeDataString($query)
+        $requestUrl = "https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=$encodedQuery&prop=pageimages|info&inprop=url&piprop=thumbnail&pithumbsize=$Width&format=json&gsrlimit=5&origin=*"
+        $response = Invoke-WithRetry -Operation "Search overview '$query'" -Action {
+            Invoke-RestMethod -Uri $requestUrl -Headers $headers -TimeoutSec 60
+        }
+
+        if (-not $response.query -or -not $response.query.pages) {
+            continue
+        }
+
+        $pages = $response.query.pages.PSObject.Properties.Value | Sort-Object index
+        $candidate = $pages | Where-Object { $_.thumbnail.source } | Select-Object -First 1
+        if ($candidate) {
+            return [pscustomobject]@{
+                query = $query
+                title = $candidate.title
+                pageUrl = $candidate.fullurl
+                imageUrl = $candidate.thumbnail.source
+            }
+        }
+    }
+
+    return $null
+}
+
+function Get-InteriorCandidate {
+    param(
+        [string[]]$Queries,
+        [int]$Width
+    )
+
+    $keywords = @("interior", "cockpit", "dashboard", "cabin")
+
+    foreach ($query in $Queries) {
+        foreach ($keyword in $keywords) {
+            $searchTerm = "$query $keyword"
+            $encodedTerm = [Uri]::EscapeDataString($searchTerm)
+            $requestUrl = "https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=$encodedTerm&prop=imageinfo&iiprop=url&iiurlwidth=$Width&format=json&gsrlimit=10&origin=*"
+            $response = Invoke-WithRetry -Operation "Search interior '$searchTerm'" -Action {
+                Invoke-RestMethod -Uri $requestUrl -Headers $headers -TimeoutSec 60
+            }
+
+            if (-not $response.query -or -not $response.query.pages) {
+                continue
+            }
+
+            $pages = $response.query.pages.PSObject.Properties.Value | Sort-Object index
+            $candidate = $pages |
+                Where-Object { $_.imageinfo -and ($_.title -match 'interior|cockpit|dashboard|cabin') } |
+                Select-Object -First 1
+
+            if (-not $candidate) {
+                $candidate = $pages |
+                    Where-Object { $_.imageinfo } |
+                    Select-Object -First 1
+            }
+
+            if ($candidate) {
+                $imageInfo = $candidate.imageinfo[0]
+                $imageUrl = if ($imageInfo.thumburl) { $imageInfo.thumburl } else { $imageInfo.url }
+                return [pscustomobject]@{
+                    query = $searchTerm
+                    title = $candidate.title
+                    pageUrl = $imageInfo.descriptionurl
+                    imageUrl = $imageUrl
+                }
+            }
+        }
+    }
+
+    return $null
+}
+
+$overviewResults = New-Object System.Collections.Generic.List[object]
+$interiorResults = New-Object System.Collections.Generic.List[object]
+$overviewFailures = New-Object System.Collections.Generic.List[string]
+$interiorFailures = New-Object System.Collections.Generic.List[string]
 
 foreach ($entry in $entries) {
     $slug = $entry.Slug
     $queries = $entry.Queries
-    $resolved = $null
-    $resolvedQuery = $null
 
-    Write-Host "Searching image for $slug..."
+    Write-Host "Processing $slug..."
 
-    foreach ($query in $queries) {
+    $existingOverview = Resolve-ExistingSlugFile -Directory $OutputDir -Slug $slug
+    if (-not $existingOverview) {
+        $overviewCandidate = $null
         try {
-            $candidate = Get-ThumbnailCandidate -Query $query -Width $ThumbnailWidth
-
-            if ($candidate) {
-                $resolved = $candidate
-                $resolvedQuery = $query
-                break
-            }
+            $overviewCandidate = Get-OverviewCandidate -Queries $queries -Width $ThumbnailWidth
         }
         catch {
-            Write-Warning "Search failed for '$query': $($_.Exception.Message)"
+            Write-Warning "Overview search failed for ${slug}: $($_.Exception.Message)"
+        }
+
+        if ($overviewCandidate) {
+            $extension = Get-FileExtension -ImageUrl $overviewCandidate.imageUrl
+            $targetPath = Join-Path $OutputDir ($slug + $extension)
+            Remove-ExistingSlugFiles -Directory $OutputDir -Slug $slug
+            Invoke-WithRetry -Operation "Download overview '$slug'" -Action {
+                Invoke-WebRequest -Uri $overviewCandidate.imageUrl -Headers $headers -OutFile $targetPath -TimeoutSec 120
+            } | Out-Null
+
+            $overviewResults.Add([pscustomobject]@{
+                slug = $slug
+                query = $overviewCandidate.query
+                pageTitle = $overviewCandidate.title
+                pageUrl = $overviewCandidate.pageUrl
+                imageUrl = $overviewCandidate.imageUrl
+                localFile = (Resolve-Path $targetPath).Path
+            }) | Out-Null
+        }
+        else {
+            $overviewFailures.Add($slug) | Out-Null
+            Write-Warning "No overview image found for $slug."
         }
     }
-
-    if (-not $resolved) {
-        $failures.Add($slug) | Out-Null
-        Write-Warning "No image found for $slug."
-        continue
+    else {
+        Write-Host "  Overview already exists, skipping download."
     }
 
-    $imageUrl = $resolved.thumbnail.source
-    $extension = Get-FileExtension -ImageUrl $imageUrl
-    $targetPath = Join-Path $OutputDir ($slug + $extension)
+    $existingInterior = Resolve-ExistingSlugFile -Directory $interiorDir -Slug $slug
+    if (-not $existingInterior) {
+        $interiorCandidate = $null
+        try {
+            $interiorCandidate = Get-InteriorCandidate -Queries $queries -Width $InteriorWidth
+        }
+        catch {
+            Write-Warning "Interior search failed for ${slug}: $($_.Exception.Message)"
+        }
 
-    Remove-ExistingSlugFiles -Slug $slug
-    Invoke-WithRetry -Operation "Download '$slug'" -Action {
-        Invoke-WebRequest -Uri $imageUrl -Headers $headers -OutFile $targetPath -TimeoutSec 120
-    } | Out-Null
+        if ($interiorCandidate) {
+            $extension = Get-FileExtension -ImageUrl $interiorCandidate.imageUrl
+            $targetPath = Join-Path $interiorDir ($slug + $extension)
+            Remove-ExistingSlugFiles -Directory $interiorDir -Slug $slug
+            Invoke-WithRetry -Operation "Download interior '$slug'" -Action {
+                Invoke-WebRequest -Uri $interiorCandidate.imageUrl -Headers $headers -OutFile $targetPath -TimeoutSec 120
+            } | Out-Null
 
-    $results.Add([pscustomobject]@{
-        slug = $slug
-        query = $resolvedQuery
-        pageTitle = $resolved.title
-        pageUrl = $resolved.fullurl
-        imageUrl = $imageUrl
-        localFile = (Resolve-Path $targetPath).Path
-    }) | Out-Null
+            $interiorResults.Add([pscustomobject]@{
+                slug = $slug
+                query = $interiorCandidate.query
+                pageTitle = $interiorCandidate.title
+                pageUrl = $interiorCandidate.pageUrl
+                imageUrl = $interiorCandidate.imageUrl
+                localFile = (Resolve-Path $targetPath).Path
+            }) | Out-Null
+        }
+        else {
+            $interiorFailures.Add($slug) | Out-Null
+            Write-Warning "No interior image found for $slug."
+        }
+    }
+    else {
+        Write-Host "  Interior already exists, skipping download."
+    }
 
-    Write-Host "Saved $slug to $targetPath"
-    Start-Sleep -Seconds 2
+    Start-Sleep -Seconds 1
 }
 
-$results |
+if ($overviewResults.Count -gt 0) {
+    $overviewResults |
+        ConvertTo-Json -Depth 4 |
+        Set-Content -Path (Join-Path $OutputDir "sources.json") -Encoding UTF8
+}
+
+$interiorResults |
     ConvertTo-Json -Depth 4 |
-    Set-Content -Path (Join-Path $OutputDir "sources.json") -Encoding UTF8
+    Set-Content -Path (Join-Path $interiorDir "sources.json") -Encoding UTF8
 
 Write-Host ""
-Write-Host "Downloaded $($results.Count) of $($entries.Count) images."
+Write-Host "Overview images downloaded this run: $($overviewResults.Count)"
+Write-Host "Interior images downloaded this run: $($interiorResults.Count)"
 
-if ($failures.Count -gt 0) {
-    Write-Warning ("Missing images: " + ($failures -join ", "))
-    exit 1
+if ($overviewFailures.Count -gt 0) {
+    Write-Warning ("Missing overview images: " + ($overviewFailures -join ", "))
 }
 
-Write-Host "All seed images downloaded successfully."
+if ($interiorFailures.Count -gt 0) {
+    Write-Warning ("Missing interior images: " + ($interiorFailures -join ", "))
+}

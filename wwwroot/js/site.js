@@ -1,4 +1,18 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+document.addEventListener("DOMContentLoaded", () => {
+    const tabButtons = document.querySelectorAll("[data-gallery-tab]");
+    const tabPanels = document.querySelectorAll("[data-gallery-panel]");
 
-// Write your JavaScript code.
+    tabButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const target = button.getAttribute("data-gallery-tab");
+
+            tabButtons.forEach((item) => {
+                item.classList.toggle("is-active", item === button);
+            });
+
+            tabPanels.forEach((panel) => {
+                panel.classList.toggle("is-active", panel.getAttribute("data-gallery-panel") === target);
+            });
+        });
+    });
+});
