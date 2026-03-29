@@ -1,29 +1,47 @@
 @model AutoCarShowroom.ViewModels.CarCatalogIndexViewModel
 
 @{
-    ViewData["Title"] = "Bộ sưu tập xe";
+    ViewData["Title"] = "Xem xe";
     var currentSearch = ViewData["CurrentSearch"] as string;
+
+    string GetStatusClass(string status) => status switch
+    {
+        var value when value == OrderWorkflow.CarStatusSold => "status-badge status-badge--sold",
+        var value when value == OrderWorkflow.CarStatusPromotion => "status-badge status-badge--promo",
+        _ => "status-badge status-badge--available"
+    };
+
+    string GetSummary(string? content)
+    {
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            return "Thông tin đang được cập nhật để khách xem nhanh hơn.";
+        }
+
+        var parts = content.Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        return parts.Length == 0 ? content.Trim() : $"{parts[0].Trim()}.";
+    }
 }
 
 <section class="inventory-hero">
     <div class="inventory-hero__copy">
-        <span class="section-kicker">Danh mục theo dòng xe</span>
-        <h1>Chọn theo dòng xe trước, rồi xem từng phiên bản bên trong.</h1>
-        <p>Thay vì trải toàn bộ 170 xe lên một trang, showroom giờ gom theo từng dòng để dễ xem hơn, dễ so sánh hơn và giống cách các hãng xe đang trưng bày.</p>
+        <span class="section-kicker">Danh mục xe</span>
+        <h1>Xem danh sách xe đang mở bán.</h1>
+        <p>Chọn mẫu xe bạn quan tâm rồi xem chi tiết, mua xe hoặc đặt lịch ngay trên từng thẻ xe.</p>
         <div class="hero-showcase__tags">
+            <span>@Model.TotalVariants mẫu xe</span>
             <span>@Model.TotalLines dòng xe</span>
-            <span>@Model.TotalVariants phiên bản</span>
-            <span>Bấm vào từng dòng để xem chi tiết</span>
+            <span>Thao tác trực tiếp trên từng xe</span>
         </div>
     </div>
 
     <div class="inventory-hero__panel">
-        <span class="inventory-hero__label">Cách xem mới</span>
-        <strong>Xem theo dòng xe trước</strong>
-        <p>Mỗi dòng sẽ có trang riêng, các phiên bản nằm cùng một chỗ để bạn bấm chọn trực tiếp và so sánh nhanh.</p>
+        <span class="inventory-hero__label">Luồng trải nghiệm</span>
+        <strong>Gọn và trực tiếp</strong>
+        <p>Xem xe nhanh hơn, ít bước hơn.</p>
         @if (User.Identity?.IsAuthenticated == true)
         {
-            <a asp-action="Create" class="btn btn-accent">Đăng thêm phiên bản mới</a>
+            <a asp-action="Create" class="btn btn-accent">Đăng thêm mẫu xe mới</a>
         }
         else
         {
@@ -43,7 +61,7 @@
     <div class="filter-bar">
         <div class="filter-field filter-field--search">
             <label class="form-label" for="searchTerm">Tìm kiếm</label>
-            <input id="searchTerm" name="searchTerm" value="@currentSearch" class="form-control" placeholder="911, Tucson, Ferrari..." />
+            <input id="searchTerm" name="searchTerm" value="@currentSearch" class="form-control" placeholder="Camry, Tucson, Ferrari, VinFast..." />
         </div>
         <div class="filter-field">
             <label class="form-label" for="brand">Hãng xe</label>
@@ -86,57 +104,62 @@
     </div>
 </form>
 
-@if (Model.Lines.Any())
+@if (Model.Cars.Any())
 {
-    <section class="line-grid">
-        @foreach (var line in Model.Lines)
+    <div class="row g-4">
+        @foreach (var car in Model.Cars)
         {
-            <article class="line-card">
-                <div class="line-card__media">
-                    <img src="@line.Image" alt="@line.DisplayName" class="line-card__image" />
-                </div>
+            var statusClass = GetStatusClass(car.Status);
+            var canOrder = OrderWorkflow.CanOrder(car);
 
-                <div class="line-card__body">
-                    <div class="line-card__meta">
-                        <span class="pill">@line.BodyType</span>
-                        <span class="pill">@line.VariantCount phiên bản</span>
-                        <span class="pill">@line.NewestYear</span>
+            <div class="col-md-6 col-xl-4">
+                <article class="car-card">
+                    <img src="@car.Image" alt="@car.CarName" class="car-card__image" />
+
+                    <div class="car-card__body">
+                        <div class="car-card__meta">
+                            <div class="car-card__tag-group">
+                                <span class="pill">@car.BodyType</span>
+                                <span class="pill">@car.Color</span>
+                                <span class="pill">@car.Year</span>
+                            </div>
+                            <span class="@statusClass">@car.Status</span>
+                        </div>
+
+                        <p class="car-card__eyebrow">@car.Brand · @car.ModelName</p>
+                        <h3>@car.CarName</h3>
+                        <p class="car-card__subtitle">@GetSummary(car.Description)</p>
+                        <div class="car-card__price">@car.Price.ToString("N0") VNĐ</div>
+
+                        <div class="car-card__actions">
+                            <a asp-action="Details" asp-route-id="@car.CarID" class="btn btn-outline-dark">Xem xe</a>
+
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                <a asp-action="Edit" asp-route-id="@car.CarID" class="btn btn-accent">Sửa xe</a>
+                                <a asp-action="Delete" asp-route-id="@car.CarID" class="btn btn-outline-danger">Xóa xe</a>
+                            }
+                            else if (canOrder)
+                            {
+                                <a asp-controller="Orders" asp-action="Checkout" asp-route-carId="@car.CarID" class="btn btn-accent">Mua xe</a>
+                                <a asp-controller="Bookings" asp-action="Create" asp-route-carId="@car.CarID" class="btn btn-outline-dark">Đặt lịch xem xe</a>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-outline-dark" disabled>Xe đã bán hoặc tạm ngưng</button>
+                            }
+                        </div>
                     </div>
-
-                    <p class="car-card__eyebrow">@line.Brand</p>
-                    <h2>@line.ModelName</h2>
-                    <p class="line-card__highlight">@line.Highlight</p>
-                    <p class="line-card__accent">@line.AccentLine</p>
-
-                    <div class="line-card__pricing">
-                        <strong>@line.PriceFrom.ToString("N0") - @line.PriceTo.ToString("N0") VNĐ</strong>
-                        <span>Khoảng giá toàn dòng</span>
-                    </div>
-
-                    <div class="line-card__actions">
-                        <a asp-action="Line"
-                           asp-route-brand="@line.Brand"
-                           asp-route-modelName="@line.ModelName"
-                           asp-route-variantId="@line.RepresentativeCarId"
-                           class="btn btn-accent">
-                            Khám phá dòng xe
-                        </a>
-
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            <a asp-action="Edit" asp-route-id="@line.RepresentativeCarId" class="btn btn-outline-dark">Sửa bản đại diện</a>
-                        }
-                    </div>
-                </div>
-            </article>
+                </article>
+            </div>
         }
-    </section>
+    </div>
 }
 else
 {
     <div class="empty-state">
-        <h2>Chưa tìm thấy dòng xe phù hợp</h2>
+        <h2>Chưa tìm thấy mẫu xe phù hợp</h2>
         <p>Thử đổi bộ lọc hoặc từ khóa để mở rộng kết quả tìm kiếm.</p>
-        <a asp-action="Index" class="btn btn-accent">Xem lại toàn bộ danh mục</a>
+        <a asp-action="Index" class="btn btn-accent">Xem lại toàn bộ xe</a>
     </div>
 }

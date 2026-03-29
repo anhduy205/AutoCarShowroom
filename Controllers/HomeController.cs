@@ -30,16 +30,18 @@ namespace AutoCarShowroom.Controllers
 
                 var visibleCars = await visibleCarsQuery.ToListAsync();
 
-                var featuredLines = CarShowcaseMapper.BuildLineCards(visibleCars, "year_desc")
+                var featuredCars = visibleCars
+                    .OrderByDescending(car => car.Year)
+                    .ThenByDescending(car => car.Price)
                     .Take(6)
                     .ToList();
 
                 var viewModel = new HomeViewModel
                 {
-                    HeroLine = featuredLines.FirstOrDefault(),
-                    FeaturedLines = featuredLines,
+                    HeroCar = featuredCars.FirstOrDefault(),
+                    FeaturedCars = featuredCars,
                     TotalCars = visibleCars.Count,
-                    TotalLines = featuredLines.Count == 0
+                    TotalLines = visibleCars.Count == 0
                         ? 0
                         : visibleCars
                             .GroupBy(car => new { car.Brand, car.ModelName })

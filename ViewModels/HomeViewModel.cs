@@ -1,10 +1,12 @@
+using AutoCarShowroom.Models;
+
 namespace AutoCarShowroom.ViewModels
 {
     public class HomeViewModel
     {
-        public IReadOnlyList<CarLineCardViewModel> FeaturedLines { get; init; } = [];
+        public IReadOnlyList<Car> FeaturedCars { get; init; } = [];
 
-        public CarLineCardViewModel? HeroLine { get; init; }
+        public Car? HeroCar { get; init; }
 
         public int TotalCars { get; init; }
 

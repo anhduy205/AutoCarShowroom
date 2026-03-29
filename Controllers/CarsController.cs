@@ -105,13 +105,16 @@ namespace AutoCarShowroom.Controllers
 
                 carsQuery = ApplyPriceRangeFilter(carsQuery, priceRange);
 
+                carsQuery = ApplySortOrder(carsQuery, sortOrder);
                 var cars = await carsQuery.ToListAsync();
-                var lines = CarShowcaseMapper.BuildLineCards(cars, sortOrder);
+                var totalLines = cars
+                    .GroupBy(car => new { car.Brand, car.ModelName })
+                    .Count();
 
                 return View(new CarCatalogIndexViewModel
                 {
-                    Lines = lines,
-                    TotalLines = lines.Count,
+                    Cars = cars,
+                    TotalLines = totalLines,
                     TotalVariants = cars.Count
                 });
             }
@@ -168,12 +171,7 @@ namespace AutoCarShowroom.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            return RedirectToAction(nameof(Line), new
-            {
-                brand = car.Brand,
-                modelName = car.ModelName,
-                variantId = car.CarID
-            });
+            return View(car);
         }
 
         [Authorize(Roles = "Admin")]
@@ -453,6 +451,18 @@ namespace AutoCarShowroom.Controllers
             }
 
             return carsQuery;
+        }
+
+        private static IQueryable<Car> ApplySortOrder(IQueryable<Car> carsQuery, string? sortOrder)
+        {
+            return sortOrder switch
+            {
+                "price_desc" => carsQuery.OrderByDescending(car => car.Price).ThenBy(car => car.CarName),
+                "price_asc" => carsQuery.OrderBy(car => car.Price).ThenBy(car => car.CarName),
+                "year_desc" => carsQuery.OrderByDescending(car => car.Year).ThenByDescending(car => car.Price),
+                "year_asc" => carsQuery.OrderBy(car => car.Year).ThenBy(car => car.Price),
+                _ => carsQuery.OrderBy(car => car.CarName)
+            };
         }
 
         private void PopulateFormOptions(string? selectedBodyType, string? selectedStatus)

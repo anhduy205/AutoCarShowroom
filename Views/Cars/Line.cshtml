@@ -60,6 +60,23 @@
     </div>
 </section>
 
+<form asp-action="Index" method="get" class="filter-panel quick-search-panel line-search-panel">
+    <div class="filter-bar quick-search-panel__bar">
+        <div class="filter-field filter-field--search">
+            <label class="form-label" for="lineSearchTerm">Tim dong xe khac</label>
+            <input id="lineSearchTerm"
+                   name="searchTerm"
+                   class="form-control"
+                   placeholder="Nhap ten hang, dong xe hoac phien ban..."
+                   autocomplete="off" />
+        </div>
+        <div class="filter-field filter-field--actions">
+            <button type="submit" class="btn btn-accent">Tim kiem</button>
+            <a asp-action="Index" class="btn btn-outline-dark">Mo toan bo kho xe</a>
+        </div>
+    </div>
+</form>
+
 <section class="section-block">
     <div class="section-heading">
         <div>

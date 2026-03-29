@@ -5,6 +5,8 @@ namespace AutoCarShowroom.ViewModels
 {
     public class CarCatalogIndexViewModel
     {
+        public IReadOnlyList<Car> Cars { get; init; } = [];
+
         public IReadOnlyList<CarLineCardViewModel> Lines { get; init; } = [];
 
         public int TotalLines { get; init; }
