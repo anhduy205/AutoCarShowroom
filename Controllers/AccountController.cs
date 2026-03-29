@@ -26,7 +26,7 @@ namespace AutoCarShowroom.Controllers
                 return RedirectToAction("Index", "Cars");
             }
 
-            return View("~/Login.cshtml", new LoginViewModel
+            return View(new LoginViewModel
             {
                 ReturnUrl = returnUrl
             });
@@ -39,7 +39,7 @@ namespace AutoCarShowroom.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View("~/Login.cshtml", model);
+                return View(model);
             }
 
             var isValidUsername = string.Equals(model.Username, _adminAccount.Username, StringComparison.OrdinalIgnoreCase);
@@ -48,7 +48,7 @@ namespace AutoCarShowroom.Controllers
             if (!isValidUsername || !isValidPassword)
             {
                 ModelState.AddModelError(string.Empty, "Tài khoản hoặc mật khẩu không đúng.");
-                return View("~/Login.cshtml", model);
+                return View(model);
             }
 
             var claims = new List<Claim>

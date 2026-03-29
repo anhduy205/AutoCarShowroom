@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using AutoCarShowroom.Validation;
 
 namespace AutoCarShowroom.Models
 {
@@ -20,6 +21,7 @@ namespace AutoCarShowroom.Models
         [Required(ErrorMessage = "Vui lòng nhập số điện thoại.")]
         [Phone(ErrorMessage = "Số điện thoại không hợp lệ.")]
         [Display(Name = "Số điện thoại")]
+        [RegularExpression(VietnamesePhoneNumberRules.Pattern, ErrorMessage = VietnamesePhoneNumberRules.ErrorMessage)]
         public string PhoneNumber { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Vui lòng nhập email.")]

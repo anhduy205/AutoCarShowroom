@@ -30,7 +30,7 @@
                     </div>
                     <div class="col-md-6">
                         <label asp-for="PhoneNumber" class="form-label"></label>
-                        <input asp-for="PhoneNumber" class="form-control" />
+                        <input asp-for="PhoneNumber" class="form-control" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="10" minlength="10" pattern="0[0-9]{9}" placeholder="09xxxxxxxx" />
                         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                     </div>
                     <div class="col-md-6">
