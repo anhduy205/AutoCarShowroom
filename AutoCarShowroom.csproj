@@ -17,12 +17,4 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Showroom.Web\**\*.cs" />
-    <Content Remove="Showroom.Web\**" />
-    <EmbeddedResource Remove="Showroom.Web\**" />
-    <None Remove="Showroom.Web\**" />
-  </ItemGroup>
-
 </Project>

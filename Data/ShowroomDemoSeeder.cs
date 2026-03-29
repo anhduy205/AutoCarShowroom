@@ -344,8 +344,7 @@ namespace AutoCarShowroom.Data
             var fileBaseName = Slugify($"{brand}-{modelName}");
             var imageFolders = new[]
             {
-                (PhysicalPath: Path.Combine(webRootPath, "images", "catalog"), WebPath: "/images/catalog"),
-                (PhysicalPath: Path.Combine(webRootPath, "uploads", "catalog"), WebPath: "/uploads/catalog")
+                (PhysicalPath: Path.Combine(webRootPath, "images", "catalog"), WebPath: "/images/catalog")
             };
 
             foreach (var (physicalPath, webPath) in imageFolders)

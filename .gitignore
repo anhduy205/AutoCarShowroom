@@ -9,8 +9,9 @@ obj/
 *.suo
 
 # Project-specific folders
-App_Data/*
-wwwroot/uploads/cars/
+.dotnet/
+App_Data/
+wwwroot/uploads/
 artifacts/
 .appdata/
 .dotnet-cli/
