@@ -98,6 +98,15 @@ namespace AutoCarShowroom
             }
 
             app.UseHttpsRedirection();
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path.StartsWithSegments("/uploads/catalog", out var remainingPath))
+                {
+                    context.Request.Path = $"/images/catalog{remainingPath}";
+                }
+
+                await next();
+            });
             app.UseStaticFiles();
 
             app.UseRouting();
