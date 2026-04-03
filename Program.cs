@@ -97,7 +97,10 @@ namespace AutoCarShowroom
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
             app.Use(async (context, next) =>
             {
                 if (context.Request.Path.StartsWithSegments("/uploads/catalog", out var remainingPath))
