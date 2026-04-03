@@ -1,5 +1,6 @@
 using AutoCarShowroom.Data;
 using AutoCarShowroom.Models;
+using AutoCarShowroom.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
@@ -39,7 +40,13 @@ namespace AutoCarShowroom
                     options.ExpireTimeSpan = TimeSpan.FromHours(8);
                     options.SlidingExpiration = true;
                 });
-            builder.Services.AddAuthorization();
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy(InternalAccess.RevenuePolicy, policy =>
+                    policy.RequireAuthenticatedUser()
+                        .RequireAssertion(context => InternalAccess.CanAccessRevenue(context.User)));
+            });
+            builder.Services.AddScoped<ShowroomChatbotService>();
 
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                 ?? throw new InvalidOperationException("Missing DefaultConnection.");

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AutoCarShowroom.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = InternalAccess.BackOfficeRoles)]
     public class AdminBookingsController : Controller
     {
         private readonly ShowroomDbContext _context;

@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = Model.DisplayName;
     var selected = Model.SelectedVariant;
+    var isBackOffice = InternalAccess.IsBackOffice(User);
     var selectedStatusClass = selected.Status switch
     {
         var status when status == OrderWorkflow.CarStatusSold => "status-badge status-badge--sold",
@@ -37,7 +38,7 @@
         <div class="detail-hero__actions">
             <a asp-action="Index" class="btn btn-outline-dark">Quay lại danh mục dòng xe</a>
 
-            @if (User.Identity?.IsAuthenticated == true)
+            @if (isBackOffice)
             {
                 <a asp-action="Edit" asp-route-id="@selected.CarId" class="btn btn-accent">Sửa phiên bản đang chọn</a>
             }

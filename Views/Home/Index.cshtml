@@ -4,6 +4,7 @@
     ViewData["Title"] = "Trang chủ";
     var heroCar = Model.HeroCar;
     var heroCanOrder = heroCar != null && OrderWorkflow.CanOrder(heroCar);
+    var isBackOffice = InternalAccess.IsBackOffice(User);
 
     string GetStatusClass(string status) => status switch
     {
@@ -31,7 +32,7 @@
         <p class="hero-showcase__description">Chỉ giữ những thao tác cần thiết để khách vào là dùng được ngay.</p>
 
         <div class="hero-showcase__actions">
-            @if (User.Identity?.IsAuthenticated == true)
+            @if (isBackOffice)
             {
                 <a asp-controller="Cars" asp-action="Index" class="btn btn-accent btn-lg">Xem danh sách xe</a>
                 <a asp-controller="Cars" asp-action="Create" class="btn btn-outline-light btn-lg">Đăng xe mới</a>
@@ -177,7 +178,7 @@
                             <div class="car-card__actions">
                                 <a asp-controller="Cars" asp-action="Details" asp-route-id="@car.CarID" class="btn btn-outline-dark">Xem xe</a>
 
-                                @if (User.Identity?.IsAuthenticated == true)
+                                @if (isBackOffice)
                                 {
                                     <a asp-controller="Cars" asp-action="Edit" asp-route-id="@car.CarID" class="btn btn-accent">Sửa xe</a>
                                     <a asp-controller="Cars" asp-action="Delete" asp-route-id="@car.CarID" class="btn btn-outline-danger">Xóa xe</a>

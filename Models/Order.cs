@@ -38,7 +38,7 @@ namespace AutoCarShowroom.Models
 
         [Required]
         [Display(Name = "Phương thức thanh toán")]
-        public string PaymentMethod { get; set; } = OrderWorkflow.PaymentMethodSimulation;
+        public string PaymentMethod { get; set; } = OrderWorkflow.PaymentMethodQr;
 
         [Required]
         [Display(Name = "Trạng thái đơn hàng")]

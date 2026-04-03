@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AutoCarShowroom.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = InternalAccess.BackOfficeRoles)]
     public class AdminOrdersController : Controller
     {
         private readonly ShowroomDbContext _context;
@@ -50,10 +50,11 @@ namespace AutoCarShowroom.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                return View(new AdminOrderDetailViewModel
+                return View(new AdminOrderManagementViewModel
                 {
                     Order = order,
-                    OrderStatusOptions = OrderWorkflow.OrderStatuses
+                    OrderStatusOptions = OrderWorkflow.OrderStatuses,
+                    PaymentStatusOptions = OrderWorkflow.PaymentStatuses
                 });
             }
             catch (Exception)
@@ -65,11 +66,17 @@ namespace AutoCarShowroom.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateStatus(int id, string orderStatus)
+        public async Task<IActionResult> UpdateStatus(int id, string orderStatus, string paymentStatus)
         {
             if (!OrderWorkflow.OrderStatuses.Contains(orderStatus, StringComparer.OrdinalIgnoreCase))
             {
                 TempData["ErrorMessage"] = "Trạng thái đơn hàng không hợp lệ.";
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            if (!OrderWorkflow.PaymentStatuses.Contains(paymentStatus, StringComparer.OrdinalIgnoreCase))
+            {
+                TempData["ErrorMessage"] = "Trạng thái thanh toán không hợp lệ.";
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -87,6 +94,7 @@ namespace AutoCarShowroom.Controllers
                 }
 
                 order.OrderStatus = orderStatus;
+                order.PaymentStatus = paymentStatus;
 
                 if (string.Equals(orderStatus, OrderWorkflow.OrderStatusCompleted, StringComparison.OrdinalIgnoreCase))
                 {

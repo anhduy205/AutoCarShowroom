@@ -165,7 +165,7 @@ namespace AutoCarShowroom.Controllers
                 return NotFound();
             }
 
-            if (!User.IsInRole("Admin") && !OrderWorkflow.CanOrder(car))
+            if (!InternalAccess.IsBackOffice(User) && !OrderWorkflow.CanOrder(car))
             {
                 TempData["ErrorMessage"] = "Mẫu xe này đã bán hoặc hiện không còn hiển thị cho khách hàng.";
                 return RedirectToAction(nameof(Index));
@@ -174,7 +174,7 @@ namespace AutoCarShowroom.Controllers
             return View(car);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = InternalAccess.BackOfficeRoles)]
         public IActionResult Create()
         {
             var viewModel = new CarFormViewModel
@@ -188,7 +188,7 @@ namespace AutoCarShowroom.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = InternalAccess.BackOfficeRoles)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CarFormViewModel model)
         {
@@ -244,7 +244,7 @@ namespace AutoCarShowroom.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = InternalAccess.BackOfficeRoles)]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -265,7 +265,7 @@ namespace AutoCarShowroom.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = InternalAccess.BackOfficeRoles)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, CarFormViewModel model)
         {
@@ -352,7 +352,7 @@ namespace AutoCarShowroom.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = InternalAccess.BackOfficeRoles)]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -373,7 +373,7 @@ namespace AutoCarShowroom.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = InternalAccess.BackOfficeRoles)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -585,7 +585,7 @@ namespace AutoCarShowroom.Controllers
         {
             var carsQuery = _context.Cars.AsNoTracking().AsQueryable();
 
-            if (!User.IsInRole("Admin"))
+            if (!InternalAccess.IsBackOffice(User))
             {
                 carsQuery = carsQuery.Where(car => OrderWorkflow.PurchasableCarStatuses.Contains(car.Status));
             }
@@ -595,7 +595,7 @@ namespace AutoCarShowroom.Controllers
 
         private IReadOnlyList<string> GetVisibleStatusesForCurrentUser()
         {
-            return User.IsInRole("Admin")
+            return InternalAccess.IsBackOffice(User)
                 ? VehicleStatuses
                 : OrderWorkflow.PurchasableCarStatuses;
         }

@@ -7,7 +7,7 @@
 <section class="section-block">
     <div class="section-heading">
         <div>
-            <span class="section-kicker">Quản trị</span>
+            <span class="section-kicker">Nội bộ</span>
             <h1>Danh sách đơn mua xe</h1>
         </div>
         <a asp-controller="Cars" asp-action="Index" class="btn btn-outline-light">Quay lại kho xe</a>
@@ -24,6 +24,7 @@
                         <th>Mẫu xe</th>
                         <th>Tổng tiền</th>
                         <th>Thanh toán</th>
+                        <th>Phương thức</th>
                         <th>Trạng thái</th>
                         <th>Ngày tạo</th>
                         <th></th>
@@ -45,6 +46,7 @@
                             </td>
                             <td>@order.TotalAmount.ToString("N0") VNĐ</td>
                             <td>@order.PaymentStatus</td>
+                            <td>@order.PaymentMethod</td>
                             <td>@order.OrderStatus</td>
                             <td>@order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
                             <td>
@@ -60,7 +62,7 @@
     {
         <div class="empty-state">
             <h2>Chưa có đơn mua xe nào</h2>
-            <p>Đơn mua xe của khách sẽ hiển thị tại đây sau khi thanh toán mô phỏng.</p>
+            <p>Đơn mua xe của khách sẽ hiển thị tại đây sau khi khách gửi yêu cầu mua và chọn phương thức thanh toán.</p>
         </div>
     }
 </section>

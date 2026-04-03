@@ -1,7 +1,7 @@
 @model AutoCarShowroom.ViewModels.LoginViewModel
 
 @{
-    ViewData["Title"] = "Đăng nhập quản trị";
+    ViewData["Title"] = "Đăng nhập nội bộ";
     Layout = "/Views/Shared/_Layout.cshtml";
 }
 
@@ -9,11 +9,10 @@
 
 <section class="login-shell">
     <div class="login-panel">
-        <span class="section-kicker">Khu vực quản trị</span>
+        <span class="section-kicker">Khu vực nội bộ</span>
         <h1>Đăng nhập để quản lý showroom</h1>
         <p class="text-muted">
-            Sau khi đăng nhập, bạn có thể thêm xe mới, cập nhật hình ảnh, chỉnh sửa thông tin
-            và xóa mẫu xe khỏi bộ sưu tập đang trưng bày.
+            Tài khoản nội bộ có thể vào kho xe, đơn mua, lịch hẹn và doanh thu tùy theo quyền đã cấu hình.
         </p>
 
         <form asp-controller="Account" asp-action="Login" method="post" class="app-form mt-4">
@@ -22,7 +21,7 @@
 
             <div class="mb-3">
                 <label asp-for="Username" class="form-label"></label>
-                <input asp-for="Username" class="form-control" autocomplete="username" placeholder="Nhập tài khoản quản trị" />
+                <input asp-for="Username" class="form-control" autocomplete="username" placeholder="Nhập tài khoản nội bộ" />
                 <span asp-validation-for="Username" class="text-danger"></span>
             </div>
 
@@ -37,7 +36,14 @@
                 <label asp-for="RememberMe" class="form-check-label"></label>
             </div>
 
-            <div class="d-grid gap-2">
+            <div class="login-panel__hint">
+                <strong>Tài khoản demo để test:</strong>
+                <span><code>admin / Admin@123</code></span>
+                <span><code>team01 / Team@123</code></span>
+                <span><code>team02 / Team@123</code></span>
+            </div>
+
+            <div class="d-grid gap-2 mt-4">
                 <button type="submit" class="btn btn-accent btn-lg">Đăng nhập</button>
                 <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark">Quay về trang chủ</a>
             </div>

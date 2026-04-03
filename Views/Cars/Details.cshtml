@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Chi tiết xe";
     var canOrder = OrderWorkflow.CanOrder(Model);
+    var isBackOffice = InternalAccess.IsBackOffice(User);
     var statusClass = Model.Status switch
     {
         var status when status == OrderWorkflow.CarStatusSold => "status-badge status-badge--sold",
@@ -45,7 +46,7 @@
 
         <div class="detail-hero__actions">
             <a asp-action="Index" class="btn btn-outline-dark">Quay lại bộ sưu tập</a>
-            @if (User.Identity?.IsAuthenticated == true)
+            @if (isBackOffice)
             {
                 <a asp-action="Edit" asp-route-id="@Model.CarID" class="btn btn-accent">Chỉnh sửa mẫu xe</a>
                 <a asp-action="Delete" asp-route-id="@Model.CarID" class="btn btn-outline-danger">Xóa xe</a>

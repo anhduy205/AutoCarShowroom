@@ -40,7 +40,10 @@
                     </div>
                     <div class="col-md-6">
                         <label asp-for="PaymentMethod" class="form-label"></label>
-                        <select asp-for="PaymentMethod" asp-items="ViewBag.PaymentMethods" class="form-select"></select>
+                        <select asp-for="PaymentMethod"
+                                asp-items="ViewBag.PaymentMethods"
+                                class="form-select"
+                                data-payment-select></select>
                         <span asp-validation-for="PaymentMethod" class="text-danger"></span>
                     </div>
                     <div class="col-12">
@@ -50,20 +53,41 @@
                     </div>
                     <div class="col-12">
                         <label asp-for="Note" class="form-label"></label>
-                        <textarea asp-for="Note" class="form-control" rows="4" placeholder="Ví dụ: ưu tiên liên hệ buổi chiều, cần hỗ trợ thủ tục ngân hàng..."></textarea>
+                        <textarea asp-for="Note" class="form-control" rows="4" placeholder="Ví dụ: cần hỗ trợ trả góp, muốn nhận tư vấn hồ sơ, hoặc cần nhân viên gọi buổi chiều..."></textarea>
                         <span asp-validation-for="Note" class="text-danger"></span>
                     </div>
                 </div>
 
+                <div class="payment-method-grid mt-4">
+                    @foreach (var paymentInfo in OrderWorkflow.PaymentMethodInfos)
+                    {
+                        var isActive = string.Equals(paymentInfo.Value, Model.PaymentMethod, StringComparison.OrdinalIgnoreCase);
+
+                        <article class="payment-method-card @(isActive ? "is-active" : string.Empty)" data-payment-card="@paymentInfo.Value">
+                            <div class="payment-method-card__header">
+                                <strong>@paymentInfo.ShortLabel</strong>
+                                <span>@paymentInfo.Highlight</span>
+                            </div>
+                            <p>@paymentInfo.Description</p>
+                            <ul class="payment-method-card__list">
+                                @foreach (var step in paymentInfo.Steps)
+                                {
+                                    <li>@step</li>
+                                }
+                            </ul>
+                        </article>
+                    }
+                </div>
+
                 <div class="checkout-submit">
-                    <button type="submit" class="btn btn-accent">Xác nhận mua xe</button>
+                    <button type="submit" class="btn btn-accent">Gửi yêu cầu mua xe</button>
                 </div>
             </form>
         </div>
 
         <aside class="summary-panel">
             <span class="section-kicker">Tóm tắt xe</span>
-            <h2>Mẫu xe đang thanh toán</h2>
+            <h2>Mẫu xe đang xử lý mua</h2>
             <div class="checkout-items">
                 <article class="checkout-item">
                     <img src="@Model.Car.Image" alt="@Model.Car.CarName" class="checkout-item__image" />
@@ -82,7 +106,7 @@
                 <span>Tổng thanh toán</span>
                 <strong>@Model.TotalAmount.ToString("N0") VNĐ</strong>
             </div>
-            <p class="checkout-note">Sau khi xác nhận, hệ thống sẽ tạo đơn mua xe để quản trị viên tiếp tục xử lý.</p>
+            <p class="checkout-note">Hệ thống sẽ tạo yêu cầu mua trước, sau đó đội ngũ nội bộ xác nhận thanh toán và tiếp tục xử lý bàn giao xe.</p>
         </aside>
     </div>
 </section>

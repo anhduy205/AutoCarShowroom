@@ -35,7 +35,8 @@ namespace AutoCarShowroom.Controllers
                 var model = new CheckoutViewModel
                 {
                     CarId = car.CarID,
-                    Car = await BuildPurchaseSummaryAsync(car)
+                    Car = await BuildPurchaseSummaryAsync(car),
+                    PaymentMethod = OrderWorkflow.PaymentMethodQr
                 };
 
                 PopulatePaymentOptions(model.PaymentMethod);
@@ -63,6 +64,7 @@ namespace AutoCarShowroom.Controllers
                 }
 
                 model.Car = await BuildPurchaseSummaryAsync(car);
+                ValidatePaymentMethod(model.PaymentMethod);
 
                 if (!ModelState.IsValid)
                 {
@@ -79,8 +81,8 @@ namespace AutoCarShowroom.Controllers
                     Address = model.Address,
                     Note = model.Note,
                     PaymentMethod = model.PaymentMethod,
-                    PaymentStatus = OrderWorkflow.PaymentStatusPaid,
-                    OrderStatus = OrderWorkflow.OrderStatusPaid,
+                    PaymentStatus = OrderWorkflow.GetInitialPaymentStatus(model.PaymentMethod),
+                    OrderStatus = OrderWorkflow.GetInitialOrderStatus(model.PaymentMethod),
                     CreatedAt = DateTime.Now,
                     TotalAmount = car.Price,
                     Items =
@@ -98,7 +100,7 @@ namespace AutoCarShowroom.Controllers
                 _context.Orders.Add(order);
                 await _context.SaveChangesAsync();
 
-                TempData["SuccessMessage"] = "Đã tạo đơn mua xe thành công.";
+                TempData["SuccessMessage"] = "Đã ghi nhận yêu cầu mua xe.";
                 return RedirectToAction(nameof(Success), new { orderCode = order.OrderCode });
             }
             catch (Exception)
@@ -143,7 +145,23 @@ namespace AutoCarShowroom.Controllers
 
         private void PopulatePaymentOptions(string? selectedPaymentMethod)
         {
-            ViewBag.PaymentMethods = new SelectList(OrderWorkflow.PaymentMethods, selectedPaymentMethod);
+            ViewBag.PaymentMethods = new SelectList(
+                OrderWorkflow.PaymentMethodInfos.Select(item => new
+                {
+                    item.Value,
+                    Text = item.ShortLabel
+                }),
+                "Value",
+                "Text",
+                selectedPaymentMethod);
+        }
+
+        private void ValidatePaymentMethod(string? paymentMethod)
+        {
+            if (!OrderWorkflow.PaymentMethods.Contains(paymentMethod, StringComparer.OrdinalIgnoreCase))
+            {
+                ModelState.AddModelError(nameof(CheckoutViewModel.PaymentMethod), "Vui lòng chọn phương thức thanh toán hợp lệ.");
+            }
         }
 
         private async Task<Car?> LoadPurchasableCarAsync(int carId)

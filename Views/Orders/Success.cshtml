@@ -1,15 +1,16 @@
 @model OrderSuccessViewModel
 
 @{
-    ViewData["Title"] = "Mua xe thành công";
+    ViewData["Title"] = "Đặt mua xe thành công";
     var item = Model.Items.FirstOrDefault();
+    var paymentInfo = OrderWorkflow.GetPaymentMethodInfo(Model.Order.PaymentMethod);
 }
 
 <section class="section-block">
     <div class="section-heading">
         <div>
             <span class="section-kicker">Hoàn tất</span>
-            <h1>Đơn mua xe đã được ghi nhận</h1>
+            <h1>Yêu cầu mua xe đã được ghi nhận</h1>
         </div>
         <a asp-controller="Cars" asp-action="Index" class="btn btn-outline-light">Xem thêm xe khác</a>
     </div>
@@ -23,6 +24,10 @@
             <div class="detail-list__item">
                 <span>Khách hàng</span>
                 <strong>@Model.Order.CustomerName</strong>
+            </div>
+            <div class="detail-list__item">
+                <span>Phương thức thanh toán</span>
+                <strong>@Model.Order.PaymentMethod</strong>
             </div>
             <div class="detail-list__item">
                 <span>Trạng thái đơn</span>
@@ -43,7 +48,41 @@
         </div>
 
         <div class="summary-panel">
-            <span class="section-kicker">Mẫu xe</span>
+            <span class="section-kicker">Thanh toán</span>
+            <h2>@paymentInfo.ShortLabel</h2>
+            <p class="checkout-note">@paymentInfo.Description</p>
+
+            @if (OrderWorkflow.UsesTransferInstructions(Model.Order.PaymentMethod))
+            {
+                <div class="payment-reference-card">
+                    <div class="summary-row">
+                        <span>Ngân hàng</span>
+                        <strong>Vietcombank</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Số tài khoản</span>
+                        <strong>1020202626</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Chủ tài khoản</span>
+                        <strong>AUTO CAR SHOWROOM</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Nội dung chuyển khoản</span>
+                        <strong>@Model.Order.OrderCode</strong>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="payment-reference-card">
+                    @foreach (var step in paymentInfo.Steps)
+                    {
+                        <p class="payment-reference-card__line">@step</p>
+                    }
+                </div>
+            }
+
             @if (item != null)
             {
                 <div class="checkout-items mt-3">
@@ -56,7 +95,8 @@
                     </article>
                 </div>
             }
-            <p class="checkout-note">Quản trị viên sẽ tiếp tục kiểm tra và cập nhật trạng thái đơn mua xe trong hệ thống.</p>
+
+            <p class="checkout-note">Nhân viên nội bộ sẽ tiếp tục kiểm tra giao dịch, xác nhận tình trạng thanh toán và cập nhật đơn mua của bạn trong hệ thống.</p>
         </div>
     </div>
 </section>

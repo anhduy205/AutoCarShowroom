@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Xem xe";
     var currentSearch = ViewData["CurrentSearch"] as string;
+    var isBackOffice = InternalAccess.IsBackOffice(User);
 
     string GetStatusClass(string status) => status switch
     {
@@ -39,7 +40,7 @@
         <span class="inventory-hero__label">Luồng trải nghiệm</span>
         <strong>Gọn và trực tiếp</strong>
         <p>Xem xe nhanh hơn, ít bước hơn.</p>
-        @if (User.Identity?.IsAuthenticated == true)
+        @if (isBackOffice)
         {
             <a asp-action="Create" class="btn btn-accent">Đăng thêm mẫu xe mới</a>
         }
@@ -134,7 +135,7 @@
                         <div class="car-card__actions">
                             <a asp-action="Details" asp-route-id="@car.CarID" class="btn btn-outline-dark">Xem xe</a>
 
-                            @if (User.Identity?.IsAuthenticated == true)
+                            @if (isBackOffice)
                             {
                                 <a asp-action="Edit" asp-route-id="@car.CarID" class="btn btn-accent">Sửa xe</a>
                                 <a asp-action="Delete" asp-route-id="@car.CarID" class="btn btn-outline-danger">Xóa xe</a>

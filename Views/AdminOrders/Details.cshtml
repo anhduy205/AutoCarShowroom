@@ -1,8 +1,9 @@
-@model AdminOrderDetailViewModel
+@model AdminOrderManagementViewModel
 
 @{
     ViewData["Title"] = "Chi tiết đơn mua xe";
     var item = Model.Order.Items.FirstOrDefault();
+    var paymentInfo = OrderWorkflow.GetPaymentMethodInfo(Model.Order.PaymentMethod);
 }
 
 <section class="section-block">
@@ -39,6 +40,10 @@
                     <strong>@Model.Order.PaymentMethod</strong>
                 </div>
                 <div class="detail-list__item">
+                    <span>Gợi ý xử lý</span>
+                    <strong>@paymentInfo.Description</strong>
+                </div>
+                <div class="detail-list__item">
                     <span>Ghi chú</span>
                     <strong>@(string.IsNullOrWhiteSpace(Model.Order.Note) ? "Không có" : Model.Order.Note)</strong>
                 </div>
@@ -50,6 +55,7 @@
             <form asp-action="UpdateStatus" method="post" class="app-form mt-4">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Order.OrderId" />
+
                 <label class="form-label" for="orderStatus">Trạng thái đơn</label>
                 <select id="orderStatus" name="orderStatus" class="form-select">
                     @foreach (var status in Model.OrderStatusOptions)
@@ -57,16 +63,26 @@
                         <option value="@status" selected="@(status == Model.Order.OrderStatus ? "selected" : null)">@status</option>
                     }
                 </select>
+
+                <label class="form-label mt-4" for="paymentStatus">Trạng thái thanh toán</label>
+                <select id="paymentStatus" name="paymentStatus" class="form-select">
+                    @foreach (var status in Model.PaymentStatusOptions)
+                    {
+                        <option value="@status" selected="@(status == Model.Order.PaymentStatus ? "selected" : null)">@status</option>
+                    }
+                </select>
+
                 <div class="summary-row mt-4">
-                    <span>Thanh toán</span>
-                    <strong>@Model.Order.PaymentStatus</strong>
+                    <span>Phương thức</span>
+                    <strong>@paymentInfo.ShortLabel</strong>
                 </div>
                 <div class="summary-row">
                     <span>Tổng tiền</span>
                     <strong>@Model.Order.TotalAmount.ToString("N0") VNĐ</strong>
                 </div>
+
                 <div class="summary-actions">
-                    <button type="submit" class="btn btn-accent">Lưu trạng thái</button>
+                    <button type="submit" class="btn btn-accent">Lưu cập nhật</button>
                 </div>
             </form>
         </aside>

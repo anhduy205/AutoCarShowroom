@@ -10,7 +10,10 @@
 </head>
 <body>
     @{
-        var isAdmin = User.Identity?.IsAuthenticated == true;
+        var isBackOffice = InternalAccess.IsBackOffice(User);
+        var canAccessRevenue = InternalAccess.CanAccessRevenue(User);
+        var roleLabel = User.IsInRole(InternalAccess.RoleAdmin) ? "Quản trị" : "Nhân viên nội bộ";
+        var showChatbot = !isBackOffice && !Context.Request.Path.StartsWithSegments("/Account/Login");
     }
     <header>
         <nav class="navbar navbar-expand-lg app-navbar">
@@ -31,7 +34,7 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Cars" asp-action="Index">Xem xe</a>
                         </li>
-                        @if (isAdmin)
+                        @if (isBackOffice)
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="AdminOrders" asp-action="Index">Đơn mua xe</a>
@@ -39,9 +42,12 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="AdminBookings" asp-action="Index">Khách đặt lịch</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="AdminRevenue" asp-action="Index">Doanh thu</a>
-                            </li>
+                            @if (canAccessRevenue)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="AdminRevenue" asp-action="Index">Doanh thu</a>
+                                </li>
+                            }
                         }
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="Privacy">Giới thiệu đồ án</a>
@@ -49,9 +55,9 @@
                     </ul>
 
                     <div class="d-flex flex-wrap align-items-center gap-2">
-                        @if (isAdmin)
+                        @if (isBackOffice)
                         {
-                            <span class="admin-chip">Quản trị viên: @(User.Identity?.Name ?? "Admin")</span>
+                            <span class="admin-chip">@roleLabel: @(User.Identity?.Name ?? "Nội bộ")</span>
                             <a class="btn btn-accent" asp-controller="Cars" asp-action="Create">Đăng xe mới</a>
                             <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
                                 @Html.AntiForgeryToken()
@@ -60,7 +66,7 @@
                         }
                         else
                         {
-                            <a class="btn btn-accent" asp-controller="Account" asp-action="Login">Đăng nhập quản trị</a>
+                            <a class="btn btn-accent" asp-controller="Account" asp-action="Login">Đăng nhập nội bộ</a>
                         }
                     </div>
                 </div>
@@ -87,6 +93,49 @@
             @RenderBody()
         </main>
     </div>
+
+    @if (showChatbot)
+    {
+        <div class="chatbot-shell" data-chatbot data-endpoint="@Url.Action("Ask", "Chatbot")">
+            <button type="button"
+                    class="chatbot-toggle"
+                    data-chatbot-toggle
+                    aria-expanded="false"
+                    aria-controls="customer-chatbot">
+                AI tư vấn xe
+            </button>
+
+            <section class="chatbot-panel" id="customer-chatbot" data-chatbot-panel hidden>
+                <div class="chatbot-panel__header">
+                    <div>
+                        <span class="section-kicker">Hỗ trợ khách hàng</span>
+                        <h2>AI tư vấn xe</h2>
+                    </div>
+                    <button type="button" class="chatbot-close" data-chatbot-close aria-label="Đóng chatbot">×</button>
+                </div>
+
+                <div class="chatbot-messages" data-chatbot-messages>
+                    <article class="chatbot-message chatbot-message--assistant">
+                        Mình có thể gợi ý xe theo ngân sách, nhu cầu gia đình, đi phố hoặc so sánh hai mẫu xe đang mở bán trong showroom.
+                    </article>
+                </div>
+
+                <div class="chatbot-prompts">
+                    <button type="button" class="chatbot-prompt" data-chatbot-prompt="Xe gia đình dưới 1 tỷ">Xe gia đình dưới 1 tỷ</button>
+                    <button type="button" class="chatbot-prompt" data-chatbot-prompt="Gợi ý SUV đi phố">Gợi ý SUV đi phố</button>
+                    <button type="button" class="chatbot-prompt" data-chatbot-prompt="So sánh Camry và C300">So sánh Camry và C300</button>
+                </div>
+
+                <form class="chatbot-form" data-chatbot-form>
+                    <input type="text"
+                           class="form-control"
+                           data-chatbot-input
+                           placeholder="Ví dụ: xe 7 chỗ dưới 1.2 tỷ, xe gia đình, so sánh Santa Fe và X5..." />
+                    <button type="submit" class="btn btn-accent" data-chatbot-submit>Gửi</button>
+                </form>
+            </section>
+        </div>
+    }
 
     <footer class="footer">
         <div class="container footer__inner">

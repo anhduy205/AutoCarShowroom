@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AutoCarShowroom.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = InternalAccess.RevenuePolicy)]
     public class AdminRevenueController : Controller
     {
         private readonly ShowroomDbContext _context;

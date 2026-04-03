@@ -11,11 +11,11 @@ namespace AutoCarShowroom.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly AdminAccountOptions _adminAccount;
+        private readonly AdminAccountOptions _accountOptions;
 
         public AccountController(IOptions<AdminAccountOptions> adminAccountOptions)
         {
-            _adminAccount = adminAccountOptions.Value;
+            _accountOptions = adminAccountOptions.Value;
         }
 
         [AllowAnonymous]
@@ -42,21 +42,28 @@ namespace AutoCarShowroom.Controllers
                 return View(model);
             }
 
-            var isValidUsername = string.Equals(model.Username, _adminAccount.Username, StringComparison.OrdinalIgnoreCase);
-            var isValidPassword = string.Equals(model.Password, _adminAccount.Password, StringComparison.Ordinal);
+            var account = _accountOptions.GetAccounts().FirstOrDefault(item =>
+                string.Equals(item.Username, model.Username, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(item.Password, model.Password, StringComparison.Ordinal));
 
-            if (!isValidUsername || !isValidPassword)
+            if (account == null)
             {
                 ModelState.AddModelError(string.Empty, "Tài khoản hoặc mật khẩu không đúng.");
                 return View(model);
             }
 
+            var normalizedRole = InternalAccess.NormalizeRole(account.Role);
             var claims = new List<Claim>
             {
-                new(ClaimTypes.NameIdentifier, _adminAccount.Username),
-                new(ClaimTypes.Name, _adminAccount.DisplayName),
-                new(ClaimTypes.Role, "Admin")
+                new(ClaimTypes.NameIdentifier, account.Username),
+                new(ClaimTypes.Name, string.IsNullOrWhiteSpace(account.DisplayName) ? account.Username : account.DisplayName),
+                new(ClaimTypes.Role, normalizedRole)
             };
+
+            if (string.Equals(normalizedRole, InternalAccess.RoleAdmin, StringComparison.OrdinalIgnoreCase) || account.CanAccessRevenue)
+            {
+                claims.Add(new Claim(InternalAccess.PermissionClaimType, InternalAccess.RevenuePermission));
+            }
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new AuthenticationProperties
@@ -70,7 +77,7 @@ namespace AutoCarShowroom.Controllers
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
 
-            TempData["SuccessMessage"] = "Đăng nhập thành công.";
+            TempData["SuccessMessage"] = "Đăng nhập nội bộ thành công.";
 
             if (!string.IsNullOrWhiteSpace(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
             {
@@ -81,7 +88,7 @@ namespace AutoCarShowroom.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = InternalAccess.BackOfficeRoles)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
