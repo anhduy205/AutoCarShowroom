@@ -68,7 +68,7 @@ namespace AutoCarShowroom.Models
                 [
                     "Hệ thống tạo mã đơn riêng cho từng giao dịch.",
                     "Đội ngũ nội bộ xác nhận giao dịch ngân hàng trước khi xử lý bàn giao.",
-                    "Có thể ghi chú nhu cầu xuất hóa đơn hoặc đặt cọc trong ô ghi chú."
+                    "Có thể ghi chú nhu cầu xuất hóa đơn trong ô ghi chú."
                 ],
                 PaymentStatusPending,
                 RequiresManualConfirmation: true),
@@ -88,17 +88,26 @@ namespace AutoCarShowroom.Models
                 PaymentMethodInstallment,
                 "Trả góp / đặt cọc",
                 "Khách để lại nhu cầu trả góp hoặc đặt cọc. Nhân viên sẽ liên hệ để tư vấn hồ sơ và lộ trình thanh toán.",
-                "Cần tư vấn",
+                "Cần tư vấn riêng",
                 [
                     "Đơn mua được giữ ở trạng thái chờ xác nhận.",
                     "Nhân viên sẽ liên hệ để chốt khoản cọc hoặc hồ sơ hỗ trợ vay.",
-                    "Khách nên mô tả thêm nhu cầu trong ô ghi chú để xử lý nhanh hơn."
+                    "Tùy từng nhu cầu thực tế, showroom sẽ tư vấn phương án phù hợp."
                 ],
                 PaymentStatusPending,
                 RequiresManualConfirmation: true)
         ];
 
+        public static readonly PaymentMethodInfo[] PublicPaymentMethodInfos =
+            PaymentMethodInfos
+                .Where(item => !string.Equals(item.Value, PaymentMethodInstallment, StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+
         public static readonly string[] PaymentMethods = PaymentMethodInfos
+            .Select(item => item.Value)
+            .ToArray();
+
+        public static readonly string[] PublicPaymentMethods = PublicPaymentMethodInfos
             .Select(item => item.Value)
             .ToArray();
 

@@ -14,6 +14,7 @@
         var canAccessRevenue = InternalAccess.CanAccessRevenue(User);
         var roleLabel = User.IsInRole(InternalAccess.RoleAdmin) ? "Quản trị" : "Nhân viên nội bộ";
         var showChatbot = !isBackOffice && !Context.Request.Path.StartsWithSegments("/Account/Login");
+        var currentChatbotCarId = ViewData["ChatbotCurrentCarId"] is int chatCarId ? chatCarId : (int?)null;
     }
     <header>
         <nav class="navbar navbar-expand-lg app-navbar">
@@ -96,7 +97,10 @@
 
     @if (showChatbot)
     {
-        <div class="chatbot-shell" data-chatbot data-endpoint="@Url.Action("Ask", "Chatbot")">
+        <div class="chatbot-shell"
+             data-chatbot
+             data-endpoint="@Url.Action("Ask", "Chatbot")"
+             data-current-car-id="@(currentChatbotCarId?.ToString() ?? string.Empty)">
             <button type="button"
                     class="chatbot-toggle"
                     data-chatbot-toggle
@@ -116,21 +120,21 @@
 
                 <div class="chatbot-messages" data-chatbot-messages>
                     <article class="chatbot-message chatbot-message--assistant">
-                        Mình có thể gợi ý xe theo ngân sách, nhu cầu gia đình, đi phố hoặc so sánh hai mẫu xe đang mở bán trong showroom.
+                        Em có thể gợi ý xe theo ngân sách, so sánh mẫu đang có, giải thích phương thức thanh toán hoặc hỗ trợ đặt lịch xem xe ngay trong chat.
                     </article>
                 </div>
 
                 <div class="chatbot-prompts">
-                    <button type="button" class="chatbot-prompt" data-chatbot-prompt="Xe gia đình dưới 1 tỷ">Xe gia đình dưới 1 tỷ</button>
-                    <button type="button" class="chatbot-prompt" data-chatbot-prompt="Gợi ý SUV đi phố">Gợi ý SUV đi phố</button>
-                    <button type="button" class="chatbot-prompt" data-chatbot-prompt="So sánh Camry và C300">So sánh Camry và C300</button>
+                    <button type="button" class="chatbot-prompt" data-chatbot-prompt="Gợi ý xe gia đình dưới 1 tỷ">Xe gia đình dưới 1 tỷ</button>
+                    <button type="button" class="chatbot-prompt" data-chatbot-prompt="Gợi ý SUV đi phố">SUV đi phố</button>
+                    <button type="button" class="chatbot-prompt" data-chatbot-prompt="Showroom có những phương thức thanh toán nào?">Thanh toán</button>
                 </div>
 
                 <form class="chatbot-form" data-chatbot-form>
                     <input type="text"
                            class="form-control"
                            data-chatbot-input
-                           placeholder="Ví dụ: xe 7 chỗ dưới 1.2 tỷ, xe gia đình, so sánh Santa Fe và X5..." />
+                           placeholder="Ví dụ: SUV dưới 1 tỷ, xe gia đình 5 chỗ, đặt lịch xem Camry..." />
                     <button type="submit" class="btn btn-accent" data-chatbot-submit>Gửi</button>
                 </form>
             </section>

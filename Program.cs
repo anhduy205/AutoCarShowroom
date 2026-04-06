@@ -1,6 +1,6 @@
 using AutoCarShowroom.Data;
 using AutoCarShowroom.Models;
-using AutoCarShowroom.Services;
+using AutoCarShowroom.Services.Chatbot;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
@@ -46,7 +46,12 @@ namespace AutoCarShowroom
                     policy.RequireAuthenticatedUser()
                         .RequireAssertion(context => InternalAccess.CanAccessRevenue(context.User)));
             });
-            builder.Services.AddScoped<ShowroomChatbotService>();
+            builder.Services.Configure<InstallmentOptions>(builder.Configuration.GetSection("InstallmentOptions"));
+            builder.Services.AddScoped<ChatbotInventoryTools>();
+            builder.Services.AddScoped<ChatbotFinanceTools>();
+            builder.Services.AddScoped<ChatbotBookingTools>();
+            builder.Services.AddSingleton<ChatbotFaqTools>();
+            builder.Services.AddScoped<ChatbotOrchestrator>();
 
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                 ?? throw new InvalidOperationException("Missing DefaultConnection.");

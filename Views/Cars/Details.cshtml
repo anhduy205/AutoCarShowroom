@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Chi tiết xe";
+    ViewData["ChatbotCurrentCarId"] = Model.CarID;
+
     var canOrder = OrderWorkflow.CanOrder(Model);
     var isBackOffice = InternalAccess.IsBackOffice(User);
     var statusClass = Model.Status switch

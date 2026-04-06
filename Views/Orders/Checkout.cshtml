@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Mua xe";
+    ViewData["ChatbotCurrentCarId"] = Model.CarId;
 }
 
 <section class="section-block">
@@ -53,13 +54,13 @@
                     </div>
                     <div class="col-12">
                         <label asp-for="Note" class="form-label"></label>
-                        <textarea asp-for="Note" class="form-control" rows="4" placeholder="Ví dụ: cần hỗ trợ trả góp, muốn nhận tư vấn hồ sơ, hoặc cần nhân viên gọi buổi chiều..."></textarea>
+                        <textarea asp-for="Note" class="form-control" rows="4" placeholder="Ví dụ: muốn nhận cuộc gọi xác nhận vào buổi chiều, cần hỗ trợ xuất hóa đơn..."></textarea>
                         <span asp-validation-for="Note" class="text-danger"></span>
                     </div>
                 </div>
 
                 <div class="payment-method-grid mt-4">
-                    @foreach (var paymentInfo in OrderWorkflow.PaymentMethodInfos)
+                    @foreach (var paymentInfo in OrderWorkflow.PublicPaymentMethodInfos)
                     {
                         var isActive = string.Equals(paymentInfo.Value, Model.PaymentMethod, StringComparison.OrdinalIgnoreCase);
 
@@ -106,7 +107,7 @@
                 <span>Tổng thanh toán</span>
                 <strong>@Model.TotalAmount.ToString("N0") VNĐ</strong>
             </div>
-            <p class="checkout-note">Hệ thống sẽ tạo yêu cầu mua trước, sau đó đội ngũ nội bộ xác nhận thanh toán và tiếp tục xử lý bàn giao xe.</p>
+            <p class="checkout-note">Nếu anh/chị cần thêm phương án thanh toán khác, showroom sẽ tư vấn riêng sau khi tiếp nhận nhu cầu.</p>
         </aside>
     </div>
 </section>

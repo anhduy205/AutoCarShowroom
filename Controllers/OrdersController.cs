@@ -146,7 +146,7 @@ namespace AutoCarShowroom.Controllers
         private void PopulatePaymentOptions(string? selectedPaymentMethod)
         {
             ViewBag.PaymentMethods = new SelectList(
-                OrderWorkflow.PaymentMethodInfos.Select(item => new
+                OrderWorkflow.PublicPaymentMethodInfos.Select(item => new
                 {
                     item.Value,
                     Text = item.ShortLabel
@@ -158,7 +158,7 @@ namespace AutoCarShowroom.Controllers
 
         private void ValidatePaymentMethod(string? paymentMethod)
         {
-            if (!OrderWorkflow.PaymentMethods.Contains(paymentMethod, StringComparer.OrdinalIgnoreCase))
+            if (!OrderWorkflow.PublicPaymentMethods.Contains(paymentMethod, StringComparer.OrdinalIgnoreCase))
             {
                 ModelState.AddModelError(nameof(CheckoutViewModel.PaymentMethod), "Vui lòng chọn phương thức thanh toán hợp lệ.");
             }

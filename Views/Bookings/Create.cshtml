@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Đặt lịch xem xe";
+    ViewData["ChatbotCurrentCarId"] = Model.CarId;
 }
 
 <section class="section-block">
@@ -45,7 +46,7 @@
                     </div>
                     <div class="col-12">
                         <label asp-for="Note" class="form-label"></label>
-                        <textarea asp-for="Note" class="form-control" rows="4" placeholder="Ví dụ: muốn xem xe vào buổi sáng, cần tư vấn trả góp..."></textarea>
+                        <textarea asp-for="Note" class="form-control" rows="4" placeholder="Ví dụ: muốn xem xe vào buổi sáng, cần nhân viên gọi trước..."></textarea>
                         <span asp-validation-for="Note" class="text-danger"></span>
                     </div>
                 </div>

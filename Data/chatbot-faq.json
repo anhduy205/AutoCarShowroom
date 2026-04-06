@@ -1,0 +1,74 @@
+[
+  {
+    "topic": "bao-duong",
+    "title": "Tư vấn bảo dưỡng cơ bản",
+    "keywords": ["bao duong", "lich bao duong", "bao lau bao duong", "thay nhot"],
+    "answer": "Với xe mới, anh/chị nên bám mốc trong sổ bảo dưỡng của hãng, thường là mỗi 5.000-10.000 km hoặc 6 tháng tùy điều kiện vận hành. Nếu đi phố nhiều, dừng/đỗ thường xuyên hoặc chạy tải nặng thì nên kiểm tra sớm hơn vì dầu máy, lọc gió và phanh xuống nhanh hơn.",
+    "nextStep": "Nếu anh/chị đã chốt được mẫu xe, em có thể gợi ý thêm lịch kiểm tra định kỳ phù hợp kiểu sử dụng của mình.",
+    "disclaimer": "Lưu ý: đây là tư vấn tham khảo chung, lịch chính xác vẫn nên theo khuyến nghị của hãng và tình trạng xe thực tế."
+  },
+  {
+    "topic": "bao-hiem",
+    "title": "Bảo hiểm nên có khi mua xe",
+    "keywords": ["bao hiem", "bao hiem vat chat", "bao hiem dan su", "bao hiem xe moi"],
+    "answer": "Khi mua xe, 2 nhóm thường gặp là bảo hiểm trách nhiệm dân sự bắt buộc và bảo hiểm vật chất xe. Nếu anh/chị mua xe giá trị cao hoặc lần đầu sở hữu xe, bảo hiểm vật chất thường giúp yên tâm hơn vì hỗ trợ khi va quệt, thiên tai hoặc mất cắp trong phạm vi hợp đồng.",
+    "nextStep": "Nếu anh/chị muốn, em có thể tư vấn tiếp phương án mua xe rồi thanh toán tại showroom hay trả góp để cân đối thêm chi phí ban đầu.",
+    "disclaimer": "Thông tin trên chỉ mang tính tham khảo, điều khoản và mức phí thực tế còn tùy gói bảo hiểm và đơn vị phát hành."
+  },
+  {
+    "topic": "phu-kien",
+    "title": "Phụ kiện nên cân nhắc trước",
+    "keywords": ["phu kien", "dan phim", "camera hanh trinh", "cam bien ap suat lop", "camera 360"],
+    "answer": "Nếu ưu tiên an toàn và tiện dụng, anh/chị nên nghĩ trước đến phim cách nhiệt, camera hành trình, cảm biến áp suất lốp và camera lùi hoặc camera 360 tùy mẫu xe. Các món này có lợi ích thực tế ngay: mát cabin hơn, quan sát tốt hơn và giảm rủi ro cho người lái mới.",
+    "nextStep": "Khi anh/chị chốt được mẫu xe, em có thể gợi ý phụ kiện nên lắp trước và món nào có thể để sau.",
+    "disclaimer": "Đây là gợi ý theo nhu cầu sử dụng phổ biến, không phải danh sách bắt buộc cho mọi xe."
+  },
+  {
+    "topic": "dang-ky-dang-kiem",
+    "title": "Đăng ký và đăng kiểm xe",
+    "keywords": ["dang ky", "dang ki", "dang kiem", "ra bien", "thu tuc xe moi"],
+    "answer": "Khi mua xe mới, anh/chị thường cần chuẩn bị chi phí đăng ký, biển số, bảo hiểm bắt buộc và các giấy tờ nhân thân hoặc hồ sơ doanh nghiệp nếu đứng tên công ty. Sau khi có xe, việc đăng kiểm và các mốc pháp lý cần bám theo quy định hiện hành của cơ quan chức năng.",
+    "nextStep": "Nếu anh/chị đang quan tâm chi phí lăn bánh hoặc trả góp, em có thể giúp tóm tắt các khoản ban đầu để dễ chốt tài chính hơn.",
+    "disclaimer": "Em chưa có dữ liệu pháp lý chính thức theo từng địa phương trong hệ thống, nên phần này chỉ là hướng dẫn tham khảo."
+  },
+  {
+    "topic": "xe-moi-xe-cu",
+    "title": "Xe mới hay xe cũ phù hợp hơn?",
+    "keywords": ["xe cu", "xe luot", "xe moi hay xe cu", "nen mua xe moi hay xe cu"],
+    "answer": "Nếu anh/chị ưu tiên yên tâm lâu dài, ít rủi ro, dễ vay và dễ bảo hành thì xe mới thường là lựa chọn an toàn hơn. Xe cũ hoặc xe lướt hợp khi muốn giảm chi phí đầu vào, nhưng cần kiểm tra kỹ lịch sử sử dụng, thân vỏ, máy móc và chi phí phát sinh sau mua.",
+    "nextStep": "Hiện showroom của mình đang ưu tiên dữ liệu xe mở bán trong kho. Nếu anh/chị muốn, em có thể gợi ý luôn mẫu xe mới đáng cân nhắc theo ngân sách.",
+    "disclaimer": "Hiện tại showroom chưa có dữ liệu xe cũ chi tiết trong hệ thống, nên phần so sánh này là tư vấn nguyên tắc chung."
+  },
+  {
+    "topic": "sedan-suv",
+    "title": "So sánh sedan và SUV",
+    "keywords": ["sedan va suv", "so sanh sedan suv", "nen mua sedan hay suv"],
+    "answer": "Sedan thường êm, ổn định và chi phí sử dụng dễ chịu hơn khi đi phố hoặc đường trường đẹp. SUV cho lợi thế gầm cao, tầm nhìn thoáng và đi tỉnh hoặc đường xấu tự tin hơn, nhưng kích thước lớn hơn và chi phí sử dụng thường nhỉnh hơn sedan.",
+    "nextStep": "Nếu anh/chị cho em thêm ngân sách và nhu cầu chính, em có thể gợi ý ngay 2-3 mẫu sedan hoặc SUV đang có trong showroom.",
+    "disclaimer": "Đây là so sánh theo nguyên tắc chung của 2 kiểu thân xe, không thay thế cho dữ liệu chi tiết từng mẫu cụ thể."
+  },
+  {
+    "topic": "nhien-lieu",
+    "title": "Xe xăng, hybrid hay xe điện",
+    "keywords": ["xe xang", "hybrid", "xe dien", "nen mua xe dien", "so sanh xe xang hybrid dien"],
+    "answer": "Xe xăng dễ tiếp cận và tiện sử dụng rộng rãi. Hybrid cân bằng hơn giữa trải nghiệm quen thuộc và tiết kiệm nhiên liệu, còn xe điện thường hợp khi anh/chị quan tâm chi phí vận hành và trải nghiệm mới, nhưng cần tính thêm hạ tầng sạc và thói quen sử dụng.",
+    "nextStep": "Nếu anh/chị muốn, em có thể gợi ý các mẫu đang có trong showroom rồi phân tích xem kiểu nào hợp hơn với cách dùng thực tế của mình.",
+    "disclaimer": "Hiện hệ thống chưa có đầy đủ dữ liệu nhiên liệu chuẩn hóa cho mọi mẫu, nên phần này là tư vấn định hướng chung."
+  },
+  {
+    "topic": "dich-vu",
+    "title": "Xe phù hợp chạy dịch vụ",
+    "keywords": ["chay dich vu", "xe dich vu", "kinh doanh", "grab", "taxi"],
+    "answer": "Nếu chạy dịch vụ, anh/chị nên ưu tiên xe bền, dễ bảo dưỡng, dễ bán lại và chi phí vận hành hợp lý. Những mẫu có không gian đủ dùng, cabin thoải mái và thanh khoản tốt thường thực tế hơn các mẫu quá thiên về hình thức hoặc công suất lớn.",
+    "nextStep": "Anh/chị nói thêm ngân sách dự kiến, em sẽ lọc ra các mẫu đang có trong showroom phù hợp với nhu cầu chạy dịch vụ.",
+    "disclaimer": "Đây là định hướng chọn xe theo nhu cầu dịch vụ, còn hiệu quả thực tế còn phụ thuộc cường độ sử dụng và khu vực vận hành."
+  },
+  {
+    "topic": "mua-lan-dau",
+    "title": "Lưu ý khi mua xe lần đầu",
+    "keywords": ["mua lan dau", "lan dau mua xe", "nguoi moi lai"],
+    "answer": "Nếu mua xe lần đầu, anh/chị nên ưu tiên mẫu dễ lái, tầm quan sát tốt, có công nghệ an toàn cơ bản và chi phí sử dụng không quá áp lực. Quan trọng nhất là chọn mẫu xe hợp ngân sách tổng thể, không chỉ nhìn vào giá niêm yết mà quên phần bảo hiểm, đăng ký, nhiên liệu và bảo dưỡng.",
+    "nextStep": "Nếu anh/chị muốn, em có thể gợi ý 2-4 mẫu dễ làm quen nhất trong showroom theo mức tiền mình đang chuẩn bị.",
+    "disclaimer": "Đây là tư vấn tham khảo cho người mua xe lần đầu, quyết định cuối cùng vẫn nên dựa trên nhu cầu và trải nghiệm lái thử thực tế."
+  }
+]
