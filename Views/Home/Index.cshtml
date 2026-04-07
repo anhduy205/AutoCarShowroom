@@ -1,4 +1,6 @@
-@model AutoCarShowroom.ViewModels.HomeViewModel
+﻿@model AutoCarShowroom.ViewModels.HomeViewModel
+
+@using System.Text.RegularExpressions
 
 @{
     ViewData["Title"] = "Trang chủ";
@@ -13,23 +15,31 @@
         _ => "status-badge status-badge--available"
     };
 
-    string GetSummary(string? content)
+    string NormalizeCopy(string? content, string fallback)
     {
         if (string.IsNullOrWhiteSpace(content))
         {
-            return "Thông tin xe đang được cập nhật để khách tham khảo nhanh.";
+            return fallback;
         }
 
-        var parts = content.Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        return parts.Length == 0 ? content.Trim() : $"{parts[0].Trim()}.";
+        var normalized = Regex.Replace(content, @"\s*\r?\n\s*", "\n");
+        normalized = Regex.Replace(normalized, @"[^\S\r\n]+", " ");
+        return normalized.Trim();
+    }
+
+    string GetSummary(string? content)
+    {
+        var normalized = NormalizeCopy(content, "Thông tin xe đang được cập nhật để khách tham khảo nhanh hơn.");
+        var parts = normalized.Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        return parts.Length == 0 ? normalized : $"{parts[0].Trim()}.";
     }
 }
 
 <section class="hero-showcase">
     <div class="hero-showcase__copy">
-        <span class="section-kicker">Showroom ô tô trực tuyến</span>
-        <h1>Xem xe nhanh, tìm xe dễ và đặt lịch xem xe ngay trên trang chủ.</h1>
-        <p class="hero-showcase__description">Chỉ giữ những thao tác cần thiết để khách vào là dùng được ngay.</p>
+        <span class="section-kicker">Showroom ô tô</span>
+        <h1>Chọn xe nhanh hơn với giao diện trưng bày hiện đại và rõ ràng.</h1>
+        <p class="hero-showcase__description copy-safe copy-safe--compact">Xem xe, xem giá và gửi yêu cầu đặt lịch ngay trên từng mẫu đang mở bán.</p>
 
         <div class="hero-showcase__actions">
             @if (isBackOffice)
@@ -54,11 +64,11 @@
         <form asp-controller="Cars" asp-action="Index" method="get" class="filter-panel quick-search-panel hero-search-panel">
             <div class="filter-bar quick-search-panel__bar">
                 <div class="filter-field filter-field--search">
-                    <label class="form-label" for="heroSearchTerm">Tìm nhanh mẫu xe</label>
+                    <label class="form-label" for="heroSearchTerm">Tìm xe nhanh</label>
                     <input id="heroSearchTerm"
                            name="searchTerm"
                            class="form-control"
-                           placeholder="Camry, Tucson, Ferrari, VinFast..."
+                           placeholder="Camry, Tucson, VF 8, Ferrari..."
                            autocomplete="off" />
                 </div>
                 <div class="filter-field filter-field--actions">
@@ -89,7 +99,7 @@
                         <span class="pill">@heroCar.Year</span>
                         <span class="@heroStatusClass">@heroCar.Status</span>
                     </div>
-                    <p>@GetSummary(heroCar.Description)</p>
+                    <p class="copy-safe copy-safe--compact">@GetSummary(heroCar.Description)</p>
                     <div class="feature-card__footer">
                         <strong>@heroCar.Price.ToString("N0") VNĐ</strong>
                         <a asp-controller="Cars"
@@ -108,7 +118,7 @@
                 <div class="feature-card__overlay">
                     <span class="feature-card__badge">AutoCarShowroom</span>
                     <h2>Showroom đã sẵn sàng để trưng bày</h2>
-                    <p>Chỉ cần thêm dữ liệu xe là khách đã có thể xem xe, mua xe và đặt lịch trực tiếp.</p>
+                    <p class="copy-safe copy-safe--compact">Chỉ cần thêm dữ liệu xe là khách đã có thể xem xe, mua xe và đặt lịch trực tiếp.</p>
                 </div>
             </div>
         }
@@ -119,17 +129,17 @@
     <article class="metric-card">
         <span class="metric-card__label">Tổng mẫu xe</span>
         <strong>@Model.TotalCars</strong>
-        <p>Đang có trong cơ sở dữ liệu.</p>
+        <p class="copy-safe copy-safe--compact">Số mẫu xe hiện có trong showroom.</p>
     </article>
     <article class="metric-card">
         <span class="metric-card__label">Tổng dòng xe</span>
         <strong>@Model.TotalLines</strong>
-        <p>Đếm theo hãng và model đang trưng bày.</p>
+        <p class="copy-safe copy-safe--compact">Tính theo hãng và model đang trưng bày.</p>
     </article>
     <article class="metric-card">
         <span class="metric-card__label">Đời xe mới nhất</span>
         <strong>@(Model.NewestModelYear == 0 ? "--" : Model.NewestModelYear)</strong>
-        <p>Cập nhật mới nhất trong showroom.</p>
+        <p class="copy-safe copy-safe--compact">Cập nhật mới nhất trong kho xe.</p>
     </article>
 </section>
 
@@ -144,7 +154,7 @@
     <div class="section-heading">
         <div>
             <span class="section-kicker">Nổi bật</span>
-            <h2>Các mẫu xe đang đáng xem nhất</h2>
+            <h2>Mẫu xe đang đáng xem nhất</h2>
         </div>
         <a asp-controller="Cars" asp-action="Index" class="btn btn-outline-light">Xem toàn bộ xe</a>
     </div>
@@ -172,7 +182,7 @@
 
                             <p class="car-card__eyebrow">@car.Brand · @car.ModelName</p>
                             <h3>@car.CarName</h3>
-                            <p class="car-card__subtitle">@GetSummary(car.Description)</p>
+                            <p class="car-card__subtitle copy-safe copy-safe--compact">@GetSummary(car.Description)</p>
                             <div class="car-card__price">@car.Price.ToString("N0") VNĐ</div>
 
                             <div class="car-card__actions">
@@ -203,7 +213,7 @@
     {
         <div class="empty-state empty-state--dark">
             <h3>Chưa có dữ liệu showroom</h3>
-            <p>Thêm dữ liệu xe để giao diện trang chủ hiển thị các mẫu nổi bật.</p>
+            <p class="copy-safe copy-safe--compact">Thêm dữ liệu xe để trang chủ hiển thị các mẫu nổi bật.</p>
         </div>
     }
 </section>
@@ -212,7 +222,7 @@
     <div class="section-heading">
         <div>
             <span class="section-kicker">Trải nghiệm</span>
-            <h2>Luồng duyệt xe quay lại kiểu trực tiếp</h2>
+            <h2>Luồng xem xe gọn, trực tiếp và dễ thao tác</h2>
         </div>
     </div>
 
@@ -220,17 +230,17 @@
         <article class="service-card">
             <span class="service-card__number">01</span>
             <h3>Xem xe ngay</h3>
-            <p>Mỗi xe hiện ra như một sản phẩm hoàn chỉnh, không cần đi qua trang trung gian mới thấy chi tiết.</p>
+            <p class="copy-safe copy-safe--compact">Mỗi mẫu xe hiển thị như một sản phẩm hoàn chỉnh, vào là thấy ảnh, giá và thông tin chính.</p>
         </article>
         <article class="service-card">
             <span class="service-card__number">02</span>
             <h3>Mua xe nhanh</h3>
-            <p>Từ thẻ xe hoặc trang chi tiết đều có thể đi thẳng vào luồng mua xe cho đúng mẫu đang xem.</p>
+            <p class="copy-safe copy-safe--compact">Khách có thể đi thẳng vào luồng mua xe từ thẻ xe hoặc trang chi tiết mà không phải qua nhiều bước.</p>
         </article>
         <article class="service-card">
             <span class="service-card__number">03</span>
             <h3>Đặt lịch thuận tiện</h3>
-            <p>Khách chọn mẫu xe rồi đặt lịch xem xe ngay, không cần mở thêm một trang khám phá theo dòng trước đó.</p>
+            <p class="copy-safe copy-safe--compact">Gửi yêu cầu xem xe, tư vấn hoặc lái thử trực tiếp trên đúng mẫu xe đang quan tâm.</p>
         </article>
     </div>
 </section>

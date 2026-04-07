@@ -1,4 +1,5 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using AutoCarShowroom.Models;
 using AutoCarShowroom.Validation;
 
 namespace AutoCarShowroom.ViewModels
@@ -23,6 +24,10 @@ namespace AutoCarShowroom.ViewModels
         [EmailAddress(ErrorMessage = "Email không hợp lệ.")]
         [Display(Name = "Email")]
         public string Email { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Vui lòng chọn loại dịch vụ.")]
+        [Display(Name = "Loại dịch vụ")]
+        public string ServiceType { get; set; } = BookingWorkflow.ServiceViewing;
 
         [Required(ErrorMessage = "Vui lòng chọn ngày giờ hẹn.")]
         [Display(Name = "Ngày giờ hẹn")]

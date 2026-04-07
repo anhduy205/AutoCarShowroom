@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using AutoCarShowroom.Models;
 using AutoCarShowroom.ViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -9,11 +9,16 @@ namespace AutoCarShowroom.Services.Chatbot
     {
         private readonly ShowroomDbContext _context;
         private readonly ChatbotInventoryTools _inventoryTools;
+        private readonly BookingSchedulingService _bookingSchedulingService;
 
-        public ChatbotBookingTools(ShowroomDbContext context, ChatbotInventoryTools inventoryTools)
+        public ChatbotBookingTools(
+            ShowroomDbContext context,
+            ChatbotInventoryTools inventoryTools,
+            BookingSchedulingService bookingSchedulingService)
         {
             _context = context;
             _inventoryTools = inventoryTools;
+            _bookingSchedulingService = bookingSchedulingService;
         }
 
         public async Task<ChatbotBookingCreationResult> CreateBookingAsync(ChatbotBookingDraft draft)
@@ -41,6 +46,7 @@ namespace AutoCarShowroom.Services.Chatbot
                 CustomerName = draft.CustomerName ?? string.Empty,
                 PhoneNumber = draft.PhoneNumber ?? string.Empty,
                 Email = draft.Email ?? string.Empty,
+                ServiceType = draft.ServiceType ?? string.Empty,
                 AppointmentAt = draft.AppointmentAt ?? DateTime.Now,
                 Note = draft.Note
             };
@@ -48,6 +54,13 @@ namespace AutoCarShowroom.Services.Chatbot
             var validationResults = new List<ValidationResult>();
             var validationContext = new ValidationContext(model);
             Validator.TryValidateObject(model, validationContext, validationResults, validateAllProperties: true);
+
+            if (!BookingWorkflow.ServiceTypes.Contains(model.ServiceType, StringComparer.OrdinalIgnoreCase))
+            {
+                validationResults.Add(new ValidationResult(
+                    "Vui lòng chọn loại dịch vụ hợp lệ.",
+                    [nameof(BookingCreateViewModel.ServiceType)]));
+            }
 
             if (!draft.AppointmentAt.HasValue || draft.AppointmentAt.Value <= DateTime.Now)
             {
@@ -70,6 +83,8 @@ namespace AutoCarShowroom.Services.Chatbot
                 };
             }
 
+            var slotEvaluation = await _bookingSchedulingService.EvaluateAsync(model.AppointmentAt);
+
             var booking = new Booking
             {
                 BookingCode = await GenerateBookingCodeAsync(),
@@ -80,9 +95,11 @@ namespace AutoCarShowroom.Services.Chatbot
                 CustomerName = model.CustomerName,
                 PhoneNumber = model.PhoneNumber,
                 Email = model.Email,
+                ServiceType = model.ServiceType,
                 AppointmentAt = model.AppointmentAt,
                 Note = model.Note,
-                BookingStatus = BookingWorkflow.StatusNew,
+                BookingStatus = slotEvaluation.InitialStatus,
+                AdminNote = slotEvaluation.AdminNote,
                 CreatedAt = DateTime.Now
             };
 
@@ -93,7 +110,9 @@ namespace AutoCarShowroom.Services.Chatbot
             {
                 Succeeded = true,
                 Booking = booking,
-                Car = car
+                Car = car,
+                CustomerMessage = slotEvaluation.CustomerMessage,
+                SuggestedAppointmentAt = slotEvaluation.SuggestedAppointmentAt
             };
         }
 

@@ -1,7 +1,19 @@
-@model IEnumerable<Booking>
+﻿@model IEnumerable<Booking>
 
 @{
     ViewData["Title"] = "Quản lý khách đặt lịch";
+
+    string GetBookingStatusClass(string status) => status switch
+    {
+        var value when value == BookingWorkflow.StatusPendingConfirmation => "table-status-badge table-status-badge--pending",
+        var value when value == BookingWorkflow.StatusConfirmed => "table-status-badge table-status-badge--confirmed",
+        var value when value == BookingWorkflow.StatusRejected => "table-status-badge table-status-badge--rejected",
+        var value when value == BookingWorkflow.StatusRescheduleRequested => "table-status-badge table-status-badge--reschedule",
+        var value when value == BookingWorkflow.StatusVisited => "table-status-badge table-status-badge--visited",
+        var value when value == BookingWorkflow.StatusSold => "table-status-badge table-status-badge--sold",
+        var value when value == BookingWorkflow.StatusUnsuccessful => "table-status-badge table-status-badge--unsuccessful",
+        _ => "table-status-badge table-status-badge--cancelled"
+    };
 }
 
 <section class="section-block">
@@ -10,7 +22,7 @@
             <span class="section-kicker">Quản trị</span>
             <h1>Danh sách khách đặt lịch</h1>
         </div>
-        <a asp-controller="Cars" asp-action="Index" class="btn btn-outline-light">Quay lại kho xe</a>
+        <a asp-controller="Cars" asp-action="Index" class="btn btn-outline-dark">Quay lại kho xe</a>
     </div>
 
     @if (Model.Any())
@@ -22,6 +34,7 @@
                         <th>Mã lịch</th>
                         <th>Khách hàng</th>
                         <th>Mẫu xe</th>
+                        <th>Dịch vụ</th>
                         <th>Ngày giờ hẹn</th>
                         <th>Trạng thái</th>
                         <th>Ngày tạo</th>
@@ -41,11 +54,12 @@
                                 <strong>@booking.CarName</strong>
                                 <div class="table-subtitle">@booking.Email</div>
                             </td>
+                            <td>@booking.ServiceType</td>
                             <td>@booking.AppointmentAt.ToString("dd/MM/yyyy HH:mm")</td>
-                            <td>@booking.BookingStatus</td>
+                            <td><span class="@GetBookingStatusClass(booking.BookingStatus)">@booking.BookingStatus</span></td>
                             <td>@booking.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
                             <td>
-                                <a asp-action="Details" asp-route-id="@booking.BookingId" class="btn btn-outline-light btn-sm">Chi tiết</a>
+                                <a asp-action="Details" asp-route-id="@booking.BookingId" class="btn btn-outline-dark btn-sm">Chi tiết</a>
                             </td>
                         </tr>
                     }
@@ -57,7 +71,7 @@
     {
         <div class="empty-state">
             <h2>Chưa có lịch hẹn nào</h2>
-            <p>Khách đặt lịch xem xe sẽ hiển thị tại đây.</p>
+            <p class="copy-safe copy-safe--compact">Khách đặt lịch xem xe sẽ hiển thị tại đây để bộ phận showroom theo dõi và xác nhận.</p>
         </div>
     }
 </section>

@@ -1,5 +1,6 @@
-using AutoCarShowroom.Data;
+﻿using AutoCarShowroom.Data;
 using AutoCarShowroom.Models;
+using AutoCarShowroom.Services;
 using AutoCarShowroom.Services.Chatbot;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
@@ -47,6 +48,7 @@ namespace AutoCarShowroom
                         .RequireAssertion(context => InternalAccess.CanAccessRevenue(context.User)));
             });
             builder.Services.Configure<InstallmentOptions>(builder.Configuration.GetSection("InstallmentOptions"));
+            builder.Services.AddScoped<BookingSchedulingService>();
             builder.Services.AddScoped<ChatbotInventoryTools>();
             builder.Services.AddScoped<ChatbotFinanceTools>();
             builder.Services.AddScoped<ChatbotBookingTools>();
@@ -113,6 +115,7 @@ namespace AutoCarShowroom
             {
                 app.UseHttpsRedirection();
             }
+
             app.Use(async (context, next) =>
             {
                 if (context.Request.Path.StartsWithSegments("/uploads/catalog", out var remainingPath))

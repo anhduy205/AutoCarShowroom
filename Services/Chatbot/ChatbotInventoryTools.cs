@@ -26,23 +26,60 @@ namespace AutoCarShowroom.Services.Chatbot
 
         public Task<Car?> GetCarByIdAsync(int carId)
         {
-            return QueryVisibleCars()
+            return QueryVisibleCarsLite()
                 .FirstOrDefaultAsync(car => car.CarID == carId);
         }
 
         public async Task<IReadOnlyList<Car>> MatchCarsByMessageAsync(string? message, int? preferredCarId = null, int take = 3)
         {
-            var cars = await QueryVisibleCars().ToListAsync();
+            var cars = await QueryVisibleCarsLite().ToListAsync();
             var normalizedMessage = ChatbotTextParser.Normalize(message);
 
             var matches = cars
-                .Where(car =>
-                    normalizedMessage.Contains(ChatbotTextParser.Normalize(car.CarName), StringComparison.Ordinal) ||
-                    normalizedMessage.Contains(ChatbotTextParser.Normalize(car.ModelName), StringComparison.Ordinal) ||
-                    normalizedMessage.Contains(ChatbotTextParser.Normalize($"{car.Brand} {car.ModelName}"), StringComparison.Ordinal))
-                .OrderByDescending(car => preferredCarId.HasValue && car.CarID == preferredCarId.Value)
-                .ThenByDescending(car => car.Year)
-                .ThenBy(car => car.Price)
+                .Select(car =>
+                {
+                    var normalizedCarName = ChatbotTextParser.Normalize(car.CarName);
+                    var normalizedModelName = ChatbotTextParser.Normalize(car.ModelName);
+                    var normalizedBrandModel = ChatbotTextParser.Normalize($"{car.Brand} {car.ModelName}");
+                    var normalizedBrandCarName = ChatbotTextParser.Normalize($"{car.Brand} {car.CarName}");
+
+                    var score = 0;
+                    if (normalizedMessage.Contains(normalizedCarName, StringComparison.Ordinal))
+                    {
+                        score += 300;
+                    }
+
+                    if (normalizedMessage.Contains(normalizedBrandCarName, StringComparison.Ordinal))
+                    {
+                        score += 240;
+                    }
+
+                    if (normalizedMessage.Contains(normalizedBrandModel, StringComparison.Ordinal))
+                    {
+                        score += 180;
+                    }
+
+                    if (normalizedMessage.Contains(normalizedModelName, StringComparison.Ordinal))
+                    {
+                        score += 80;
+                    }
+
+                    if (preferredCarId.HasValue && car.CarID == preferredCarId.Value)
+                    {
+                        score += 40;
+                    }
+
+                    return new
+                    {
+                        Car = car,
+                        Score = score
+                    };
+                })
+                .Where(match => match.Score > 0)
+                .OrderByDescending(match => match.Score)
+                .ThenByDescending(match => match.Car.Year)
+                .ThenBy(match => match.Car.Price)
+                .Select(match => match.Car)
                 .Take(take)
                 .ToList();
 
@@ -60,7 +97,7 @@ namespace AutoCarShowroom.Services.Chatbot
 
         public async Task<IReadOnlyList<ChatbotCarMatch>> SearchCarsAsync(ChatbotSearchCriteria criteria)
         {
-            var cars = await QueryVisibleCars().ToListAsync();
+            var cars = await QueryVisibleCarsLite().ToListAsync();
             var preferredBodyTypes = GetPreferredBodyTypes(criteria.Purpose);
             var keywordTokens = ChatbotTextParser.TokenizeSearchKeywords(criteria.Keyword);
 
@@ -183,7 +220,7 @@ namespace AutoCarShowroom.Services.Chatbot
 
         public async Task<IReadOnlyList<Car>> GetPromotionCarsAsync(int take = 4)
         {
-            return await QueryVisibleCars()
+            return await QueryVisibleCarsLite()
                 .Where(car => car.Status == OrderWorkflow.CarStatusPromotion)
                 .OrderByDescending(car => car.Year)
                 .ThenByDescending(car => car.Price)
@@ -193,40 +230,64 @@ namespace AutoCarShowroom.Services.Chatbot
 
         public async Task<ChatbotInventoryOverview> GetInventoryOverviewAsync(int featuredTake = 4)
         {
-            var cars = await QueryVisibleCars()
-                .OrderByDescending(car => car.Status == OrderWorkflow.CarStatusPromotion)
-                .ThenByDescending(car => car.Year)
-                .ThenBy(car => car.Price)
-                .ToListAsync();
+            var visibleCars = QueryVisibleCars();
+            var totalVisibleCars = await visibleCars.CountAsync();
 
-            if (cars.Count == 0)
+            if (totalVisibleCars == 0)
             {
                 return new ChatbotInventoryOverview();
             }
 
-            var bodyTypeSummaries = cars
-                .GroupBy(car => car.BodyType, StringComparer.OrdinalIgnoreCase)
-                .OrderByDescending(group => group.Count())
+            var bodyTypeGroups = await visibleCars
+                .GroupBy(car => car.BodyType)
+                .Select(group => new
+                {
+                    Key = group.Key,
+                    Count = group.Count()
+                })
+                .ToListAsync();
+
+            var brandGroups = await visibleCars
+                .GroupBy(car => car.Brand)
+                .Select(group => new
+                {
+                    Key = group.Key,
+                    Count = group.Count()
+                })
+                .ToListAsync();
+
+            var featuredCars = await QueryVisibleCarsLite()
+                .OrderByDescending(car => car.Status == OrderWorkflow.CarStatusPromotion)
+                .ThenByDescending(car => car.Year)
+                .ThenBy(car => car.Price)
+                .Take(Math.Clamp(featuredTake, 1, 6))
+                .ToListAsync();
+
+            var bodyTypeSummaries = bodyTypeGroups
+                .OrderByDescending(group => group.Count)
                 .ThenBy(group => group.Key)
-                .Select(group => $"{group.Key}: {group.Count()} xe")
+                .Select(group => $"{group.Key}: {group.Count} xe")
                 .ToList();
 
-            var brandSummaries = cars
-                .GroupBy(car => car.Brand, StringComparer.OrdinalIgnoreCase)
-                .OrderByDescending(group => group.Count())
+            var brandSummaries = brandGroups
+                .OrderByDescending(group => group.Count)
                 .ThenBy(group => group.Key)
                 .Take(6)
-                .Select(group => $"{group.Key}: {group.Count()} xe")
+                .Select(group => $"{group.Key}: {group.Count} xe")
                 .ToList();
 
             return new ChatbotInventoryOverview
             {
-                TotalVisibleCars = cars.Count,
-                MinPrice = cars.Min(car => car.Price),
-                MaxPrice = cars.Max(car => car.Price),
+                TotalVisibleCars = totalVisibleCars,
+                MinPrice = featuredCars.Count > 0
+                    ? await visibleCars.MinAsync(car => car.Price)
+                    : 0m,
+                MaxPrice = featuredCars.Count > 0
+                    ? await visibleCars.MaxAsync(car => car.Price)
+                    : 0m,
                 BodyTypeSummaries = bodyTypeSummaries,
                 BrandSummaries = brandSummaries,
-                FeaturedCars = cars.Take(Math.Clamp(featuredTake, 1, 6)).ToList()
+                FeaturedCars = featuredCars
             };
         }
 
@@ -235,6 +296,30 @@ namespace AutoCarShowroom.Services.Chatbot
             return _context.Cars
                 .AsNoTracking()
                 .Where(car => OrderWorkflow.PurchasableCarStatuses.Contains(car.Status));
+        }
+
+        private IQueryable<Car> QueryVisibleCarsLite()
+        {
+            return QueryVisibleCars()
+                .Select(car => new Car
+                {
+                    CarID = car.CarID,
+                    CarName = car.CarName,
+                    Brand = car.Brand,
+                    ModelName = car.ModelName,
+                    BodyType = car.BodyType,
+                    Image = car.Image,
+                    Price = car.Price,
+                    Status = car.Status,
+                    Year = car.Year,
+                    Description = car.Description,
+                    Specifications = car.Specifications,
+                    EngineAndChassis = car.EngineAndChassis,
+                    Seats = car.Seats,
+                    Convenience = car.Convenience,
+                    ActiveSafety = car.ActiveSafety,
+                    PassiveSafety = car.PassiveSafety
+                });
         }
 
         private static IReadOnlyList<string> GetPreferredBodyTypes(string? purpose)

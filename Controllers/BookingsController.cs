@@ -1,6 +1,8 @@
 using AutoCarShowroom.Models;
+using AutoCarShowroom.Services;
 using AutoCarShowroom.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace AutoCarShowroom.Controllers
@@ -8,10 +10,17 @@ namespace AutoCarShowroom.Controllers
     public class BookingsController : Controller
     {
         private readonly ShowroomDbContext _context;
+        private readonly BookingSchedulingService _bookingSchedulingService;
+        private readonly ILogger<BookingsController> _logger;
 
-        public BookingsController(ShowroomDbContext context)
+        public BookingsController(
+            ShowroomDbContext context,
+            BookingSchedulingService bookingSchedulingService,
+            ILogger<BookingsController> logger)
         {
             _context = context;
+            _bookingSchedulingService = bookingSchedulingService;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Create(int? carId)
@@ -34,14 +43,19 @@ namespace AutoCarShowroom.Controllers
                 var model = new BookingCreateViewModel
                 {
                     CarId = car.CarID,
-                    Car = BuildPurchaseSummary(car)
+                    Car = BuildPurchaseSummary(car),
+                    ServiceType = BookingWorkflow.ServiceViewing
                 };
 
+                PopulateServiceTypeOptions(model.ServiceType);
                 return View(model);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "Chưa thể mở biểu mẫu đặt lịch. Vui lòng thử lại sau.";
+                _logger.LogError(ex, "Unable to open booking form for car {CarId}.", carId.Value);
+                TempData["ErrorMessage"] = DatabaseIssueHelper.IsDatabaseConnectivityIssue(ex)
+                    ? "Chưa thể mở biểu mẫu đặt lịch vì hệ thống chưa kết nối được cơ sở dữ liệu showroom. Anh/chị vui lòng kiểm tra SQL Server rồi thử lại giúp em."
+                    : "Chưa thể mở biểu mẫu đặt lịch. Vui lòng thử lại sau.";
                 return RedirectToAction("Details", "Cars", new { id = carId.Value });
             }
         }
@@ -61,6 +75,7 @@ namespace AutoCarShowroom.Controllers
                 }
 
                 model.Car = BuildPurchaseSummary(car);
+                ValidateServiceType(model.ServiceType);
 
                 if (model.AppointmentAt <= DateTime.Now)
                 {
@@ -69,9 +84,11 @@ namespace AutoCarShowroom.Controllers
 
                 if (!ModelState.IsValid)
                 {
+                    PopulateServiceTypeOptions(model.ServiceType);
                     return View(model);
                 }
 
+                var slotEvaluation = await _bookingSchedulingService.EvaluateAsync(model.AppointmentAt);
                 var booking = new Booking
                 {
                     BookingCode = await GenerateBookingCodeAsync(),
@@ -82,21 +99,27 @@ namespace AutoCarShowroom.Controllers
                     CustomerName = model.CustomerName,
                     PhoneNumber = model.PhoneNumber,
                     Email = model.Email,
+                    ServiceType = model.ServiceType,
                     AppointmentAt = model.AppointmentAt,
                     Note = model.Note,
-                    BookingStatus = BookingWorkflow.StatusNew,
+                    BookingStatus = slotEvaluation.InitialStatus,
+                    AdminNote = slotEvaluation.AdminNote,
                     CreatedAt = DateTime.Now
                 };
 
                 _context.Bookings.Add(booking);
                 await _context.SaveChangesAsync();
 
-                TempData["SuccessMessage"] = "Đã gửi lịch hẹn thành công.";
+                TempData["SuccessMessage"] = "Đã ghi nhận yêu cầu đặt lịch của bạn.";
+                TempData["BookingCustomerMessage"] = slotEvaluation.CustomerMessage;
                 return RedirectToAction(nameof(Success), new { bookingCode = booking.BookingCode });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "Chưa thể tạo lịch hẹn. Vui lòng thử lại sau.";
+                _logger.LogError(ex, "Unable to create booking request for car {CarId}.", model.CarId);
+                TempData["ErrorMessage"] = DatabaseIssueHelper.IsDatabaseConnectivityIssue(ex)
+                    ? "Chưa thể tạo yêu cầu đặt lịch vì hệ thống chưa kết nối được cơ sở dữ liệu showroom. Anh/chị vui lòng kiểm tra SQL Server rồi thử lại giúp em."
+                    : "Chưa thể tạo yêu cầu đặt lịch. Vui lòng thử lại sau.";
                 return RedirectToAction("Details", "Cars", new { id = model.CarId });
             }
         }
@@ -122,13 +145,38 @@ namespace AutoCarShowroom.Controllers
 
                 return View(new BookingSuccessViewModel
                 {
-                    Booking = booking
+                    Booking = booking,
+                    CustomerMessage = TempData["BookingCustomerMessage"] as string
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "Chưa thể hiển thị thông tin lịch hẹn.";
+                _logger.LogError(ex, "Unable to display booking success page for booking code {BookingCode}.", bookingCode);
+                TempData["ErrorMessage"] = DatabaseIssueHelper.IsDatabaseConnectivityIssue(ex)
+                    ? "Chưa thể hiển thị thông tin lịch hẹn vì hệ thống chưa kết nối được cơ sở dữ liệu showroom. Anh/chị vui lòng kiểm tra SQL Server rồi thử lại giúp em."
+                    : "Chưa thể hiển thị thông tin lịch hẹn.";
                 return RedirectToAction("Index", "Cars");
+            }
+        }
+
+        private void PopulateServiceTypeOptions(string? selectedServiceType)
+        {
+            ViewBag.ServiceTypes = new SelectList(
+                BookingWorkflow.ServiceTypes.Select(type => new
+                {
+                    Value = type,
+                    Text = type
+                }),
+                "Value",
+                "Text",
+                selectedServiceType);
+        }
+
+        private void ValidateServiceType(string? serviceType)
+        {
+            if (!BookingWorkflow.ServiceTypes.Contains(serviceType, StringComparer.OrdinalIgnoreCase))
+            {
+                ModelState.AddModelError(nameof(BookingCreateViewModel.ServiceType), "Vui lòng chọn loại dịch vụ hợp lệ.");
             }
         }
 

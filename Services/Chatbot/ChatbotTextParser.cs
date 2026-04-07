@@ -1,6 +1,7 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using AutoCarShowroom.Models;
 
 namespace AutoCarShowroom.Services.Chatbot
 {
@@ -189,6 +190,32 @@ namespace AutoCarShowroom.Services.Chatbot
                 }
 
                 return DateTime.Today.AddDays(1).AddHours(hour).AddMinutes(minute);
+            }
+
+            return null;
+        }
+
+        public static string? ExtractBookingServiceType(string? message)
+        {
+            var normalizedMessage = Normalize(message);
+            if (string.IsNullOrWhiteSpace(normalizedMessage))
+            {
+                return null;
+            }
+
+            if (ContainsAny(normalizedMessage, "lai thu", "thu lai", "dang ky lai thu"))
+            {
+                return BookingWorkflow.ServiceTestDrive;
+            }
+
+            if (ContainsAny(normalizedMessage, "tu van", "can tu van", "hoi them"))
+            {
+                return BookingWorkflow.ServiceConsultation;
+            }
+
+            if (ContainsAny(normalizedMessage, "xem xe", "xem truc tiep", "xem mau xe"))
+            {
+                return BookingWorkflow.ServiceViewing;
             }
 
             return null;

@@ -1,4 +1,6 @@
-@model AutoCarShowroom.ViewModels.CarCatalogIndexViewModel
+﻿@model AutoCarShowroom.ViewModels.CarCatalogIndexViewModel
+
+@using System.Text.RegularExpressions
 
 @{
     ViewData["Title"] = "Xem xe";
@@ -12,23 +14,31 @@
         _ => "status-badge status-badge--available"
     };
 
-    string GetSummary(string? content)
+    string NormalizeCopy(string? content, string fallback)
     {
         if (string.IsNullOrWhiteSpace(content))
         {
-            return "Thông tin đang được cập nhật để khách xem nhanh hơn.";
+            return fallback;
         }
 
-        var parts = content.Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        return parts.Length == 0 ? content.Trim() : $"{parts[0].Trim()}.";
+        var normalized = Regex.Replace(content, @"\s*\r?\n\s*", "\n");
+        normalized = Regex.Replace(normalized, @"[^\S\r\n]+", " ");
+        return normalized.Trim();
+    }
+
+    string GetSummary(string? content)
+    {
+        var normalized = NormalizeCopy(content, "Thông tin đang được cập nhật để khách xem nhanh hơn.");
+        var parts = normalized.Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        return parts.Length == 0 ? normalized : $"{parts[0].Trim()}.";
     }
 }
 
 <section class="inventory-hero">
     <div class="inventory-hero__copy">
-        <span class="section-kicker">Danh mục xe</span>
-        <h1>Xem danh sách xe đang mở bán.</h1>
-        <p>Chọn mẫu xe bạn quan tâm rồi xem chi tiết, mua xe hoặc đặt lịch ngay trên từng thẻ xe.</p>
+        <span class="section-kicker">Danh mục showroom</span>
+        <h1>Kho xe đang mở bán</h1>
+        <p class="copy-safe copy-safe--compact">Xem nhanh từng mẫu xe, lọc theo nhu cầu và thao tác trực tiếp ngay trên mỗi thẻ sản phẩm.</p>
         <div class="hero-showcase__tags">
             <span>@Model.TotalVariants mẫu xe</span>
             <span>@Model.TotalLines dòng xe</span>
@@ -37,9 +47,9 @@
     </div>
 
     <div class="inventory-hero__panel">
-        <span class="inventory-hero__label">Luồng trải nghiệm</span>
-        <strong>Gọn và trực tiếp</strong>
-        <p>Xem xe nhanh hơn, ít bước hơn.</p>
+        <span class="inventory-hero__label">Trải nghiệm</span>
+        <strong>Dễ xem, dễ chọn, dễ đặt lịch</strong>
+        <p class="copy-safe copy-safe--compact">Ảnh xe rõ hơn, giá dễ nhìn hơn và bộ lọc gọn hơn để khách thao tác nhanh.</p>
         @if (isBackOffice)
         {
             <a asp-action="Create" class="btn btn-accent">Đăng thêm mẫu xe mới</a>
@@ -129,7 +139,7 @@
 
                         <p class="car-card__eyebrow">@car.Brand · @car.ModelName</p>
                         <h3>@car.CarName</h3>
-                        <p class="car-card__subtitle">@GetSummary(car.Description)</p>
+                        <p class="car-card__subtitle copy-safe copy-safe--compact">@GetSummary(car.Description)</p>
                         <div class="car-card__price">@car.Price.ToString("N0") VNĐ</div>
 
                         <div class="car-card__actions">
@@ -160,7 +170,7 @@ else
 {
     <div class="empty-state">
         <h2>Chưa tìm thấy mẫu xe phù hợp</h2>
-        <p>Thử đổi bộ lọc hoặc từ khóa để mở rộng kết quả tìm kiếm.</p>
+        <p class="copy-safe copy-safe--compact">Thử đổi bộ lọc hoặc từ khóa để mở rộng kết quả tìm kiếm.</p>
         <a asp-action="Index" class="btn btn-accent">Xem lại toàn bộ xe</a>
     </div>
 }

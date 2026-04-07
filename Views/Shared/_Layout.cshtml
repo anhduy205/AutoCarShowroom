@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
@@ -16,19 +16,25 @@
         var showChatbot = !isBackOffice && !Context.Request.Path.StartsWithSegments("/Account/Login");
         var currentChatbotCarId = ViewData["ChatbotCurrentCarId"] is int chatCarId ? chatCarId : (int?)null;
     }
+
     <header>
         <nav class="navbar navbar-expand-lg app-navbar">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <span class="navbar-brand__title">AutoCarShowroom</span>
-                    <span class="navbar-brand__subtitle">Showroom ô tô trực tuyến</span>
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                    <span class="navbar-brand__mark">AC</span>
+                    <span class="navbar-brand__text">
+                        <span class="navbar-brand__title">AutoCarShowroom</span>
+                        <span class="navbar-brand__subtitle">Showroom ô tô trực tuyến</span>
+                    </span>
                 </a>
+
                 <button class="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Bật menu điều hướng">
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Mở menu điều hướng">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="navbar-collapse collapse justify-content-between">
-                    <ul class="navbar-nav gap-lg-3">
+                    <ul class="navbar-nav gap-lg-2">
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="Index">Trang chủ</a>
                         </li>
@@ -113,20 +119,20 @@
                 <div class="chatbot-panel__header">
                     <div>
                         <span class="section-kicker">Hỗ trợ khách hàng</span>
-                        <h2>AI tư vấn xe</h2>
+                        <h2>AI tư vấn showroom</h2>
                     </div>
                     <button type="button" class="chatbot-close" data-chatbot-close aria-label="Đóng chatbot">×</button>
                 </div>
 
                 <div class="chatbot-messages" data-chatbot-messages>
                     <article class="chatbot-message chatbot-message--assistant">
-                        Em có thể gợi ý xe theo ngân sách, so sánh mẫu đang có, giải thích phương thức thanh toán hoặc hỗ trợ đặt lịch xem xe ngay trong chat.
+                        Em có thể gợi ý xe theo ngân sách, so sánh mẫu xe đang có, giải thích thanh toán hoặc hỗ trợ đặt lịch xem xe ngay trong chat.
                     </article>
                 </div>
 
                 <div class="chatbot-prompts">
                     <button type="button" class="chatbot-prompt" data-chatbot-prompt="Gợi ý xe gia đình dưới 1 tỷ">Xe gia đình dưới 1 tỷ</button>
-                    <button type="button" class="chatbot-prompt" data-chatbot-prompt="Gợi ý SUV đi phố">SUV đi phố</button>
+                    <button type="button" class="chatbot-prompt" data-chatbot-prompt="Gợi ý sedan đi làm hằng ngày">Sedan đi làm</button>
                     <button type="button" class="chatbot-prompt" data-chatbot-prompt="Showroom có những phương thức thanh toán nào?">Thanh toán</button>
                 </div>
 
@@ -134,7 +140,7 @@
                     <input type="text"
                            class="form-control"
                            data-chatbot-input
-                           placeholder="Ví dụ: SUV dưới 1 tỷ, xe gia đình 5 chỗ, đặt lịch xem Camry..." />
+                           placeholder="Ví dụ: SUV dưới 1 tỷ, xe gia đình 7 chỗ, đặt lịch xem Camry..." />
                     <button type="submit" class="btn btn-accent" data-chatbot-submit>Gửi</button>
                 </form>
             </section>
@@ -143,13 +149,18 @@
 
     <footer class="footer">
         <div class="container footer__inner">
-            <div>
+            <div class="footer__copy">
                 <strong>AutoCarShowroom</strong>
-                <p class="mb-0">Website showroom ô tô phục vụ đồ án môn học.</p>
+                <p class="mb-0">Website showroom ô tô phục vụ trưng bày xe, tư vấn và đặt lịch xem xe cho đồ án môn học.</p>
             </div>
-            <a asp-controller="Home" asp-action="Privacy">Xem thông tin hệ thống</a>
+            <div class="footer__links">
+                <a asp-controller="Home" asp-action="Index">Trang chủ</a>
+                <a asp-controller="Cars" asp-action="Index">Xem xe</a>
+                <a asp-controller="Home" asp-action="Privacy">Thông tin hệ thống</a>
+            </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

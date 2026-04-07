@@ -1,14 +1,15 @@
-@model BookingSuccessViewModel
+﻿@model BookingSuccessViewModel
 
 @{
-    ViewData["Title"] = "Đặt lịch thành công";
+    ViewData["Title"] = "Yêu cầu đặt lịch đã được ghi nhận";
+    var customerMessage = Model.CustomerMessage ?? BookingWorkflow.BuildCustomerConfirmationMessage(Model.Booking);
 }
 
 <section class="section-block">
     <div class="section-heading">
         <div>
-            <span class="section-kicker">Thành công</span>
-            <h1>Lịch hẹn của bạn đã được ghi nhận</h1>
+            <span class="section-kicker">Yêu cầu đặt lịch</span>
+            <h1>Showroom đã ghi nhận yêu cầu của anh/chị</h1>
         </div>
         <a asp-controller="Cars" asp-action="Index" class="btn btn-outline-light">Xem thêm xe khác</a>
     </div>
@@ -16,7 +17,7 @@
     <div class="success-layout">
         <div class="detail-list">
             <div class="detail-list__item">
-                <span>Mã lịch hẹn</span>
+                <span>Mã yêu cầu</span>
                 <strong>@Model.Booking.BookingCode</strong>
             </div>
             <div class="detail-list__item">
@@ -32,11 +33,15 @@
                 <strong>@Model.Booking.Email</strong>
             </div>
             <div class="detail-list__item">
-                <span>Ngày giờ hẹn</span>
+                <span>Loại dịch vụ</span>
+                <strong>@Model.Booking.ServiceType</strong>
+            </div>
+            <div class="detail-list__item">
+                <span>Ngày giờ đề xuất</span>
                 <strong>@Model.Booking.AppointmentAt.ToString("dd/MM/yyyy HH:mm")</strong>
             </div>
             <div class="detail-list__item">
-                <span>Trạng thái</span>
+                <span>Trạng thái hiện tại</span>
                 <strong>@Model.Booking.BookingStatus</strong>
             </div>
         </div>
@@ -52,7 +57,13 @@
                     </div>
                 </article>
             </div>
-            <p class="checkout-note">Showroom sẽ liên hệ với bạn để xác nhận lại lịch hẹn và hỗ trợ thêm thông tin.</p>
+            <p class="checkout-note">@customerMessage</p>
+            @if (!string.IsNullOrWhiteSpace(Model.Booking.AdminNote))
+            {
+                <div class="checkout-note mt-3">@Model.Booking.AdminNote</div>
+            }
+            <p class="checkout-note mt-3">Hiện tại lịch này chưa được chốt chính thức. Showroom sẽ thông báo lại sau khi Admin xác nhận.</p>
         </div>
     </div>
 </section>
+

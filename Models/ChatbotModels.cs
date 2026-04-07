@@ -1,4 +1,4 @@
-namespace AutoCarShowroom.Models
+﻿namespace AutoCarShowroom.Models
 {
     public class ChatbotRequest
     {
@@ -119,6 +119,8 @@ namespace AutoCarShowroom.Models
         public string? PhoneNumber { get; set; }
 
         public string? Email { get; set; }
+
+        public string? ServiceType { get; set; }
 
         public DateTime? AppointmentAt { get; set; }
 

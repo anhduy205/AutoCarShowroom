@@ -2300,3 +2300,814 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
+:root {
+  --bg: #eef3f8;
+  --bg-soft: #f6f8fb;
+  --surface: #ffffff;
+  --surface-soft: #f7f9fc;
+  --surface-dark: #0f1d2d;
+  --surface-dark-soft: #16283d;
+  --text: #132435;
+  --muted: #617385;
+  --panel: rgba(255, 255, 255, 0.96);
+  --panel-strong: rgba(255, 255, 255, 0.98);
+  --panel-soft: rgba(20, 36, 55, 0.04);
+  --panel-muted: #6f8296;
+  --panel-border: rgba(19, 36, 53, 0.08);
+  --brand: #2b6cb0;
+  --brand-strong: #183d67;
+  --brand-shadow: rgba(43, 108, 176, 0.18);
+  --accent: #1f4f82;
+  --line: rgba(19, 36, 53, 0.08);
+  --shadow: 0 20px 48px rgba(19, 36, 53, 0.08);
+  --shadow-strong: 0 28px 70px rgba(14, 27, 42, 0.18);
+}
+
+body {
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(69, 123, 186, 0.1), transparent 24%),
+    radial-gradient(circle at 84% 12%, rgba(20, 63, 112, 0.08), transparent 18%),
+    linear-gradient(180deg, #f7f9fc 0%, #eef3f8 38%, #e7edf4 100%);
+  font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+body::before {
+  top: 5rem;
+  left: -5rem;
+  background: radial-gradient(circle, rgba(43, 108, 176, 0.12) 0%, transparent 72%);
+}
+
+body::after {
+  right: -4rem;
+  bottom: 6rem;
+  background: radial-gradient(circle, rgba(24, 61, 103, 0.1) 0%, transparent 74%);
+}
+
+h1,
+h2,
+h3,
+.navbar-brand__title {
+  font-family: "Poppins", "Inter", "Segoe UI", sans-serif;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+}
+
+body,
+p,
+span,
+small,
+label,
+li,
+a,
+button,
+input,
+textarea,
+select,
+th,
+td {
+  letter-spacing: normal;
+  word-spacing: normal;
+}
+
+.section-kicker,
+.car-card__eyebrow,
+.navbar-brand__subtitle,
+.metric-card__label,
+.inventory-hero__label,
+.detail-list__item span,
+.table-subtitle,
+.chatbot-choice-group__label {
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.hero-showcase__description,
+.inventory-hero__copy p,
+.detail-hero__description,
+.spec-panel__text,
+.detail-section-card p,
+.car-card__subtitle,
+.feature-card__overlay p,
+.service-card p,
+.metric-card p,
+.checkout-note,
+.table-subtitle,
+.chatbot-message,
+.chatbot-suggestion__body p,
+.chatbot-suggestion__body span,
+.line-card__highlight,
+.line-card__accent,
+.variant-card__body p {
+  text-align: left;
+  text-justify: auto;
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: none;
+}
+
+.copy-safe {
+  white-space: pre-line;
+  line-height: 1.75;
+  letter-spacing: normal;
+  word-spacing: normal;
+  text-align: left;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.copy-safe--compact {
+  white-space: normal;
+  line-height: 1.7;
+}
+
+.app-navbar .container,
+.layout-shell.container,
+.footer .container {
+  width: min(88vw, 1460px);
+  max-width: min(88vw, 1460px);
+}
+
+.layout-shell {
+  padding-top: 2rem;
+  padding-bottom: 4.5rem;
+}
+
+.app-navbar {
+  padding: 0.9rem 0;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, rgba(10, 22, 36, 0.94), rgba(19, 38, 58, 0.92));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 16px 42px rgba(10, 21, 34, 0.16);
+  backdrop-filter: blur(18px);
+}
+
+.app-navbar:hover,
+.app-navbar:focus-within {
+  box-shadow: 0 20px 50px rgba(10, 21, 34, 0.18);
+}
+
+.navbar-brand {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.navbar-brand__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.95rem;
+  background: linear-gradient(135deg, #2c6cb1, #123863);
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 800;
+  box-shadow: 0 14px 28px rgba(9, 27, 48, 0.28);
+}
+
+.navbar-brand__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+}
+
+.navbar-brand__title {
+  font-size: 1.32rem;
+}
+
+.navbar-brand__subtitle {
+  color: rgba(226, 235, 244, 0.72);
+  font-size: 0.8rem;
+}
+
+.nav-link {
+  padding: 0.6rem 0.95rem;
+  border-radius: 999px;
+  color: rgba(238, 244, 250, 0.8);
+  font-weight: 600;
+  transition: background 0.28s var(--ease-premium), color 0.28s var(--ease-premium), transform 0.28s var(--ease-premium);
+}
+
+.nav-link:hover,
+.nav-link:focus {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.btn,
+.form-control,
+.form-select {
+  border-radius: 1rem;
+}
+
+.btn {
+  min-height: 46px;
+  font-weight: 700;
+}
+
+.btn-accent {
+  background: linear-gradient(135deg, #18497a, #2e6fb2);
+  border-color: rgba(24, 73, 122, 0.2);
+  box-shadow: 0 16px 30px rgba(24, 73, 122, 0.18);
+}
+
+.btn-accent:hover,
+.btn-accent:focus {
+  background: linear-gradient(135deg, #1d548d, #377ec7);
+  box-shadow: 0 18px 34px rgba(24, 73, 122, 0.22);
+}
+
+.btn-outline-light {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.btn-outline-dark {
+  border-color: rgba(19, 36, 53, 0.12);
+  background: #fff;
+  color: var(--text);
+}
+
+.btn-outline-dark:hover,
+.btn-outline-dark:focus {
+  background: #f5f8fb;
+}
+
+.hero-showcase,
+.inventory-hero,
+.detail-hero {
+  border-radius: 2rem;
+  box-shadow: var(--shadow-strong);
+}
+
+.hero-showcase {
+  padding: 2.3rem;
+  background:
+    radial-gradient(circle at right top, rgba(120, 168, 220, 0.18), transparent 26%),
+    linear-gradient(135deg, #0d1c2c 0%, #17304a 62%, #1e3e5e 100%);
+}
+
+.hero-showcase__copy {
+  max-width: 42rem;
+}
+
+.hero-showcase__copy h1,
+.inventory-hero__copy h1,
+.detail-hero__content h1 {
+  letter-spacing: -0.04em;
+}
+
+.hero-showcase__description {
+  max-width: 40rem;
+  color: rgba(233, 241, 249, 0.84);
+}
+
+.hero-showcase__actions .btn,
+.detail-hero__actions .btn,
+.car-card__actions .btn {
+  justify-content: center;
+}
+
+.hero-showcase__tags span {
+  background: rgba(255, 255, 255, 0.09);
+  color: rgba(241, 247, 252, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.feature-card {
+  min-height: 520px;
+  border-radius: 1.8rem;
+  background: #0f1d2d;
+}
+
+.feature-card__overlay {
+  padding: 1.8rem;
+  background: linear-gradient(180deg, transparent, rgba(6, 15, 25, 0.96));
+}
+
+.feature-card__overlay h2 {
+  font-size: 2rem;
+}
+
+.feature-card__footer strong,
+.car-card__price,
+.price-banner {
+  font-size: 1.45rem;
+}
+
+.metric-card,
+.service-card,
+.section-block:not(.section-block--dark),
+.filter-panel,
+.app-form,
+.detail-panel,
+.empty-state,
+.login-panel,
+.checkout-panel,
+.summary-panel,
+.table-shell,
+.cart-list,
+.payment-method-card,
+.payment-reference-card,
+.upload-preview,
+.form-section-title,
+.login-panel__hint,
+.spec-panel,
+.detail-section-card,
+.detail-list__item,
+.feature-stack__card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(246, 249, 252, 0.98));
+  border: 1px solid rgba(19, 36, 53, 0.08);
+  box-shadow: 0 18px 42px rgba(19, 36, 53, 0.08);
+  color: var(--text);
+  backdrop-filter: none;
+}
+
+.section-block:not(.section-block--dark),
+.filter-panel,
+.app-form,
+.detail-panel,
+.empty-state,
+.login-panel,
+.checkout-panel,
+.summary-panel,
+.table-shell {
+  border-radius: 1.7rem;
+}
+
+.metric-card strong,
+.service-card h3,
+.section-block:not(.section-block--dark) h1,
+.section-block:not(.section-block--dark) h2,
+.section-block:not(.section-block--dark) h3,
+.checkout-panel h3,
+.summary-panel h3,
+.detail-list__item strong,
+.detail-section-card h3,
+.spec-panel h3,
+.app-table strong,
+.footer__inner strong,
+.login-panel__hint {
+  color: var(--text);
+}
+
+.metric-card p,
+.service-card p,
+.section-block:not(.section-block--dark) p,
+.checkout-note,
+.table-subtitle,
+.detail-list__item span,
+.spec-panel__text,
+.detail-section-card p,
+.upload-help,
+.empty-state p,
+.footer p {
+  color: var(--muted);
+}
+
+.section-block:not(.section-block--dark) .section-kicker,
+.filter-panel .section-kicker,
+.checkout-panel .section-kicker,
+.summary-panel .section-kicker,
+.detail-panel .section-kicker,
+.empty-state .section-kicker,
+.login-panel .section-kicker {
+  background: rgba(43, 108, 176, 0.08);
+  color: var(--brand-strong);
+}
+
+.metric-card,
+.service-card {
+  padding: 1.5rem;
+  border-radius: 1.4rem;
+}
+
+.metric-card:hover,
+.service-card:hover {
+  box-shadow: 0 22px 48px rgba(19, 36, 53, 0.12);
+}
+
+.metric-card__label {
+  color: #597086;
+}
+
+.section-block {
+  padding: 1.8rem;
+}
+
+.section-block--dark {
+  background: linear-gradient(135deg, #102033 0%, #18314b 100%);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.section-block--dark .section-kicker {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(242, 247, 252, 0.96);
+}
+
+.inventory-hero {
+  padding: 2rem;
+  background: linear-gradient(135deg, #112335 0%, #1a334d 100%);
+}
+
+.inventory-hero__panel {
+  padding: 1.65rem;
+  border-radius: 1.5rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(245, 248, 252, 0.96));
+  color: var(--text);
+  box-shadow: 0 20px 46px rgba(19, 36, 53, 0.12);
+}
+
+.inventory-hero__panel strong {
+  color: var(--text);
+  font-size: 1.35rem;
+}
+
+.inventory-hero__label {
+  color: #4f6882;
+}
+
+.inventory-hero__panel p {
+  color: var(--muted);
+}
+
+.filter-panel {
+  padding: 1.35rem;
+  margin-bottom: 1.9rem;
+}
+
+.filter-bar {
+  gap: 1.05rem;
+}
+
+.form-label {
+  color: #213549;
+  font-weight: 700;
+}
+
+.form-control,
+.form-select {
+  border: 1px solid rgba(19, 36, 53, 0.12);
+  background: #fff;
+  color: var(--text);
+}
+
+.form-control::placeholder {
+  color: rgba(94, 111, 129, 0.72);
+}
+
+.filter-field--search .form-control,
+.chatbot-form .form-control {
+  background: #fff;
+  border-color: rgba(19, 36, 53, 0.12);
+  color: var(--text);
+  box-shadow: none;
+}
+
+.car-card {
+  border-radius: 1.55rem;
+  border-color: rgba(19, 36, 53, 0.08);
+  box-shadow: 0 18px 44px rgba(19, 36, 53, 0.1);
+}
+
+.car-card:hover {
+  box-shadow: 0 26px 54px rgba(19, 36, 53, 0.14);
+}
+
+.car-card__image {
+  height: 265px;
+}
+
+.car-card__body {
+  padding: 1.35rem;
+  gap: 0.8rem;
+}
+
+.car-card__eyebrow,
+.detail-hero__eyebrow {
+  color: #235382;
+  font-size: 0.8rem;
+}
+
+.car-card__body h3 {
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
+.car-card__subtitle {
+  margin-top: 0;
+  color: #5a6f84;
+  font-size: 0.95rem;
+}
+
+.pill {
+  background: rgba(43, 108, 176, 0.08);
+  color: #204d7a;
+  border: 1px solid rgba(43, 108, 176, 0.08);
+}
+
+.detail-hero {
+  padding: 1.8rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.99), rgba(244, 247, 251, 0.98));
+  border: 1px solid rgba(19, 36, 53, 0.08);
+}
+
+.detail-hero .section-kicker {
+  background: rgba(43, 108, 176, 0.08);
+  color: #1c4a79;
+}
+
+.detail-hero__content h1,
+.detail-hero__eyebrow {
+  color: var(--text);
+}
+
+.detail-hero__description {
+  color: #5c7085;
+  max-width: 64ch;
+}
+
+.detail-hero .btn-outline-light {
+  border-color: rgba(19, 36, 53, 0.12);
+  background: #fff;
+  color: var(--text);
+}
+
+.price-banner {
+  padding: 0.95rem 1.25rem;
+  border-radius: 1.1rem;
+  background: linear-gradient(135deg, rgba(43, 108, 176, 0.1), rgba(43, 108, 176, 0.04));
+  color: #17395d;
+  box-shadow: inset 0 0 0 1px rgba(43, 108, 176, 0.08);
+}
+
+.detail-list__item,
+.spec-panel,
+.detail-section-card,
+.upload-preview,
+.form-section-title,
+.payment-method-card,
+.payment-reference-card,
+.login-panel__hint,
+.feature-stack__card {
+  background: #f7fafc;
+}
+
+.detail-list__item span {
+  color: #6a7d90;
+}
+
+.detail-list__item strong {
+  line-height: 1.6;
+}
+
+.spec-panel__text,
+.detail-section-card p {
+  color: #566a7f;
+}
+
+.summary-row {
+  border-bottom-color: rgba(19, 36, 53, 0.08);
+}
+
+.summary-row strong {
+  color: var(--text);
+}
+
+.checkout-item,
+.cart-item-card {
+  border-bottom-color: rgba(19, 36, 53, 0.08);
+}
+
+.checkout-note,
+.cart-item-card__warning,
+.table-subtitle {
+  color: #617385;
+}
+
+.app-table {
+  color: var(--text);
+}
+
+.app-table th,
+.app-table td {
+  border-bottom-color: rgba(19, 36, 53, 0.08);
+}
+
+.app-table th {
+  color: #617385;
+  background: rgba(243, 247, 251, 0.9);
+}
+
+.app-table tbody tr:hover {
+  background: rgba(43, 108, 176, 0.04);
+}
+
+.table-status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.38rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.table-status-badge--pending {
+  background: rgba(43, 108, 176, 0.1);
+  color: #1d548d;
+}
+
+.table-status-badge--confirmed {
+  background: rgba(31, 122, 67, 0.12);
+  color: #1c7743;
+}
+
+.table-status-badge--rejected,
+.table-status-badge--cancelled {
+  background: rgba(181, 52, 64, 0.12);
+  color: #a12d3a;
+}
+
+.table-status-badge--reschedule {
+  background: rgba(210, 127, 59, 0.14);
+  color: #a9561c;
+}
+
+.table-status-badge--visited {
+  background: rgba(97, 115, 133, 0.14);
+  color: #516476;
+}
+
+.table-status-badge--sold {
+  background: rgba(24, 61, 103, 0.12);
+  color: #1b4773;
+}
+
+.table-status-badge--unsuccessful {
+  background: rgba(140, 99, 50, 0.14);
+  color: #8a622d;
+}
+
+.footer {
+  padding: 1rem 0 2.2rem;
+  color: #617385;
+}
+
+.footer__inner {
+  padding: 1.15rem 1.3rem;
+  border-radius: 1.35rem;
+  border: 1px solid rgba(19, 36, 53, 0.08);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 16px 36px rgba(19, 36, 53, 0.08);
+}
+
+.footer__copy {
+  max-width: 42rem;
+}
+
+.footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer a {
+  color: #1b4b79;
+}
+
+.chatbot-toggle {
+  background: linear-gradient(135deg, #10243a, #21548d);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.chatbot-panel {
+  border-radius: 1.8rem;
+  border: 1px solid rgba(19, 36, 53, 0.1);
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 26px 56px rgba(19, 36, 53, 0.18);
+}
+
+.chatbot-panel__header h2,
+.chatbot-close {
+  color: var(--text);
+}
+
+.chatbot-panel__header .section-kicker {
+  background: rgba(43, 108, 176, 0.08);
+  color: #1d4f80;
+}
+
+.chatbot-message--assistant {
+  background: #f4f8fc;
+  color: var(--text);
+}
+
+.chatbot-message--user {
+  background: linear-gradient(135deg, #2b6cb0, #4a88cc);
+  color: #fff;
+}
+
+.chatbot-prompt,
+.chatbot-choice--quick {
+  background: #eef4fb;
+  border-color: rgba(43, 108, 176, 0.12);
+  color: #1a4d7b;
+}
+
+.chatbot-choice--action {
+  background: #f7fafc;
+  color: var(--text);
+  border-color: rgba(19, 36, 53, 0.08);
+}
+
+.chatbot-choice--primary {
+  background: linear-gradient(135deg, #1b4f82, #2d6fb2);
+  color: #fff;
+}
+
+.chatbot-suggestion {
+  background: #fff;
+  border-color: rgba(19, 36, 53, 0.08);
+  box-shadow: 0 14px 28px rgba(19, 36, 53, 0.08);
+}
+
+.chatbot-suggestion__body strong {
+  color: var(--text);
+}
+
+.chatbot-suggestion__body span,
+.chatbot-suggestion__body p {
+  color: #5d7084;
+}
+
+.chatbot-suggestion__price {
+  color: #1b4f82;
+}
+
+.chatbot-suggestion__status {
+  background: rgba(43, 108, 176, 0.08);
+  color: #1d4f80 !important;
+}
+
+@media (max-width: 991.98px) {
+  .hero-showcase,
+  .inventory-hero,
+  .detail-hero,
+  .section-block {
+    padding: 1.45rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .app-navbar .container,
+  .layout-shell.container,
+  .footer .container {
+    width: calc(100% - 1.25rem);
+    max-width: calc(100% - 1.25rem);
+  }
+
+  .hero-showcase,
+  .inventory-hero,
+  .detail-hero,
+  .section-block,
+  .filter-panel,
+  .checkout-panel,
+  .summary-panel {
+    padding: 1.2rem;
+    border-radius: 1.35rem;
+  }
+
+  .hero-showcase__copy h1,
+  .inventory-hero__copy h1,
+  .detail-hero__content h1 {
+    font-size: clamp(1.85rem, 8vw, 2.45rem);
+  }
+
+  .feature-card {
+    min-height: 420px;
+  }
+
+  .feature-card__image,
+  .detail-hero__image,
+  .car-card__image {
+    min-height: 0;
+  }
+
+  .car-card__actions .btn,
+  .hero-showcase__actions .btn,
+  .detail-hero__actions .btn {
+    width: 100%;
+  }
+
+  .footer__inner {
+    padding: 1rem;
+  }
+}

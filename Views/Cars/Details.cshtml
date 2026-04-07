@@ -1,4 +1,6 @@
-@model Car
+﻿@model Car
+
+@using System.Text.RegularExpressions
 
 @{
     ViewData["Title"] = "Chi tiết xe";
@@ -13,17 +15,29 @@
         _ => "status-badge status-badge--available"
     };
 
+    string NormalizeCopy(string? content, string fallback)
+    {
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            return fallback;
+        }
+
+        var normalized = Regex.Replace(content, @"\s*\r?\n\s*", "\n");
+        normalized = Regex.Replace(normalized, @"[^\S\r\n]+", " ");
+        return normalized.Trim();
+    }
+
     var detailSections = new[]
     {
-        new { Title = "Thông tin chung", Content = Model.Specifications },
-        new { Title = "Động cơ & khung xe", Content = Model.EngineAndChassis },
-        new { Title = "Ngoại thất", Content = Model.Exterior },
-        new { Title = "Nội thất", Content = Model.Interior },
-        new { Title = "Ghế", Content = Model.Seats },
-        new { Title = "Tiện nghi", Content = Model.Convenience },
-        new { Title = "An ninh / hệ thống chống trộm", Content = Model.SecurityAndAntiTheft },
-        new { Title = "An toàn chủ động", Content = Model.ActiveSafety },
-        new { Title = "An toàn bị động", Content = Model.PassiveSafety }
+        new { Title = "Thông tin chung", Content = NormalizeCopy(Model.Specifications, "Showroom đang cập nhật thêm thông tin ở mục này.") },
+        new { Title = "Động cơ & khung gầm", Content = NormalizeCopy(Model.EngineAndChassis, "Showroom đang cập nhật thêm thông tin ở mục này.") },
+        new { Title = "Ngoại thất", Content = NormalizeCopy(Model.Exterior, "Showroom đang cập nhật thêm thông tin ở mục này.") },
+        new { Title = "Nội thất", Content = NormalizeCopy(Model.Interior, "Showroom đang cập nhật thêm thông tin ở mục này.") },
+        new { Title = "Ghế", Content = NormalizeCopy(Model.Seats, "Showroom đang cập nhật thêm thông tin ở mục này.") },
+        new { Title = "Tiện nghi", Content = NormalizeCopy(Model.Convenience, "Showroom đang cập nhật thêm thông tin ở mục này.") },
+        new { Title = "An ninh / chống trộm", Content = NormalizeCopy(Model.SecurityAndAntiTheft, "Showroom đang cập nhật thêm thông tin ở mục này.") },
+        new { Title = "An toàn chủ động", Content = NormalizeCopy(Model.ActiveSafety, "Showroom đang cập nhật thêm thông tin ở mục này.") },
+        new { Title = "An toàn bị động", Content = NormalizeCopy(Model.PassiveSafety, "Showroom đang cập nhật thêm thông tin ở mục này.") }
     };
 }
 
@@ -33,7 +47,7 @@
     </div>
 
     <div class="detail-hero__content">
-        <span class="section-kicker">Thông tin mẫu xe</span>
+        <span class="section-kicker">Chi tiết mẫu xe</span>
         <p class="detail-hero__eyebrow">@Model.Brand @Model.ModelName</p>
         <h1>@Model.CarName</h1>
         <div class="detail-hero__specs">
@@ -44,10 +58,10 @@
         </div>
 
         <div class="price-banner">@Model.Price.ToString("N0") VNĐ</div>
-        <p class="detail-hero__description">@Model.Description</p>
+        <p class="detail-hero__description copy-safe">@NormalizeCopy(Model.Description, "Showroom đang cập nhật thêm mô tả cho mẫu xe này.")</p>
 
         <div class="detail-hero__actions">
-            <a asp-action="Index" class="btn btn-outline-dark">Quay lại bộ sưu tập</a>
+            <a asp-action="Index" class="btn btn-outline-dark">Quay lại danh sách xe</a>
             @if (isBackOffice)
             {
                 <a asp-action="Edit" asp-route-id="@Model.CarID" class="btn btn-accent">Chỉnh sửa mẫu xe</a>
@@ -56,11 +70,11 @@
             else if (canOrder)
             {
                 <a asp-controller="Orders" asp-action="Checkout" asp-route-carId="@Model.CarID" class="btn btn-accent">Mua xe</a>
-                <a asp-controller="Bookings" asp-action="Create" asp-route-carId="@Model.CarID" class="btn btn-outline-light">Đặt lịch xem xe</a>
+                <a asp-controller="Bookings" asp-action="Create" asp-route-carId="@Model.CarID" class="btn btn-outline-dark">Đặt lịch xem xe</a>
             }
             else
             {
-                <button type="button" class="btn btn-outline-light" disabled>Xe đã bán hoặc ngừng nhận khách</button>
+                <button type="button" class="btn btn-outline-dark" disabled>Xe đã bán hoặc tạm ngưng nhận khách</button>
             }
         </div>
     </div>
@@ -69,8 +83,8 @@
 <section class="section-block">
     <div class="section-heading">
         <div>
-            <span class="section-kicker">Chi tiết</span>
-            <h2>Hồ sơ mẫu xe</h2>
+            <span class="section-kicker">Tổng quan</span>
+            <h2>Thông tin nhanh</h2>
         </div>
     </div>
 
@@ -107,7 +121,7 @@
         <div class="col-lg-8">
             <div class="spec-panel spec-panel--summary h-100">
                 <span class="section-kicker">Mô tả nổi bật</span>
-                <p class="spec-panel__text">@Model.Description</p>
+                <p class="spec-panel__text copy-safe">@NormalizeCopy(Model.Description, "Showroom đang cập nhật thêm mô tả cho mẫu xe này.")</p>
             </div>
         </div>
     </div>
@@ -126,7 +140,7 @@
         {
             <article class="detail-section-card">
                 <h3>@detailSection.Title</h3>
-                <p>@detailSection.Content</p>
+                <p class="copy-safe">@detailSection.Content</p>
             </article>
         }
     </div>

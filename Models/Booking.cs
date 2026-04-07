@@ -44,6 +44,10 @@ namespace AutoCarShowroom.Models
         [Display(Name = "Email")]
         public string Email { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Vui lòng chọn loại dịch vụ.")]
+        [Display(Name = "Loại dịch vụ")]
+        public string ServiceType { get; set; } = BookingWorkflow.ServiceViewing;
+
         [Required(ErrorMessage = "Vui lòng chọn ngày giờ hẹn.")]
         [Display(Name = "Ngày giờ hẹn")]
         public DateTime AppointmentAt { get; set; }
@@ -53,7 +57,7 @@ namespace AutoCarShowroom.Models
 
         [Required]
         [Display(Name = "Trạng thái lịch hẹn")]
-        public string BookingStatus { get; set; } = BookingWorkflow.StatusNew;
+        public string BookingStatus { get; set; } = BookingWorkflow.StatusPendingConfirmation;
 
         [Display(Name = "Ghi chú quản trị")]
         public string? AdminNote { get; set; }

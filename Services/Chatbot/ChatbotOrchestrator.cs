@@ -1,11 +1,11 @@
-using System.Text;
+﻿using System.Text;
 using AutoCarShowroom.Models;
 
 namespace AutoCarShowroom.Services.Chatbot
 {
     public sealed partial class ChatbotOrchestrator
     {
-        private static readonly string[] BodyTypes = ["SUV", "Sedan", "Hatchback", "MPV", "Crossover", "Bán tải", "Coupe", "Mui trần"];
+        private static readonly string[] BodyTypes = ["SUV", "Sedan", "Hatchback", "MPV", "Crossover", "BÃ¡n táº£i", "Coupe", "Mui tráº§n"];
         private static readonly string[] PurposeKeywords = ["gia dinh", "ca nhan", "di pho", "dich vu", "duong dai", "doanh nhan", "mua lan dau", "offroad"];
         private static readonly string[] KnownBrandKeywords =
         [
@@ -15,10 +15,10 @@ namespace AutoCarShowroom.Services.Chatbot
         ];
         private static readonly string[] SearchClarificationReplies =
         [
-            "Ngân sách dưới 1 tỷ",
-            "Xe gia đình 5 chỗ",
-            "SUV đi phố",
-            "Xe chạy dịch vụ"
+            "NgÃ¢n sÃ¡ch dÆ°á»›i 1 tá»·",
+            "Xe gia Ä‘Ã¬nh 5 chá»—",
+            "SUV Ä‘i phá»‘",
+            "Xe cháº¡y dá»‹ch vá»¥"
         ];
 
         private readonly ChatbotInventoryTools _inventoryTools;
@@ -143,7 +143,7 @@ namespace AutoCarShowroom.Services.Chatbot
 
             reply = new ChatbotReply
             {
-                Message = "Em đã làm mới phiên tư vấn. Anh/chị cứ nhắn nhu cầu mới như ngân sách, kiểu xe, mẫu muốn so sánh hoặc nhu cầu đặt lịch xem xe nhé.",
+                Message = "Em Ä‘Ã£ lÃ m má»›i phiÃªn tÆ° váº¥n. Anh/chá»‹ cá»© nháº¯n nhu cáº§u má»›i nhÆ° ngÃ¢n sÃ¡ch, kiá»ƒu xe, máº«u muá»‘n so sÃ¡nh hoáº·c nhu cáº§u Ä‘áº·t lá»‹ch xem xe nhÃ©.",
                 QuickReplies = SearchClarificationReplies
                     .Select(value => new ChatbotQuickReply { Label = value, Message = value })
                     .ToList(),
@@ -184,13 +184,14 @@ namespace AutoCarShowroom.Services.Chatbot
             return await BuildRecommendationReplyAsync(message, normalizedMessage, state);
         }
 
-        private async Task<ChatbotReply> StartBookingFlowAsync(
+                private async Task<ChatbotReply> StartBookingFlowAsync(
             string message,
             string normalizedMessage,
             ChatbotConversationState state)
         {
             state.ActiveMode = "booking";
             state.ActiveIntent = "booking";
+            state.BookingDraft.ServiceType ??= ChatbotTextParser.ExtractBookingServiceType(message);
 
             var candidateCars = await _inventoryTools.MatchCarsByMessageAsync(message, state.CurrentCarId, take: 1);
             var car = candidateCars.FirstOrDefault();
@@ -205,7 +206,7 @@ namespace AutoCarShowroom.Services.Chatbot
                 state.PendingField = "booking_car";
                 return new ChatbotReply
                 {
-                    Message = "Em có thể hỗ trợ đặt lịch xem xe ngay trong chat. Anh/chị cho em biết rõ mẫu xe muốn xem trước nhé, ví dụ: Toyota Camry 2.5Q hoặc VinFast VF 8 Plus.",
+                    Message = "Em có thể ghi nhận yêu cầu đặt lịch xem xe, tư vấn hoặc lái thử ngay trong chat. Anh/chị cho em biết rõ mẫu xe đang quan tâm trước nhé, ví dụ: Toyota Camry 2.5Q hoặc VinFast VF 8 Plus.",
                     RequiresInput = true,
                     QuickReplies =
                     [
@@ -221,8 +222,7 @@ namespace AutoCarShowroom.Services.Chatbot
 
             return await AskNextBookingQuestionAsync(state, car);
         }
-
-        private async Task<ChatbotReply> ContinueBookingFlowAsync(
+                private async Task<ChatbotReply> ContinueBookingFlowAsync(
             string message,
             string normalizedMessage,
             ChatbotConversationState state)
@@ -239,6 +239,8 @@ namespace AutoCarShowroom.Services.Chatbot
                     State = state
                 };
             }
+
+            state.BookingDraft.ServiceType ??= ChatbotTextParser.ExtractBookingServiceType(message);
 
             Car? car = null;
             if (state.BookingDraft.CarId.HasValue)
@@ -278,7 +280,7 @@ namespace AutoCarShowroom.Services.Chatbot
                 state.PendingField = "booking_car";
                 return new ChatbotReply
                 {
-                    Message = "Em cần xác định lại mẫu xe trước khi tạo lịch hẹn. Anh/chị nhắn giúp em tên xe đang muốn xem nhé.",
+                    Message = "Em cần xác định lại mẫu xe trước khi tạo yêu cầu đặt lịch. Anh/chị nhắn giúp em tên xe đang muốn xem nhé.",
                     RequiresInput = true,
                     State = state
                 };
@@ -295,6 +297,24 @@ namespace AutoCarShowroom.Services.Chatbot
                 case "email":
                     state.BookingDraft.Email = ChatbotTextParser.ExtractEmail(message) ?? message.Trim();
                     break;
+                case "service_type":
+                    state.BookingDraft.ServiceType = ChatbotTextParser.ExtractBookingServiceType(message);
+                    if (string.IsNullOrWhiteSpace(state.BookingDraft.ServiceType))
+                    {
+                        return new ChatbotReply
+                        {
+                            Message = "Anh/chị giúp em chọn 1 loại dịch vụ: xem xe, tư vấn hoặc lái thử nhé.",
+                            RequiresInput = true,
+                            QuickReplies =
+                            [
+                                new ChatbotQuickReply { Label = "Xem xe", Message = "Xem xe" },
+                                new ChatbotQuickReply { Label = "Tư vấn", Message = "Tư vấn" },
+                                new ChatbotQuickReply { Label = "Lái thử", Message = "Lái thử" }
+                            ],
+                            State = state
+                        };
+                    }
+                    break;
                 case "appointment_at":
                     state.BookingDraft.AppointmentAt = ChatbotTextParser.ExtractAppointment(message);
                     if (state.BookingDraft.AppointmentAt == null)
@@ -307,24 +327,18 @@ namespace AutoCarShowroom.Services.Chatbot
                         };
                     }
                     break;
-                case "booking_note":
-                    state.BookingDraft.Note = ChatbotTextParser.ContainsAny(normalizedMessage, "bo qua", "khong can", "khong co")
-                        ? null
-                        : message.Trim();
-                    break;
             }
 
             return await AskNextBookingQuestionAsync(state, car);
         }
-
-        private async Task<ChatbotReply> AskNextBookingQuestionAsync(ChatbotConversationState state, Car car)
+                private async Task<ChatbotReply> AskNextBookingQuestionAsync(ChatbotConversationState state, Car car)
         {
             if (string.IsNullOrWhiteSpace(state.BookingDraft.CustomerName))
             {
                 state.PendingField = "customer_name";
                 return new ChatbotReply
                 {
-                    Message = $"Em đang hỗ trợ đặt lịch xem `{car.CarName}`. Anh/chị cho em xin họ và tên để em ghi nhận lịch hẹn nhé.",
+                    Message = $"Em đang hỗ trợ ghi nhận yêu cầu đặt lịch cho `{car.CarName}`. Anh/chị cho em xin họ và tên để em tạo yêu cầu đặt lịch nhé.",
                     RequiresInput = true,
                     Actions = BuildCarActions(car),
                     State = state
@@ -336,7 +350,7 @@ namespace AutoCarShowroom.Services.Chatbot
                 state.PendingField = "phone_number";
                 return new ChatbotReply
                 {
-                    Message = "Anh/chị cho em xin số điện thoại 10 số để showroom tiện xác nhận lịch hẹn.",
+                    Message = "Anh/chị cho em xin số điện thoại 10 số để showroom tiện liên hệ xác nhận lịch hẹn sau khi Admin duyệt.",
                     RequiresInput = true,
                     State = state
                 };
@@ -353,12 +367,29 @@ namespace AutoCarShowroom.Services.Chatbot
                 };
             }
 
+            if (string.IsNullOrWhiteSpace(state.BookingDraft.ServiceType))
+            {
+                state.PendingField = "service_type";
+                return new ChatbotReply
+                {
+                    Message = "Anh/chị muốn đặt lịch theo loại dịch vụ nào: xem xe, tư vấn hay lái thử?",
+                    RequiresInput = true,
+                    QuickReplies =
+                    [
+                        new ChatbotQuickReply { Label = "Xem xe", Message = "Xem xe" },
+                        new ChatbotQuickReply { Label = "Tư vấn", Message = "Tư vấn" },
+                        new ChatbotQuickReply { Label = "Lái thử", Message = "Lái thử" }
+                    ],
+                    State = state
+                };
+            }
+
             if (!state.BookingDraft.AppointmentAt.HasValue)
             {
                 state.PendingField = "appointment_at";
                 return new ChatbotReply
                 {
-                    Message = "Anh/chị muốn hẹn ngày giờ nào? Anh/chị nhắn theo dạng `dd/MM/yyyy HH:mm`, ví dụ `12/04/2026 09:30` giúp em nhé.",
+                    Message = "Anh/chị muốn hẹn ngày giờ nào? Anh/chị nhắn theo dạng `dd/MM/yyyy HH:mm`, ví dụ `12/04/2026 09:30` giúp em nhé. Lưu ý lịch này sẽ cần chờ Admin xác nhận trước khi chốt chính thức.",
                     RequiresInput = true,
                     QuickReplies =
                     [
@@ -380,7 +411,7 @@ namespace AutoCarShowroom.Services.Chatbot
 
                 return new ChatbotReply
                 {
-                    Message = $"Em chưa tạo được lịch hẹn vì: {string.Join("; ", createResult.Errors)}",
+                    Message = $"Em chưa tạo được yêu cầu đặt lịch vì: {string.Join("; ", createResult.Errors)}",
                     RequiresInput = true,
                     State = state
                 };
@@ -389,27 +420,37 @@ namespace AutoCarShowroom.Services.Chatbot
             var booking = createResult.Booking;
             state.BookingDraft = new ChatbotBookingDraft();
 
+            var quickReplies = new List<ChatbotQuickReply>
+            {
+                new ChatbotQuickReply { Label = "Gợi ý xe tương tự", Message = $"Gợi ý xe giống {createResult.Car.BodyType}" },
+                new ChatbotQuickReply { Label = "Xem thanh toán", Message = "Showroom có những phương thức thanh toán nào?" }
+            };
+
+            if (createResult.SuggestedAppointmentAt.HasValue)
+            {
+                quickReplies.Insert(0, new ChatbotQuickReply
+                {
+                    Label = $"Đổi sang {createResult.SuggestedAppointmentAt.Value:HH:mm dd/MM}",
+                    Message = $"Tôi muốn đặt lịch vào {createResult.SuggestedAppointmentAt.Value:dd/MM/yyyy HH:mm}"
+                });
+            }
+
             return new ChatbotReply
             {
-                Message = BuildBookingSuccessMessage(createResult.Car, booking),
+                Message = BuildBookingSuccessMessage(createResult.Car, booking, createResult.CustomerMessage, createResult.SuggestedAppointmentAt),
                 Actions =
                 [
                     CreateLinkAction("Xem chi tiết xe", $"/Cars/Details/{createResult.Car.CarID}", "secondary"),
-                    CreateLinkAction("Xem lịch đã tạo", $"/Bookings/Success?bookingCode={booking.BookingCode}", "primary")
+                    CreateLinkAction("Xem yêu cầu đã tạo", $"/Bookings/Success?bookingCode={booking.BookingCode}", "primary")
                 ],
-                QuickReplies =
-                [
-                    new ChatbotQuickReply { Label = "Gợi ý xe tương tự", Message = $"Gợi ý xe giống {createResult.Car.BodyType}" },
-                    new ChatbotQuickReply { Label = "Xem thanh toán", Message = "Showroom có những phương thức thanh toán nào?" }
-                ],
+                QuickReplies = quickReplies,
                 State = state
             };
         }
-
-        private static string InferBookingRetryField(IReadOnlyList<string> errors)
+                private static string InferBookingRetryField(IReadOnlyList<string> errors)
         {
             var joinedErrors = string.Join(' ', errors).ToLowerInvariant();
-            if (joinedErrors.Contains("điện thoại", StringComparison.Ordinal))
+            if (joinedErrors.Contains("điện thoại", StringComparison.Ordinal) || joinedErrors.Contains("dien thoai", StringComparison.Ordinal))
             {
                 return "phone_number";
             }
@@ -419,14 +460,23 @@ namespace AutoCarShowroom.Services.Chatbot
                 return "email";
             }
 
-            if (joinedErrors.Contains("ngày giờ", StringComparison.Ordinal) || joinedErrors.Contains("thời điểm", StringComparison.Ordinal))
+            if (joinedErrors.Contains("dịch vụ", StringComparison.Ordinal) || joinedErrors.Contains("dich vu", StringComparison.Ordinal))
+            {
+                return "service_type";
+            }
+
+            if (joinedErrors.Contains("ngày giờ", StringComparison.Ordinal) || joinedErrors.Contains("ngay gio", StringComparison.Ordinal) || joinedErrors.Contains("thời điểm", StringComparison.Ordinal) || joinedErrors.Contains("thoi diem", StringComparison.Ordinal))
             {
                 return "appointment_at";
             }
 
+            if (joinedErrors.Contains("mẫu xe", StringComparison.Ordinal) || joinedErrors.Contains("mau xe", StringComparison.Ordinal))
+            {
+                return "booking_car";
+            }
+
             return "customer_name";
         }
-
         private async Task<ChatbotReply> StartInstallmentFlowAsync(
             string message,
             string normalizedMessage,
@@ -448,7 +498,7 @@ namespace AutoCarShowroom.Services.Chatbot
                 state.PendingField = "installment_car";
                 return new ChatbotReply
                 {
-                    Message = "Em có thể tính trả góp tham khảo, nhưng cần biết anh/chị muốn tính cho mẫu xe nào trước nhé.",
+                    Message = "Em cÃ³ thá»ƒ tÃ­nh tráº£ gÃ³p tham kháº£o, nhÆ°ng cáº§n biáº¿t anh/chá»‹ muá»‘n tÃ­nh cho máº«u xe nÃ o trÆ°á»›c nhÃ©.",
                     RequiresInput = true,
                     State = state
                 };
@@ -485,7 +535,7 @@ namespace AutoCarShowroom.Services.Chatbot
 
                 return new ChatbotReply
                 {
-                    Message = "Em đã dừng phần tính trả góp. Khi cần tính lại, anh/chị chỉ cần nhắn số tiền trả trước hoặc tên mẫu xe nhé.",
+                    Message = "Em Ä‘Ã£ dá»«ng pháº§n tÃ­nh tráº£ gÃ³p. Khi cáº§n tÃ­nh láº¡i, anh/chá»‹ chá»‰ cáº§n nháº¯n sá»‘ tiá»n tráº£ trÆ°á»›c hoáº·c tÃªn máº«u xe nhÃ©.",
                     State = state
                 };
             }
@@ -503,7 +553,7 @@ namespace AutoCarShowroom.Services.Chatbot
                 {
                     return new ChatbotReply
                     {
-                        Message = "Em vẫn chưa nhận ra mẫu xe cần tính trả góp. Anh/chị nhắn rõ tên xe giúp em nhé.",
+                        Message = "Em váº«n chÆ°a nháº­n ra máº«u xe cáº§n tÃ­nh tráº£ gÃ³p. Anh/chá»‹ nháº¯n rÃµ tÃªn xe giÃºp em nhÃ©.",
                         RequiresInput = true,
                         State = state
                     };
@@ -527,7 +577,7 @@ namespace AutoCarShowroom.Services.Chatbot
                 state.PendingField = "installment_car";
                 return new ChatbotReply
                 {
-                    Message = "Em cần xác định lại mẫu xe trước khi tính trả góp. Anh/chị nhắn tên xe giúp em nhé.",
+                    Message = "Em cáº§n xÃ¡c Ä‘á»‹nh láº¡i máº«u xe trÆ°á»›c khi tÃ­nh tráº£ gÃ³p. Anh/chá»‹ nháº¯n tÃªn xe giÃºp em nhÃ©.",
                     RequiresInput = true,
                     State = state
                 };
@@ -540,7 +590,7 @@ namespace AutoCarShowroom.Services.Chatbot
                 {
                     return new ChatbotReply
                     {
-                        Message = "Em chưa đọc được số tiền trả trước. Anh/chị nhắn giúp em theo dạng như `300 triệu` hoặc `500tr` nhé.",
+                        Message = "Em chÆ°a Ä‘á»c Ä‘Æ°á»£c sá»‘ tiá»n tráº£ trÆ°á»›c. Anh/chá»‹ nháº¯n giÃºp em theo dáº¡ng nhÆ° `300 triá»‡u` hoáº·c `500tr` nhÃ©.",
                         RequiresInput = true,
                         State = state
                     };
@@ -562,12 +612,12 @@ namespace AutoCarShowroom.Services.Chatbot
                 state.PendingField = "down_payment";
                 return new ChatbotReply
                 {
-                    Message = $"Em đang tính trả góp tham khảo cho `{car.CarName}`. Anh/chị dự kiến trả trước khoảng bao nhiêu để em tính gần đúng nhất?",
+                    Message = $"Em Ä‘ang tÃ­nh tráº£ gÃ³p tham kháº£o cho `{car.CarName}`. Anh/chá»‹ dá»± kiáº¿n tráº£ trÆ°á»›c khoáº£ng bao nhiÃªu Ä‘á»ƒ em tÃ­nh gáº§n Ä‘Ãºng nháº¥t?",
                     RequiresInput = true,
                     QuickReplies =
                     [
-                        new ChatbotQuickReply { Label = "300 triệu", Message = "Trả trước 300 triệu" },
-                        new ChatbotQuickReply { Label = "30% giá xe", Message = "Trả trước khoảng 30%" }
+                        new ChatbotQuickReply { Label = "300 triá»‡u", Message = "Tráº£ trÆ°á»›c 300 triá»‡u" },
+                        new ChatbotQuickReply { Label = "30% giÃ¡ xe", Message = "Tráº£ trÆ°á»›c khoáº£ng 30%" }
                     ],
                     Actions = BuildCarActions(car),
                     State = state
@@ -589,7 +639,7 @@ namespace AutoCarShowroom.Services.Chatbot
             {
                 return new ChatbotReply
                 {
-                    Message = "Hiện em chưa tính được phương án trả góp chính xác cho mẫu xe này trong hệ thống. Anh/chị thử lại sau hoặc để showroom hỗ trợ trực tiếp nhé.",
+                    Message = "Hiá»‡n em chÆ°a tÃ­nh Ä‘Æ°á»£c phÆ°Æ¡ng Ã¡n tráº£ gÃ³p chÃ­nh xÃ¡c cho máº«u xe nÃ y trong há»‡ thá»‘ng. Anh/chá»‹ thá»­ láº¡i sau hoáº·c Ä‘á»ƒ showroom há»— trá»£ trá»±c tiáº¿p nhÃ©.",
                     State = state
                 };
             }
@@ -600,12 +650,12 @@ namespace AutoCarShowroom.Services.Chatbot
                 Actions =
                 [
                     CreateLinkAction("Mua xe", $"/Orders/Checkout?carId={car.CarID}", "primary"),
-                    CreateLinkAction("Đặt lịch xem xe", $"/Bookings/Create?carId={car.CarID}", "secondary")
+                    CreateLinkAction("Äáº·t lá»‹ch xem xe", $"/Bookings/Create?carId={car.CarID}", "secondary")
                 ],
                 QuickReplies =
                 [
-                    new ChatbotQuickReply { Label = "Tính lại 84 tháng", Message = $"Tính trả góp {car.CarName} trong 84 tháng" },
-                    new ChatbotQuickReply { Label = "Giải thích thanh toán", Message = "Showroom có những phương thức thanh toán nào?" }
+                    new ChatbotQuickReply { Label = "TÃ­nh láº¡i 84 thÃ¡ng", Message = $"TÃ­nh tráº£ gÃ³p {car.CarName} trong 84 thÃ¡ng" },
+                    new ChatbotQuickReply { Label = "Giáº£i thÃ­ch thanh toÃ¡n", Message = "Showroom cÃ³ nhá»¯ng phÆ°Æ¡ng thá»©c thanh toÃ¡n nÃ o?" }
                 ],
                 State = state
             };
@@ -632,12 +682,12 @@ namespace AutoCarShowroom.Services.Chatbot
 
                 return new ChatbotReply
                 {
-                    Message = "Để em so sánh chính xác theo dữ liệu showroom, anh/chị nhắn rõ 2 mẫu xe đang phân vân nhé. Ví dụ: `So sánh Toyota Camry và BMW X5`.",
+                    Message = "Äá»ƒ em so sÃ¡nh chÃ­nh xÃ¡c theo dá»¯ liá»‡u showroom, anh/chá»‹ nháº¯n rÃµ 2 máº«u xe Ä‘ang phÃ¢n vÃ¢n nhÃ©. VÃ­ dá»¥: `So sÃ¡nh Toyota Camry vÃ  BMW X5`.",
                     RequiresInput = true,
                     QuickReplies =
                     [
-                        new ChatbotQuickReply { Label = "So sánh Camry và C300", Message = "So sánh Toyota Camry và Mercedes-Benz C300 AMG" },
-                        new ChatbotQuickReply { Label = "So sánh Santa Fe và Fortuner", Message = "So sánh Hyundai Santa Fe và Toyota Fortuner" }
+                        new ChatbotQuickReply { Label = "So sÃ¡nh Camry vÃ  C300", Message = "So sÃ¡nh Toyota Camry vÃ  Mercedes-Benz C300 AMG" },
+                        new ChatbotQuickReply { Label = "So sÃ¡nh Santa Fe vÃ  Fortuner", Message = "So sÃ¡nh Hyundai Santa Fe vÃ  Toyota Fortuner" }
                     ],
                     State = state
                 };
@@ -652,8 +702,8 @@ namespace AutoCarShowroom.Services.Chatbot
                 Message = BuildComparisonMessage(firstCar, secondCar),
                 Suggestions =
                 [
-                    BuildSuggestion(firstCar, "Phù hợp để đối chiếu trực tiếp về giá, kiểu xe và phong cách sử dụng."),
-                    BuildSuggestion(secondCar, "Nên xem cùng lúc để chốt nhanh hơn theo nhu cầu thật của anh/chị.")
+                    BuildSuggestion(firstCar, "PhÃ¹ há»£p Ä‘á»ƒ Ä‘á»‘i chiáº¿u trá»±c tiáº¿p vá» giÃ¡, kiá»ƒu xe vÃ  phong cÃ¡ch sá»­ dá»¥ng."),
+                    BuildSuggestion(secondCar, "NÃªn xem cÃ¹ng lÃºc Ä‘á»ƒ chá»‘t nhanh hÆ¡n theo nhu cáº§u tháº­t cá»§a anh/chá»‹.")
                 ],
                 Actions =
                 [
@@ -663,8 +713,8 @@ namespace AutoCarShowroom.Services.Chatbot
                 ],
                 QuickReplies =
                 [
-                    new ChatbotQuickReply { Label = "Gợi ý xe tiết kiệm hơn", Message = "Gợi ý xe tiết kiệm hơn" },
-                    new ChatbotQuickReply { Label = "Gợi ý xe gia đình", Message = "Gợi ý xe gia đình 5 người" }
+                    new ChatbotQuickReply { Label = "Gá»£i Ã½ xe tiáº¿t kiá»‡m hÆ¡n", Message = "Gá»£i Ã½ xe tiáº¿t kiá»‡m hÆ¡n" },
+                    new ChatbotQuickReply { Label = "Gá»£i Ã½ xe gia Ä‘Ã¬nh", Message = "Gá»£i Ã½ xe gia Ä‘Ã¬nh 5 ngÆ°á»i" }
                 ],
                 State = state
             };
@@ -691,12 +741,12 @@ namespace AutoCarShowroom.Services.Chatbot
             return new ChatbotReply
             {
                 Message = BuildCarDetailMessage(car),
-                Suggestions = [BuildSuggestion(car, "Đây là mẫu xe anh/chị đang xem hoặc vừa nhắc tới trong hội thoại.")],
+                Suggestions = [BuildSuggestion(car, "ÄÃ¢y lÃ  máº«u xe anh/chá»‹ Ä‘ang xem hoáº·c vá»«a nháº¯c tá»›i trong há»™i thoáº¡i.")],
                 Actions = BuildCarActions(car),
                 QuickReplies =
                 [
-                    new ChatbotQuickReply { Label = "Xem thanh toán", Message = "Showroom có những phương thức thanh toán nào?" },
-                    new ChatbotQuickReply { Label = "Đặt lịch xem xe", Message = $"Đặt lịch xem xe {car.CarName}" }
+                    new ChatbotQuickReply { Label = "Xem thanh toÃ¡n", Message = "Showroom cÃ³ nhá»¯ng phÆ°Æ¡ng thá»©c thanh toÃ¡n nÃ o?" },
+                    new ChatbotQuickReply { Label = "Äáº·t lá»‹ch xem xe", Message = $"Äáº·t lá»‹ch xem xe {car.CarName}" }
                 ],
                 State = state
             };
@@ -719,31 +769,31 @@ namespace AutoCarShowroom.Services.Chatbot
             {
                 return new ChatbotReply
                 {
-                    Message = "Hiện tại hệ thống chưa ghi nhận xe nào đang mở bán trong kho showroom. Anh/chị có thể quay lại sau hoặc liên hệ nhân viên để kiểm tra tồn kho thực tế.",
-                    Actions = [CreateLinkAction("Xem danh sách xe", "/Cars/Index", "primary")],
+                    Message = "Hiá»‡n táº¡i há»‡ thá»‘ng chÆ°a ghi nháº­n xe nÃ o Ä‘ang má»Ÿ bÃ¡n trong kho showroom. Anh/chá»‹ cÃ³ thá»ƒ quay láº¡i sau hoáº·c liÃªn há»‡ nhÃ¢n viÃªn Ä‘á»ƒ kiá»ƒm tra tá»“n kho thá»±c táº¿.",
+                    Actions = [CreateLinkAction("Xem danh sÃ¡ch xe", "/Cars/Index", "primary")],
                     State = state
                 };
             }
 
             var builder = new StringBuilder();
-            builder.AppendLine($"Hiện tại showroom đang có {overview.TotalVisibleCars} xe mở bán trong kho.");
-            builder.AppendLine($"- Tầm giá tham khảo: từ {overview.MinPrice:N0} VNĐ đến {overview.MaxPrice:N0} VNĐ.");
-            builder.AppendLine($"- Nhóm xe đang có: {string.Join(", ", overview.BodyTypeSummaries)}.");
-            builder.AppendLine($"- Hãng nổi bật: {string.Join(", ", overview.BrandSummaries)}.");
+            builder.AppendLine($"Hiá»‡n táº¡i showroom Ä‘ang cÃ³ {overview.TotalVisibleCars} xe má»Ÿ bÃ¡n trong kho.");
+            builder.AppendLine($"- Táº§m giÃ¡ tham kháº£o: tá»« {overview.MinPrice:N0} VNÄ Ä‘áº¿n {overview.MaxPrice:N0} VNÄ.");
+            builder.AppendLine($"- NhÃ³m xe Ä‘ang cÃ³: {string.Join(", ", overview.BodyTypeSummaries)}.");
+            builder.AppendLine($"- HÃ£ng ná»•i báº­t: {string.Join(", ", overview.BrandSummaries)}.");
             builder.AppendLine();
-            builder.Append("Kết luận: kho xe hiện khá đa dạng từ sedan, SUV đến MPV và bán tải. Nếu anh/chị nói rõ thêm ngân sách, số chỗ hoặc kiểu xe, em sẽ lọc ngay các mẫu hợp nhất.");
+            builder.Append("Káº¿t luáº­n: kho xe hiá»‡n khÃ¡ Ä‘a dáº¡ng tá»« sedan, SUV Ä‘áº¿n MPV vÃ  bÃ¡n táº£i. Náº¿u anh/chá»‹ nÃ³i rÃµ thÃªm ngÃ¢n sÃ¡ch, sá»‘ chá»— hoáº·c kiá»ƒu xe, em sáº½ lá»c ngay cÃ¡c máº«u há»£p nháº¥t.");
 
             return new ChatbotReply
             {
                 Message = builder.ToString().Trim(),
                 Suggestions = overview.FeaturedCars
-                    .Select(car => BuildSuggestion(car, "Đang mở bán trong kho showroom và phù hợp để xem nhanh trước khi lọc sâu hơn."))
+                    .Select(car => BuildSuggestion(car, "Äang má»Ÿ bÃ¡n trong kho showroom vÃ  phÃ¹ há»£p Ä‘á»ƒ xem nhanh trÆ°á»›c khi lá»c sÃ¢u hÆ¡n."))
                     .ToList(),
-                Actions = [CreateLinkAction("Xem danh sách xe", "/Cars/Index", "primary")],
+                Actions = [CreateLinkAction("Xem danh sÃ¡ch xe", "/Cars/Index", "primary")],
                 QuickReplies =
                 [
-                    new ChatbotQuickReply { Label = "7 chỗ dưới 900 triệu", Message = "Tôi cần xe gia đình 7 chỗ dưới 900 triệu" },
-                    new ChatbotQuickReply { Label = "Sedan đi làm hằng ngày", Message = "Tôi muốn xe 5 chỗ, tiết kiệm xăng, đi làm hằng ngày, kiểu Sedan" }
+                    new ChatbotQuickReply { Label = "7 chá»— dÆ°á»›i 900 triá»‡u", Message = "TÃ´i cáº§n xe gia Ä‘Ã¬nh 7 chá»— dÆ°á»›i 900 triá»‡u" },
+                    new ChatbotQuickReply { Label = "Sedan Ä‘i lÃ m háº±ng ngÃ y", Message = "TÃ´i muá»‘n xe 5 chá»—, tiáº¿t kiá»‡m xÄƒng, Ä‘i lÃ m háº±ng ngÃ y, kiá»ƒu Sedan" }
                 ],
                 State = state
             };
@@ -782,13 +832,13 @@ namespace AutoCarShowroom.Services.Chatbot
 
             return new ChatbotReply
             {
-                Message = $"Hiện tại em chưa có dữ liệu chính xác cho `{carReference}` trong hệ thống showroom, nên em không dám khẳng định về giá, khuyến mãi hay tình trạng của mẫu này.\n\nNếu anh/chị muốn, em có thể:\n- gợi ý mẫu tương đương đang có trong showroom\n- lọc theo tầm giá hoặc kiểu xe gần giống\n- hoặc anh/chị gửi tên mẫu xe khác để em kiểm tra tiếp.",
+                Message = $"Hiá»‡n táº¡i em chÆ°a cÃ³ dá»¯ liá»‡u chÃ­nh xÃ¡c cho `{carReference}` trong há»‡ thá»‘ng showroom, nÃªn em khÃ´ng dÃ¡m kháº³ng Ä‘á»‹nh vá» giÃ¡, khuyáº¿n mÃ£i hay tÃ¬nh tráº¡ng cá»§a máº«u nÃ y.\n\nNáº¿u anh/chá»‹ muá»‘n, em cÃ³ thá»ƒ:\n- gá»£i Ã½ máº«u tÆ°Æ¡ng Ä‘Æ°Æ¡ng Ä‘ang cÃ³ trong showroom\n- lá»c theo táº§m giÃ¡ hoáº·c kiá»ƒu xe gáº§n giá»‘ng\n- hoáº·c anh/chá»‹ gá»­i tÃªn máº«u xe khÃ¡c Ä‘á»ƒ em kiá»ƒm tra tiáº¿p.",
                 QuickReplies =
                 [
-                    new ChatbotQuickReply { Label = "Gợi ý xe tương đương", Message = "Gợi ý xe tương đương đang có trong showroom" },
-                    new ChatbotQuickReply { Label = "Xem xe đang mở bán", Message = "Showroom hiện có những xe nào trong kho?" }
+                    new ChatbotQuickReply { Label = "Gá»£i Ã½ xe tÆ°Æ¡ng Ä‘Æ°Æ¡ng", Message = "Gá»£i Ã½ xe tÆ°Æ¡ng Ä‘Æ°Æ¡ng Ä‘ang cÃ³ trong showroom" },
+                    new ChatbotQuickReply { Label = "Xem xe Ä‘ang má»Ÿ bÃ¡n", Message = "Showroom hiá»‡n cÃ³ nhá»¯ng xe nÃ o trong kho?" }
                 ],
-                Actions = [CreateLinkAction("Xem danh sách xe", "/Cars/Index", "primary")],
+                Actions = [CreateLinkAction("Xem danh sÃ¡ch xe", "/Cars/Index", "primary")],
                 State = state
             };
         }
@@ -806,26 +856,26 @@ namespace AutoCarShowroom.Services.Chatbot
                 var messageBuilder = new StringBuilder();
                 if (string.Equals(promotionCar.Status, OrderWorkflow.CarStatusPromotion, StringComparison.OrdinalIgnoreCase))
                 {
-                    messageBuilder.AppendLine($"Hiện tại `{promotionCar.CarName}` đang ở trạng thái khuyến mãi trong hệ thống showroom.");
-                    messageBuilder.AppendLine($"- Giá tham khảo: {promotionCar.Price:N0} VNĐ.");
-                    messageBuilder.AppendLine($"- Loại xe: {promotionCar.BodyType}.");
-                    messageBuilder.AppendLine($"- Năm sản xuất: {promotionCar.Year}.");
+                    messageBuilder.AppendLine($"Hiá»‡n táº¡i `{promotionCar.CarName}` Ä‘ang á»Ÿ tráº¡ng thÃ¡i khuyáº¿n mÃ£i trong há»‡ thá»‘ng showroom.");
+                    messageBuilder.AppendLine($"- GiÃ¡ tham kháº£o: {promotionCar.Price:N0} VNÄ.");
+                    messageBuilder.AppendLine($"- Loáº¡i xe: {promotionCar.BodyType}.");
+                    messageBuilder.AppendLine($"- NÄƒm sáº£n xuáº¥t: {promotionCar.Year}.");
                     messageBuilder.AppendLine();
-                    messageBuilder.Append("Kết luận: đây là một trong những mẫu đang có ưu đãi hiển thị trong kho. Anh/chị có thể mở chi tiết để xem thêm mô tả, hình ảnh và đặt lịch xem xe.");
+                    messageBuilder.Append("Káº¿t luáº­n: Ä‘Ã¢y lÃ  má»™t trong nhá»¯ng máº«u Ä‘ang cÃ³ Æ°u Ä‘Ã£i hiá»ƒn thá»‹ trong kho. Anh/chá»‹ cÃ³ thá»ƒ má»Ÿ chi tiáº¿t Ä‘á»ƒ xem thÃªm mÃ´ táº£, hÃ¬nh áº£nh vÃ  Ä‘áº·t lá»‹ch xem xe.");
                 }
                 else
                 {
-                    messageBuilder.AppendLine($"Hiện tại em chưa thấy `{promotionCar.CarName}` ở trạng thái khuyến mãi trong hệ thống.");
-                    messageBuilder.AppendLine($"- Trạng thái hiện tại: {promotionCar.Status}.");
-                    messageBuilder.AppendLine($"- Giá tham khảo: {promotionCar.Price:N0} VNĐ.");
+                    messageBuilder.AppendLine($"Hiá»‡n táº¡i em chÆ°a tháº¥y `{promotionCar.CarName}` á»Ÿ tráº¡ng thÃ¡i khuyáº¿n mÃ£i trong há»‡ thá»‘ng.");
+                    messageBuilder.AppendLine($"- Tráº¡ng thÃ¡i hiá»‡n táº¡i: {promotionCar.Status}.");
+                    messageBuilder.AppendLine($"- GiÃ¡ tham kháº£o: {promotionCar.Price:N0} VNÄ.");
                     messageBuilder.AppendLine();
-                    messageBuilder.Append("Kết luận: mẫu này vẫn đang có dữ liệu trong showroom nhưng chưa có cờ khuyến mãi ở thời điểm hiện tại.");
+                    messageBuilder.Append("Káº¿t luáº­n: máº«u nÃ y váº«n Ä‘ang cÃ³ dá»¯ liá»‡u trong showroom nhÆ°ng chÆ°a cÃ³ cá» khuyáº¿n mÃ£i á»Ÿ thá»i Ä‘iá»ƒm hiá»‡n táº¡i.");
                 }
 
                 return new ChatbotReply
                 {
                     Message = messageBuilder.ToString().Trim(),
-                    Suggestions = [BuildSuggestion(promotionCar, "Mẫu xe anh/chị vừa hỏi về trạng thái khuyến mãi.")],
+                    Suggestions = [BuildSuggestion(promotionCar, "Máº«u xe anh/chá»‹ vá»«a há»i vá» tráº¡ng thÃ¡i khuyáº¿n mÃ£i.")],
                     Actions = BuildCarActions(promotionCar),
                     State = state
                 };
@@ -842,7 +892,7 @@ namespace AutoCarShowroom.Services.Chatbot
             {
                 return new ChatbotReply
                 {
-                    Message = "Hiện tại em chưa thấy mẫu xe nào đang ở trạng thái khuyến mãi trong hệ thống showroom. Anh/chị muốn em gợi ý theo ngân sách hoặc loại xe đang còn hàng không?",
+                    Message = "Hiá»‡n táº¡i em chÆ°a tháº¥y máº«u xe nÃ o Ä‘ang á»Ÿ tráº¡ng thÃ¡i khuyáº¿n mÃ£i trong há»‡ thá»‘ng showroom. Anh/chá»‹ muá»‘n em gá»£i Ã½ theo ngÃ¢n sÃ¡ch hoáº·c loáº¡i xe Ä‘ang cÃ²n hÃ ng khÃ´ng?",
                     QuickReplies = SearchClarificationReplies
                         .Select(value => new ChatbotQuickReply { Label = value, Message = value })
                         .ToList(),
@@ -852,11 +902,11 @@ namespace AutoCarShowroom.Services.Chatbot
 
             return new ChatbotReply
             {
-                Message = "Em đã lọc nhanh các mẫu đang ở trạng thái khuyến mãi trong showroom. Anh/chị nên xem trước các mẫu dưới đây để tiện so giá và đặt lịch.",
+                Message = "Em Ä‘Ã£ lá»c nhanh cÃ¡c máº«u Ä‘ang á»Ÿ tráº¡ng thÃ¡i khuyáº¿n mÃ£i trong showroom. Anh/chá»‹ nÃªn xem trÆ°á»›c cÃ¡c máº«u dÆ°á»›i Ä‘Ã¢y Ä‘á»ƒ tiá»‡n so giÃ¡ vÃ  Ä‘áº·t lá»‹ch.",
                 Suggestions = promotionCars
-                    .Select(car => BuildSuggestion(car, "Đang có trạng thái khuyến mãi trong hệ thống showroom."))
+                    .Select(car => BuildSuggestion(car, "Äang cÃ³ tráº¡ng thÃ¡i khuyáº¿n mÃ£i trong há»‡ thá»‘ng showroom."))
                     .ToList(),
-                Actions = [CreateLinkAction("Xem toàn bộ xe", "/Cars/Index", "primary")],
+                Actions = [CreateLinkAction("Xem toÃ n bá»™ xe", "/Cars/Index", "primary")],
                 State = state
             };
         }
@@ -865,7 +915,7 @@ namespace AutoCarShowroom.Services.Chatbot
         {
             var methods = _financeTools.GetPaymentMethods();
             var builder = new StringBuilder();
-            builder.AppendLine("Hiện showroom đang hỗ trợ các phương thức thanh toán sau:");
+            builder.AppendLine("Hiá»‡n showroom Ä‘ang há»— trá»£ cÃ¡c phÆ°Æ¡ng thá»©c thanh toÃ¡n sau:");
 
             foreach (var method in methods)
             {
@@ -873,15 +923,15 @@ namespace AutoCarShowroom.Services.Chatbot
             }
 
             builder.AppendLine();
-            builder.Append("Kết luận: nếu anh/chị muốn chốt nhanh thì nghiêng về QR hoặc chuyển khoản; nếu muốn xem xe kỹ trước khi xuống tiền thì thanh toán tại showroom sẽ linh hoạt hơn.");
+            builder.Append("Káº¿t luáº­n: náº¿u anh/chá»‹ muá»‘n chá»‘t nhanh thÃ¬ nghiÃªng vá» QR hoáº·c chuyá»ƒn khoáº£n; náº¿u muá»‘n xem xe ká»¹ trÆ°á»›c khi xuá»‘ng tiá»n thÃ¬ thanh toÃ¡n táº¡i showroom sáº½ linh hoáº¡t hÆ¡n.");
             builder.AppendLine();
-            builder.Append("Bước tiếp theo: nếu anh/chị đang nhắm một mẫu cụ thể, em có thể dẫn thẳng sang trang mua xe hoặc đặt lịch xem xe.");
+            builder.Append("BÆ°á»›c tiáº¿p theo: náº¿u anh/chá»‹ Ä‘ang nháº¯m má»™t máº«u cá»¥ thá»ƒ, em cÃ³ thá»ƒ dáº«n tháº³ng sang trang mua xe hoáº·c Ä‘áº·t lá»‹ch xem xe.");
 
             var actions = new List<ChatbotAction>();
             if (state.CurrentCarId.HasValue)
             {
                 actions.Add(CreateLinkAction("Mua xe", $"/Orders/Checkout?carId={state.CurrentCarId.Value}", "primary"));
-                actions.Add(CreateLinkAction("Đặt lịch xem xe", $"/Bookings/Create?carId={state.CurrentCarId.Value}"));
+                actions.Add(CreateLinkAction("Äáº·t lá»‹ch xem xe", $"/Bookings/Create?carId={state.CurrentCarId.Value}"));
             }
 
             return new ChatbotReply
@@ -902,11 +952,11 @@ namespace AutoCarShowroom.Services.Chatbot
 
             return new ChatbotReply
             {
-                Message = $"{article.Title}\n\n{article.Answer}\n\n{article.Disclaimer}\n\nBước tiếp theo: {article.NextStep}",
+                Message = $"{article.Title}\n\n{article.Answer}\n\n{article.Disclaimer}\n\nBÆ°á»›c tiáº¿p theo: {article.NextStep}",
                 QuickReplies =
                 [
-                    new ChatbotQuickReply { Label = "Tư vấn theo ngân sách", Message = "Gợi ý xe theo ngân sách" },
-                    new ChatbotQuickReply { Label = "Đặt lịch xem xe", Message = "Tôi muốn đặt lịch xem xe" }
+                    new ChatbotQuickReply { Label = "TÆ° váº¥n theo ngÃ¢n sÃ¡ch", Message = "Gá»£i Ã½ xe theo ngÃ¢n sÃ¡ch" },
+                    new ChatbotQuickReply { Label = "Äáº·t lá»‹ch xem xe", Message = "TÃ´i muá»‘n Ä‘áº·t lá»‹ch xem xe" }
                 ],
                 State = state
             };
@@ -933,7 +983,7 @@ namespace AutoCarShowroom.Services.Chatbot
 
                 return new ChatbotReply
                 {
-                    Message = "Để em gợi ý đúng hơn, anh/chị cho em 3 ý ngắn thôi nhé:\n- Ngân sách khoảng bao nhiêu?\n- Mua đi gia đình, cá nhân hay dịch vụ?\n- Anh/chị nghiêng về sedan, SUV hay 7 chỗ?",
+                    Message = "Äá»ƒ em gá»£i Ã½ Ä‘Ãºng hÆ¡n, anh/chá»‹ cho em 3 Ã½ ngáº¯n thÃ´i nhÃ©:\n- NgÃ¢n sÃ¡ch khoáº£ng bao nhiÃªu?\n- Mua Ä‘i gia Ä‘Ã¬nh, cÃ¡ nhÃ¢n hay dá»‹ch vá»¥?\n- Anh/chá»‹ nghiÃªng vá» sedan, SUV hay 7 chá»—?",
                     RequiresInput = true,
                     QuickReplies = SearchClarificationReplies
                         .Select(value => new ChatbotQuickReply { Label = value, Message = value })
@@ -960,13 +1010,13 @@ namespace AutoCarShowroom.Services.Chatbot
             {
                 return new ChatbotReply
                 {
-                    Message = "Hiện tại em chưa tìm thấy mẫu khớp hoàn toàn trong showroom. Nếu anh/chị muốn, em có thể nới ngân sách, đổi loại xe hoặc gợi ý mẫu gần nhất đang còn hàng.",
+                    Message = "Hiá»‡n táº¡i em chÆ°a tÃ¬m tháº¥y máº«u khá»›p hoÃ n toÃ n trong showroom. Náº¿u anh/chá»‹ muá»‘n, em cÃ³ thá»ƒ ná»›i ngÃ¢n sÃ¡ch, Ä‘á»•i loáº¡i xe hoáº·c gá»£i Ã½ máº«u gáº§n nháº¥t Ä‘ang cÃ²n hÃ ng.",
                     QuickReplies =
                     [
-                        new ChatbotQuickReply { Label = "Nới lên 1,2 tỷ", Message = "Gợi ý xe dưới 1.2 tỷ" },
-                        new ChatbotQuickReply { Label = "Xem SUV đang có", Message = "Gợi ý SUV đang có" }
+                        new ChatbotQuickReply { Label = "Ná»›i lÃªn 1,2 tá»·", Message = "Gá»£i Ã½ xe dÆ°á»›i 1.2 tá»·" },
+                        new ChatbotQuickReply { Label = "Xem SUV Ä‘ang cÃ³", Message = "Gá»£i Ã½ SUV Ä‘ang cÃ³" }
                     ],
-                    Actions = [CreateLinkAction("Xem toàn bộ xe", "/Cars/Index", "primary")],
+                    Actions = [CreateLinkAction("Xem toÃ n bá»™ xe", "/Cars/Index", "primary")],
                     State = state
                 };
             }
@@ -981,8 +1031,8 @@ namespace AutoCarShowroom.Services.Chatbot
                 Actions = BuildRecommendationActions(matches),
                 QuickReplies =
                 [
-                    new ChatbotQuickReply { Label = "So sánh 2 xe đầu", Message = BuildComparisonPrompt(matches) },
-                    new ChatbotQuickReply { Label = "Đặt lịch xe đầu", Message = $"Đặt lịch xem xe {topMatch.Car.CarName}" }
+                    new ChatbotQuickReply { Label = "So sÃ¡nh 2 xe Ä‘áº§u", Message = BuildComparisonPrompt(matches) },
+                    new ChatbotQuickReply { Label = "Äáº·t lá»‹ch xe Ä‘áº§u", Message = $"Äáº·t lá»‹ch xem xe {topMatch.Car.CarName}" }
                 ],
                 State = state
             };
@@ -1184,7 +1234,7 @@ namespace AutoCarShowroom.Services.Chatbot
 
             var alphaNumericModelMatch = System.Text.RegularExpressions.Regex.Match(
                 message,
-                @"\b[A-Za-zÀ-ỹ\-]+\s+[A-Za-z]*\d+[A-Za-z0-9\-]*\b");
+                @"\b[A-Za-z]{1,5}\-?\d+[A-Za-z0-9\-]*\b");
 
             if (alphaNumericModelMatch.Success)
             {
@@ -1206,12 +1256,12 @@ namespace AutoCarShowroom.Services.Chatbot
         {
             return new ChatbotReply
             {
-                Message = "Em là AI tư vấn showroom. Em có thể gợi ý xe theo ngân sách, so sánh mẫu đang có, giải thích phương thức thanh toán hoặc hỗ trợ đặt lịch xem xe ngay trong chat.",
+                Message = "Em lÃ  AI tÆ° váº¥n showroom. Em cÃ³ thá»ƒ gá»£i Ã½ xe theo ngÃ¢n sÃ¡ch, so sÃ¡nh máº«u Ä‘ang cÃ³, giáº£i thÃ­ch phÆ°Æ¡ng thá»©c thanh toÃ¡n hoáº·c há»— trá»£ Ä‘áº·t lá»‹ch xem xe ngay trong chat.",
                 QuickReplies =
                 [
-                    new ChatbotQuickReply { Label = "Xe gia đình dưới 1 tỷ", Message = "Gợi ý xe gia đình dưới 1 tỷ" },
-                    new ChatbotQuickReply { Label = "SUV đi phố", Message = "Gợi ý SUV đi phố" },
-                    new ChatbotQuickReply { Label = "Đặt lịch xem xe", Message = "Tôi muốn đặt lịch xem xe" }
+                    new ChatbotQuickReply { Label = "Xe gia Ä‘Ã¬nh dÆ°á»›i 1 tá»·", Message = "Gá»£i Ã½ xe gia Ä‘Ã¬nh dÆ°á»›i 1 tá»·" },
+                    new ChatbotQuickReply { Label = "SUV Ä‘i phá»‘", Message = "Gá»£i Ã½ SUV Ä‘i phá»‘" },
+                    new ChatbotQuickReply { Label = "Äáº·t lá»‹ch xem xe", Message = "TÃ´i muá»‘n Ä‘áº·t lá»‹ch xem xe" }
                 ],
                 State = state
             };
@@ -1224,22 +1274,22 @@ namespace AutoCarShowroom.Services.Chatbot
             var summaryParts = new List<string>();
             if (profile.Budget.HasValue)
             {
-                summaryParts.Add($"ngân sách khoảng {profile.Budget.Value:N0} VNĐ");
+                summaryParts.Add($"ngÃ¢n sÃ¡ch khoáº£ng {profile.Budget.Value:N0} VNÄ");
             }
 
             if (!string.IsNullOrWhiteSpace(profile.Purpose))
             {
-                summaryParts.Add($"nhu cầu {profile.Purpose}");
+                summaryParts.Add($"nhu cáº§u {profile.Purpose}");
             }
 
             if (!string.IsNullOrWhiteSpace(profile.BodyType))
             {
-                summaryParts.Add($"kiểu xe {profile.BodyType}");
+                summaryParts.Add($"kiá»ƒu xe {profile.BodyType}");
             }
 
             if (profile.SeatCount.HasValue)
             {
-                summaryParts.Add($"{profile.SeatCount.Value} chỗ");
+                summaryParts.Add($"{profile.SeatCount.Value} chá»—");
             }
 
             var topMatch = matches[0].Car;
@@ -1247,16 +1297,16 @@ namespace AutoCarShowroom.Services.Chatbot
             var valueMatch = matches.OrderBy(match => match.Car.Price).First().Car;
 
             var builder = new StringBuilder();
-            builder.Append("Em tóm tắt nhu cầu: ");
-            builder.Append(summaryParts.Count > 0 ? string.Join(", ", summaryParts) : "đang tìm xe phù hợp trong showroom");
+            builder.Append("Em tÃ³m táº¯t nhu cáº§u: ");
+            builder.Append(summaryParts.Count > 0 ? string.Join(", ", summaryParts) : "Ä‘ang tÃ¬m xe phÃ¹ há»£p trong showroom");
             builder.AppendLine(".");
             builder.AppendLine();
-            builder.AppendLine($"- Phương án tối ưu nhất: {topMatch.CarName}.");
-            builder.AppendLine($"- Phương án cân bằng nhất: {balancedMatch.CarName}.");
-            builder.AppendLine($"- Phương án tiết kiệm nhất: {valueMatch.CarName}.");
+            builder.AppendLine($"- PhÆ°Æ¡ng Ã¡n tá»‘i Æ°u nháº¥t: {topMatch.CarName}.");
+            builder.AppendLine($"- PhÆ°Æ¡ng Ã¡n cÃ¢n báº±ng nháº¥t: {balancedMatch.CarName}.");
+            builder.AppendLine($"- PhÆ°Æ¡ng Ã¡n tiáº¿t kiá»‡m nháº¥t: {valueMatch.CarName}.");
             builder.AppendLine();
-            builder.Append($"Kết luận: nếu anh/chị muốn chốt nhanh, em nghiêng nhiều nhất về {topMatch.CarName} vì đang khớp nhu cầu rõ nhất trong dữ liệu hiện có. ");
-            builder.Append("Bước tiếp theo: anh/chị có thể mở chi tiết, so sánh 2 mẫu đầu hoặc đặt lịch xem xe cho mẫu đang ưng ý.");
+            builder.Append($"Káº¿t luáº­n: náº¿u anh/chá»‹ muá»‘n chá»‘t nhanh, em nghiÃªng nhiá»u nháº¥t vá» {topMatch.CarName} vÃ¬ Ä‘ang khá»›p nhu cáº§u rÃµ nháº¥t trong dá»¯ liá»‡u hiá»‡n cÃ³. ");
+            builder.Append("BÆ°á»›c tiáº¿p theo: anh/chá»‹ cÃ³ thá»ƒ má»Ÿ chi tiáº¿t, so sÃ¡nh 2 máº«u Ä‘áº§u hoáº·c Ä‘áº·t lá»‹ch xem xe cho máº«u Ä‘ang Æ°ng Ã½.");
 
             return builder.ToString().Trim();
         }
@@ -1267,37 +1317,37 @@ namespace AutoCarShowroom.Services.Chatbot
             var considerations = string.Join(", ", match.Considerations.Take(1));
             var suitableAudience = match.Car.BodyType switch
             {
-                "SUV" => "đi gia đình, đi tỉnh và ưu tiên gầm cao",
-                "MPV" => "gia đình đông người hoặc chạy dịch vụ",
-                "Sedan" => "đi phố, công việc và ưu tiên sự cân bằng",
-                "Hatchback" => "di chuyển đô thị thường xuyên",
-                "Bán tải" => "đi đường xấu hoặc cần chở thêm đồ",
-                _ => "người muốn xem thêm chi tiết thực tế"
+                "SUV" => "Ä‘i gia Ä‘Ã¬nh, Ä‘i tá»‰nh vÃ  Æ°u tiÃªn gáº§m cao",
+                "MPV" => "gia Ä‘Ã¬nh Ä‘Ã´ng ngÆ°á»i hoáº·c cháº¡y dá»‹ch vá»¥",
+                "Sedan" => "Ä‘i phá»‘, cÃ´ng viá»‡c vÃ  Æ°u tiÃªn sá»± cÃ¢n báº±ng",
+                "Hatchback" => "di chuyá»ƒn Ä‘Ã´ thá»‹ thÆ°á»ng xuyÃªn",
+                "BÃ¡n táº£i" => "Ä‘i Ä‘Æ°á»ng xáº¥u hoáº·c cáº§n chá»Ÿ thÃªm Ä‘á»“",
+                _ => "ngÆ°á»i muá»‘n xem thÃªm chi tiáº¿t thá»±c táº¿"
             };
 
-            return $"Điểm mạnh: {strengths}. Cần cân nhắc: {considerations}. Phù hợp với: {suitableAudience}.";
+            return $"Äiá»ƒm máº¡nh: {strengths}. Cáº§n cÃ¢n nháº¯c: {considerations}. PhÃ¹ há»£p vá»›i: {suitableAudience}.";
         }
 
         private static string BuildComparisonPrompt(IReadOnlyList<ChatbotCarMatch> matches)
         {
             return matches.Count >= 2
-                ? $"So sánh {matches[0].Car.CarName} và {matches[1].Car.CarName}"
-                : "So sánh 2 mẫu xe này";
+                ? $"So sÃ¡nh {matches[0].Car.CarName} vÃ  {matches[1].Car.CarName}"
+                : "So sÃ¡nh 2 máº«u xe nÃ y";
         }
 
         private static string BuildComparisonMessage(Car firstCar, Car secondCar)
         {
             var builder = new StringBuilder();
-            builder.AppendLine($"Em đang so sánh {firstCar.CarName} và {secondCar.CarName} theo dữ liệu showroom hiện có.");
+            builder.AppendLine($"Em Ä‘ang so sÃ¡nh {firstCar.CarName} vÃ  {secondCar.CarName} theo dá»¯ liá»‡u showroom hiá»‡n cÃ³.");
             builder.AppendLine();
-            builder.AppendLine($"- Giá bán: {firstCar.CarName} ở mức {firstCar.Price:N0} VNĐ, còn {secondCar.CarName} ở mức {secondCar.Price:N0} VNĐ.");
-            builder.AppendLine($"- Kiểu xe và trải nghiệm: {firstCar.CarName} thuộc nhóm {firstCar.BodyType}, còn {secondCar.CarName} thuộc nhóm {secondCar.BodyType}.");
-            builder.AppendLine($"- Đời xe: {firstCar.CarName} đời {firstCar.Year}, {secondCar.CarName} đời {secondCar.Year}.");
-            builder.AppendLine($"- Tình trạng hiển thị: {firstCar.Status} và {secondCar.Status}.");
+            builder.AppendLine($"- GiÃ¡ bÃ¡n: {firstCar.CarName} á»Ÿ má»©c {firstCar.Price:N0} VNÄ, cÃ²n {secondCar.CarName} á»Ÿ má»©c {secondCar.Price:N0} VNÄ.");
+            builder.AppendLine($"- Kiá»ƒu xe vÃ  tráº£i nghiá»‡m: {firstCar.CarName} thuá»™c nhÃ³m {firstCar.BodyType}, cÃ²n {secondCar.CarName} thuá»™c nhÃ³m {secondCar.BodyType}.");
+            builder.AppendLine($"- Äá»i xe: {firstCar.CarName} Ä‘á»i {firstCar.Year}, {secondCar.CarName} Ä‘á»i {secondCar.Year}.");
+            builder.AppendLine($"- TÃ¬nh tráº¡ng hiá»ƒn thá»‹: {firstCar.Status} vÃ  {secondCar.Status}.");
             builder.AppendLine();
-            builder.AppendLine($"Kết luận: nếu anh/chị ưu tiên giá dễ tiếp cận hơn thì nghiêng về {(firstCar.Price <= secondCar.Price ? firstCar.CarName : secondCar.CarName)}.");
-            builder.AppendLine($"Nếu ưu tiên kiểu xe thực dụng hơn cho nhu cầu hiện tại, anh/chị nên nghiêng về {(IsMorePractical(firstCar, secondCar) ? firstCar.CarName : secondCar.CarName)}.");
-            builder.Append("Bước tiếp theo: anh/chị nên mở chi tiết 2 mẫu để xem ảnh, mô tả và chọn mẫu phù hợp hơn để mua hoặc đặt lịch xem xe.");
+            builder.AppendLine($"Káº¿t luáº­n: náº¿u anh/chá»‹ Æ°u tiÃªn giÃ¡ dá»… tiáº¿p cáº­n hÆ¡n thÃ¬ nghiÃªng vá» {(firstCar.Price <= secondCar.Price ? firstCar.CarName : secondCar.CarName)}.");
+            builder.AppendLine($"Náº¿u Æ°u tiÃªn kiá»ƒu xe thá»±c dá»¥ng hÆ¡n cho nhu cáº§u hiá»‡n táº¡i, anh/chá»‹ nÃªn nghiÃªng vá» {(IsMorePractical(firstCar, secondCar) ? firstCar.CarName : secondCar.CarName)}.");
+            builder.Append("BÆ°á»›c tiáº¿p theo: anh/chá»‹ nÃªn má»Ÿ chi tiáº¿t 2 máº«u Ä‘á»ƒ xem áº£nh, mÃ´ táº£ vÃ  chá»n máº«u phÃ¹ há»£p hÆ¡n Ä‘á»ƒ mua hoáº·c Ä‘áº·t lá»‹ch xem xe.");
 
             return builder.ToString().Trim();
         }
@@ -1312,14 +1362,14 @@ namespace AutoCarShowroom.Services.Chatbot
         private static string BuildCarDetailMessage(Car car)
         {
             var builder = new StringBuilder();
-            builder.AppendLine($"Nếu anh/chị đang quan tâm {car.CarName}, đây là các ý chính từ dữ liệu showroom:");
-            builder.AppendLine($"- Phân khúc/kiểu xe: {car.BodyType}.");
-            builder.AppendLine($"- Giá tham khảo: {car.Price:N0} VNĐ.");
-            builder.AppendLine($"- Tình trạng: {car.Status}.");
-            builder.AppendLine($"- Điểm nổi bật: {TakeFirstSentence(car.Description)}");
-            builder.AppendLine($"- Thông tin thực tế: {TakeFirstSentence(car.Specifications)}");
+            builder.AppendLine($"Náº¿u anh/chá»‹ Ä‘ang quan tÃ¢m {car.CarName}, Ä‘Ã¢y lÃ  cÃ¡c Ã½ chÃ­nh tá»« dá»¯ liá»‡u showroom:");
+            builder.AppendLine($"- PhÃ¢n khÃºc/kiá»ƒu xe: {car.BodyType}.");
+            builder.AppendLine($"- GiÃ¡ tham kháº£o: {car.Price:N0} VNÄ.");
+            builder.AppendLine($"- TÃ¬nh tráº¡ng: {car.Status}.");
+            builder.AppendLine($"- Äiá»ƒm ná»•i báº­t: {TakeFirstSentence(car.Description)}");
+            builder.AppendLine($"- ThÃ´ng tin thá»±c táº¿: {TakeFirstSentence(car.Specifications)}");
             builder.AppendLine();
-            builder.Append("Kết luận: đây là mẫu đáng xem nếu anh/chị đang cần một lựa chọn đúng nhóm xe hiện tại của nó. Bước tiếp theo: anh/chị có thể xem chi tiết sâu hơn, mua xe hoặc đặt lịch xem xe.");
+            builder.Append("Káº¿t luáº­n: Ä‘Ã¢y lÃ  máº«u Ä‘Ã¡ng xem náº¿u anh/chá»‹ Ä‘ang cáº§n má»™t lá»±a chá»n Ä‘Ãºng nhÃ³m xe hiá»‡n táº¡i cá»§a nÃ³. BÆ°á»›c tiáº¿p theo: anh/chá»‹ cÃ³ thá»ƒ xem chi tiáº¿t sÃ¢u hÆ¡n, mua xe hoáº·c Ä‘áº·t lá»‹ch xem xe.");
 
             return builder.ToString().Trim();
         }
@@ -1328,36 +1378,55 @@ namespace AutoCarShowroom.Services.Chatbot
         {
             var upfrontTotal = estimate.DownPayment + estimate.RegistrationEstimate + estimate.InsuranceEstimate;
             var builder = new StringBuilder();
-            builder.AppendLine($"Em đang tạm tính trả góp cho {estimate.Car.CarName} theo dữ liệu hiện có.");
+            builder.AppendLine($"Em Ä‘ang táº¡m tÃ­nh tráº£ gÃ³p cho {estimate.Car.CarName} theo dá»¯ liá»‡u hiá»‡n cÃ³.");
             builder.AppendLine();
-            builder.AppendLine($"- Giá xe: {estimate.CarPrice:N0} VNĐ.");
-            builder.AppendLine($"- Trả trước: {estimate.DownPayment:N0} VNĐ.");
-            builder.AppendLine($"- Khoản vay dự kiến: {estimate.LoanAmount:N0} VNĐ.");
-            builder.AppendLine($"- Kỳ hạn tạm tính: {estimate.TermMonths} tháng.");
-            builder.AppendLine($"- Lãi suất tham khảo: {estimate.AnnualInterestRate:N2}%/năm.");
-            builder.AppendLine($"- Góp mỗi tháng khoảng: {estimate.MonthlyPayment:N0} VNĐ.");
+            builder.AppendLine($"- GiÃ¡ xe: {estimate.CarPrice:N0} VNÄ.");
+            builder.AppendLine($"- Tráº£ trÆ°á»›c: {estimate.DownPayment:N0} VNÄ.");
+            builder.AppendLine($"- Khoáº£n vay dá»± kiáº¿n: {estimate.LoanAmount:N0} VNÄ.");
+            builder.AppendLine($"- Ká»³ háº¡n táº¡m tÃ­nh: {estimate.TermMonths} thÃ¡ng.");
+            builder.AppendLine($"- LÃ£i suáº¥t tham kháº£o: {estimate.AnnualInterestRate:N2}%/nÄƒm.");
+            builder.AppendLine($"- GÃ³p má»—i thÃ¡ng khoáº£ng: {estimate.MonthlyPayment:N0} VNÄ.");
             builder.AppendLine();
-            builder.AppendLine("Các khoản thường gặp khi xuống tiền ban đầu:");
-            builder.AppendLine($"- Phí đăng ký/ra biển tạm tính: {estimate.RegistrationEstimate:N0} VNĐ.");
-            builder.AppendLine($"- Bảo hiểm năm đầu tạm tính: {estimate.InsuranceEstimate:N0} VNĐ.");
-            builder.AppendLine($"- Tổng cần chuẩn bị ban đầu khoảng: {upfrontTotal:N0} VNĐ.");
+            builder.AppendLine("CÃ¡c khoáº£n thÆ°á»ng gáº·p khi xuá»‘ng tiá»n ban Ä‘áº§u:");
+            builder.AppendLine($"- PhÃ­ Ä‘Äƒng kÃ½/ra biá»ƒn táº¡m tÃ­nh: {estimate.RegistrationEstimate:N0} VNÄ.");
+            builder.AppendLine($"- Báº£o hiá»ƒm nÄƒm Ä‘áº§u táº¡m tÃ­nh: {estimate.InsuranceEstimate:N0} VNÄ.");
+            builder.AppendLine($"- Tá»•ng cáº§n chuáº©n bá»‹ ban Ä‘áº§u khoáº£ng: {upfrontTotal:N0} VNÄ.");
             builder.AppendLine();
-            builder.Append($"Chi phí nuôi xe hàng tháng chỉ là tham khảo: nhiên liệu khoảng {estimate.MonthlyFuelEstimate:N0} VNĐ và bảo dưỡng bình quân khoảng {estimate.MonthlyMaintenanceEstimate:N0} VNĐ. ");
-            builder.Append("Kết luận: đây là phương án ước tính để anh/chị hình dung dòng tiền, chưa phải báo giá tài chính chính thức của ngân hàng hay showroom.");
+            builder.Append($"Chi phÃ­ nuÃ´i xe hÃ ng thÃ¡ng chá»‰ lÃ  tham kháº£o: nhiÃªn liá»‡u khoáº£ng {estimate.MonthlyFuelEstimate:N0} VNÄ vÃ  báº£o dÆ°á»¡ng bÃ¬nh quÃ¢n khoáº£ng {estimate.MonthlyMaintenanceEstimate:N0} VNÄ. ");
+            builder.Append("Káº¿t luáº­n: Ä‘Ã¢y lÃ  phÆ°Æ¡ng Ã¡n Æ°á»›c tÃ­nh Ä‘á»ƒ anh/chá»‹ hÃ¬nh dung dÃ²ng tiá»n, chÆ°a pháº£i bÃ¡o giÃ¡ tÃ i chÃ­nh chÃ­nh thá»©c cá»§a ngÃ¢n hÃ ng hay showroom.");
 
             return builder.ToString().Trim();
         }
 
-        private static string BuildBookingSuccessMessage(Car car, Booking booking)
+                private static string BuildBookingSuccessMessage(Car car, Booking booking, string? customerMessage, DateTime? suggestedAppointmentAt)
         {
-            return $"Em đã ghi nhận lịch xem xe thành công cho {car.CarName}.\n\n- Mã lịch hẹn: {booking.BookingCode}\n- Ngày giờ hẹn: {booking.AppointmentAt:dd/MM/yyyy HH:mm}\n- Khách liên hệ: {booking.CustomerName} - {booking.PhoneNumber}\n\nKết luận: showroom đã nhận được thông tin, đội ngũ sẽ chủ động liên hệ xác nhận. Bước tiếp theo: anh/chị giữ điện thoại giúp em để nhân viên chốt lại lịch.";
-        }
+            var builder = new StringBuilder();
+            builder.AppendLine($"Em đã ghi nhận yêu cầu {booking.ServiceType.ToLowerInvariant()} cho {car.CarName}.");
+            builder.AppendLine();
+            builder.AppendLine($"- Mã yêu cầu: {booking.BookingCode}");
+            builder.AppendLine($"- Dịch vụ: {booking.ServiceType}");
+            builder.AppendLine($"- Ngày giờ anh/chị chọn: {booking.AppointmentAt:dd/MM/yyyy HH:mm}");
+            builder.AppendLine($"- Trạng thái hiện tại: {booking.BookingStatus}");
+            builder.AppendLine($"- Khách liên hệ: {booking.CustomerName} - {booking.PhoneNumber}");
 
+            if (suggestedAppointmentAt.HasValue)
+            {
+                builder.AppendLine($"- Khung giờ gợi ý thêm: {suggestedAppointmentAt.Value:dd/MM/yyyy HH:mm}");
+            }
+
+            builder.AppendLine();
+            builder.Append(string.IsNullOrWhiteSpace(customerMessage)
+                ? BookingWorkflow.BuildCustomerConfirmationMessage(booking)
+                : customerMessage.Trim());
+            builder.Append(" Hiện tại lịch này chưa được chốt chính thức. Sau khi Admin xác nhận, showroom sẽ thông báo lại cho anh/chị.");
+
+            return builder.ToString().Trim();
+        }
         private static string TakeFirstSentence(string? content)
         {
             if (string.IsNullOrWhiteSpace(content))
             {
-                return "Hiện hệ thống chưa có thêm mô tả chi tiết cho mục này.";
+                return "Hiá»‡n há»‡ thá»‘ng chÆ°a cÃ³ thÃªm mÃ´ táº£ chi tiáº¿t cho má»¥c nÃ y.";
             }
 
             var parts = content.Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
@@ -1385,12 +1454,12 @@ namespace AutoCarShowroom.Services.Chatbot
         {
             var actions = new List<ChatbotAction>
             {
-                CreateLinkAction("Xem danh sách xe", "/Cars/Index")
+                CreateLinkAction("Xem danh sÃ¡ch xe", "/Cars/Index")
             };
 
             if (matches.Count > 0)
             {
-                actions.Add(CreateLinkAction("Xem chi tiết xe đầu", $"/Cars/Details/{matches[0].Car.CarID}", "primary"));
+                actions.Add(CreateLinkAction("Xem chi tiáº¿t xe Ä‘áº§u", $"/Cars/Details/{matches[0].Car.CarID}", "primary"));
             }
 
             return actions;
@@ -1400,9 +1469,9 @@ namespace AutoCarShowroom.Services.Chatbot
         {
             return
             [
-                CreateLinkAction("Xem chi tiết", $"/Cars/Details/{car.CarID}"),
+                CreateLinkAction("Xem chi tiáº¿t", $"/Cars/Details/{car.CarID}"),
                 CreateLinkAction("Mua xe", $"/Orders/Checkout?carId={car.CarID}", "primary"),
-                CreateLinkAction("Đặt lịch xem xe", $"/Bookings/Create?carId={car.CarID}")
+                CreateLinkAction("Äáº·t lá»‹ch xem xe", $"/Bookings/Create?carId={car.CarID}")
             ];
         }
 
@@ -1429,3 +1498,4 @@ namespace AutoCarShowroom.Services.Chatbot
         }
     }
 }
+

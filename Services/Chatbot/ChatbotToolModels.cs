@@ -1,4 +1,4 @@
-using AutoCarShowroom.Models;
+﻿using AutoCarShowroom.Models;
 
 namespace AutoCarShowroom.Services.Chatbot
 {
@@ -79,6 +79,10 @@ namespace AutoCarShowroom.Services.Chatbot
         public Booking? Booking { get; init; }
 
         public Car? Car { get; init; }
+
+        public string CustomerMessage { get; init; } = string.Empty;
+
+        public DateTime? SuggestedAppointmentAt { get; init; }
 
         public IReadOnlyList<string> Errors { get; init; } = [];
     }

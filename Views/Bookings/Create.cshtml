@@ -1,7 +1,7 @@
-@model BookingCreateViewModel
+﻿@model BookingCreateViewModel
 
 @{
-    ViewData["Title"] = "Đặt lịch xem xe";
+    ViewData["Title"] = "Gửi yêu cầu đặt lịch";
     ViewData["ChatbotCurrentCarId"] = Model.CarId;
 }
 
@@ -9,9 +9,9 @@
     <div class="section-heading">
         <div>
             <span class="section-kicker">Đặt lịch</span>
-            <h1>Đặt lịch xem xe</h1>
+            <h1>Gửi yêu cầu đặt lịch showroom</h1>
         </div>
-        <a asp-controller="Cars" asp-action="Details" asp-route-id="@Model.CarId" class="btn btn-outline-light">Quay lại xe</a>
+        <a asp-controller="Cars" asp-action="Details" asp-route-id="@Model.CarId" class="btn btn-outline-dark">Quay lại xe</a>
     </div>
 
     <div class="checkout-layout">
@@ -40,6 +40,11 @@
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
                     <div class="col-md-6">
+                        <label asp-for="ServiceType" class="form-label"></label>
+                        <select asp-for="ServiceType" asp-items="ViewBag.ServiceTypes" class="form-select"></select>
+                        <span asp-validation-for="ServiceType" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
                         <label asp-for="AppointmentAt" class="form-label"></label>
                         <input asp-for="AppointmentAt" asp-format="{0:yyyy-MM-ddTHH:mm}" type="datetime-local" class="form-control" />
                         <span asp-validation-for="AppointmentAt" class="text-danger"></span>
@@ -52,7 +57,7 @@
                 </div>
 
                 <div class="checkout-submit">
-                    <button type="submit" class="btn btn-accent">Xác nhận đặt lịch</button>
+                    <button type="submit" class="btn btn-accent">Gửi yêu cầu đặt lịch</button>
                 </div>
             </form>
         </div>
@@ -69,7 +74,7 @@
                     </div>
                 </article>
             </div>
-            <p class="checkout-note">Quản trị viên sẽ xem lịch hẹn của bạn và chủ động liên hệ xác nhận.</p>
+            <p class="checkout-note copy-safe copy-safe--compact">Yêu cầu đặt lịch của anh/chị sẽ được tạo ở trạng thái <strong>Chờ xác nhận</strong> hoặc <strong>Đề nghị đổi giờ</strong> nếu khung giờ đã đầy. Chỉ khi Admin xác nhận thì lịch mới được chốt chính thức.</p>
         </aside>
     </div>
 </section>
