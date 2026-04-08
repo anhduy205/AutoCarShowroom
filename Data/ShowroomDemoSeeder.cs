@@ -454,9 +454,9 @@ namespace AutoCarShowroom.Data
         {
             return bodyType switch
             {
-                "BÃ¡n táº£i" => "Bán tải",
-                "Mui tráº§n" => "Mui trần",
-                "KhÃ¡c" => "Khác",
+                "Bán tải" => "Bán tải",
+                "Mui trần" => "Mui trần",
+                "Khác" => "Khác",
                 _ => bodyType
             };
         }

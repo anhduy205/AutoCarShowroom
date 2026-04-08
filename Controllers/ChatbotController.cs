@@ -20,7 +20,7 @@ namespace AutoCarShowroom.Controllers
         }
 
         [HttpPost("Ask")]
-        [IgnoreAntiforgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Ask([FromBody] ChatbotRequest request)
         {
             if (request == null || string.IsNullOrWhiteSpace(request.Message))

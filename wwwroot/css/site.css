@@ -3057,6 +3057,47 @@ td {
   color: #1d4f80 !important;
 }
 
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.chatbot-toggle,
+.chatbot-panel,
+.chatbot-panel__header h2,
+.chatbot-message,
+.chatbot-prompt,
+.chatbot-choice,
+.chatbot-suggestion__body,
+.chatbot-form .form-control {
+  font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+  letter-spacing: normal;
+  word-spacing: normal;
+  text-rendering: optimizeLegibility;
+}
+
+.chatbot-message,
+.chatbot-suggestion__body p,
+.chatbot-suggestion__body span,
+.chatbot-choice,
+.chatbot-prompt,
+.chatbot-form .form-control {
+  line-height: 1.6;
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: none;
+}
+
+.chatbot-message {
+  white-space: pre-line;
+}
+
+.chatbot-suggestion__body strong,
+.chatbot-form .form-control::placeholder {
+  letter-spacing: normal;
+}
+
 @media (max-width: 991.98px) {
   .hero-showcase,
   .inventory-hero,

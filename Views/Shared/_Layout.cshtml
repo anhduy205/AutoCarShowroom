@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
@@ -15,6 +16,7 @@
         var roleLabel = User.IsInRole(InternalAccess.RoleAdmin) ? "Quản trị" : "Nhân viên nội bộ";
         var showChatbot = !isBackOffice && !Context.Request.Path.StartsWithSegments("/Account/Login");
         var currentChatbotCarId = ViewData["ChatbotCurrentCarId"] is int chatCarId ? chatCarId : (int?)null;
+        var chatbotRequestToken = showChatbot ? Antiforgery.GetAndStoreTokens(Context).RequestToken : null;
     }
 
     <header>
@@ -106,7 +108,8 @@
         <div class="chatbot-shell"
              data-chatbot
              data-endpoint="@Url.Action("Ask", "Chatbot")"
-             data-current-car-id="@(currentChatbotCarId?.ToString() ?? string.Empty)">
+             data-current-car-id="@(currentChatbotCarId?.ToString() ?? string.Empty)"
+             data-csrf-token="@chatbotRequestToken">
             <button type="button"
                     class="chatbot-toggle"
                     data-chatbot-toggle

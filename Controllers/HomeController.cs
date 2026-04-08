@@ -23,7 +23,7 @@ namespace AutoCarShowroom.Controllers
             {
                 var visibleCarsQuery = _context.Cars.AsNoTracking().AsQueryable();
 
-                if (!User.IsInRole("Admin"))
+                if (!InternalAccess.IsBackOffice(User))
                 {
                     visibleCarsQuery = visibleCarsQuery.Where(car => OrderWorkflow.PurchasableCarStatuses.Contains(car.Status));
                 }

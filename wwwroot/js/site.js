@@ -63,6 +63,7 @@ function initializeChatbot() {
     const currentCarId = Number.isFinite(Number(currentCarIdRaw)) && Number(currentCarIdRaw) > 0
         ? Number(currentCarIdRaw)
         : null;
+    const csrfToken = chatbotRoot.getAttribute("data-csrf-token");
 
     if (!endpoint || !toggleButton || !panel || !form || !input || !submitButton || !messageList) {
         return;
@@ -314,7 +315,8 @@ function initializeChatbot() {
             const response = await fetch(endpoint, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    ...(csrfToken ? { RequestVerificationToken: csrfToken } : {})
                 },
                 body: JSON.stringify({
                     message: normalizedMessage,

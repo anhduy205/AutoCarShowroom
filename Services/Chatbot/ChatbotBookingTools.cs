@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using AutoCarShowroom.Models;
 using AutoCarShowroom.ViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -85,12 +86,22 @@ namespace AutoCarShowroom.Services.Chatbot
                 };
             }
 
-            var slotEvaluation = await _bookingSchedulingService.EvaluateAsync(model.AppointmentAt);
-            if (slotEvaluation.IsFull)
+            var bookingCreation = await CreateBookingWithLockAsync(model, car.CarID);
+            if (bookingCreation.Booking == null || bookingCreation.SlotEvaluation == null)
             {
+                if (bookingCreation.SlotEvaluation == null)
+                {
+                    return new ChatbotBookingCreationResult
+                    {
+                        Car = car,
+                        Errors = ["Mẫu xe này hiện không còn nhận đặt lịch."]
+                    };
+                }
+
+                var slotEvaluation = bookingCreation.SlotEvaluation;
                 var errors = new List<string>
                 {
-                    $"Khung giờ {slotEvaluation.SlotStart:HH:mm dd/MM/yyyy} đã có khách khác đặt trước."
+                    $"Khung giờ {model.AppointmentAt:HH:mm dd/MM/yyyy} đã có khách khác đặt trước."
                 };
 
                 if (slotEvaluation.SuggestedAppointmentAt.HasValue)
@@ -104,6 +115,50 @@ namespace AutoCarShowroom.Services.Chatbot
                     Errors = errors,
                     SuggestedAppointmentAt = slotEvaluation.SuggestedAppointmentAt
                 };
+            }
+
+            return new ChatbotBookingCreationResult
+            {
+                Succeeded = true,
+                Booking = bookingCreation.Booking,
+                Car = car,
+                CustomerMessage = bookingCreation.SlotEvaluation.CustomerMessage,
+                SuggestedAppointmentAt = bookingCreation.SlotEvaluation.SuggestedAppointmentAt
+            };
+        }
+
+        private async Task<string> GenerateBookingCodeAsync()
+        {
+            while (true)
+            {
+                var bookingCode = $"BK-{DateTime.Now:yyyyMMddHHmmss}-{Guid.NewGuid():N}"[..24];
+                var exists = await _context.Bookings.AnyAsync(item => item.BookingCode == bookingCode);
+
+                if (!exists)
+                {
+                    return bookingCode;
+                }
+            }
+        }
+
+        private async Task<(Booking? Booking, BookingSlotEvaluationResult? SlotEvaluation)> CreateBookingWithLockAsync(
+            BookingCreateViewModel model,
+            int carId)
+        {
+            await using var transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable);
+
+            var car = await _context.Cars
+                .FirstOrDefaultAsync(item => item.CarID == carId);
+
+            if (car == null || !OrderWorkflow.CanOrder(car))
+            {
+                return (null, null);
+            }
+
+            var slotEvaluation = await _bookingSchedulingService.EvaluateAsync(model.AppointmentAt);
+            if (slotEvaluation.IsFull)
+            {
+                return (null, slotEvaluation);
             }
 
             var booking = new Booking
@@ -126,29 +181,9 @@ namespace AutoCarShowroom.Services.Chatbot
 
             _context.Bookings.Add(booking);
             await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
 
-            return new ChatbotBookingCreationResult
-            {
-                Succeeded = true,
-                Booking = booking,
-                Car = car,
-                CustomerMessage = slotEvaluation.CustomerMessage,
-                SuggestedAppointmentAt = slotEvaluation.SuggestedAppointmentAt
-            };
-        }
-
-        private async Task<string> GenerateBookingCodeAsync()
-        {
-            while (true)
-            {
-                var bookingCode = $"BK-{DateTime.Now:yyyyMMddHHmmss}-{Guid.NewGuid():N}"[..24];
-                var exists = await _context.Bookings.AnyAsync(item => item.BookingCode == bookingCode);
-
-                if (!exists)
-                {
-                    return bookingCode;
-                }
-            }
+            return (booking, slotEvaluation);
         }
     }
 }

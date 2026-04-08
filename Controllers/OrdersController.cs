@@ -3,6 +3,7 @@ using AutoCarShowroom.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace AutoCarShowroom.Controllers
 {
@@ -72,33 +73,12 @@ namespace AutoCarShowroom.Controllers
                     return View(model);
                 }
 
-                var order = new Order
+                var order = await CreateOrderWithLockAsync(model);
+                if (order == null)
                 {
-                    OrderCode = await GenerateOrderCodeAsync(),
-                    CustomerName = model.CustomerName,
-                    PhoneNumber = model.PhoneNumber,
-                    Email = model.Email,
-                    Address = model.Address,
-                    Note = model.Note,
-                    PaymentMethod = model.PaymentMethod,
-                    PaymentStatus = OrderWorkflow.GetInitialPaymentStatus(model.PaymentMethod),
-                    OrderStatus = OrderWorkflow.GetInitialOrderStatus(model.PaymentMethod),
-                    CreatedAt = DateTime.Now,
-                    TotalAmount = car.Price,
-                    Items =
-                    [
-                        new OrderItem
-                        {
-                            CarId = car.CarID,
-                            CarName = car.CarName,
-                            CarImage = car.Image,
-                            UnitPrice = car.Price
-                        }
-                    ]
-                };
-
-                _context.Orders.Add(order);
-                await _context.SaveChangesAsync();
+                    TempData["ErrorMessage"] = "Mẫu xe này vừa được giữ trong một đơn mua khác. Anh/chị vui lòng chọn mẫu khác hoặc tải lại trang.";
+                    return RedirectToAction("Details", "Cars", new { id = model.CarId });
+                }
 
                 TempData["SuccessMessage"] = "Đã ghi nhận yêu cầu mua xe.";
                 return RedirectToAction(nameof(Success), new { orderCode = order.OrderCode });
@@ -230,6 +210,60 @@ namespace AutoCarShowroom.Controllers
                     return orderCode;
                 }
             }
+        }
+
+        private async Task<Order?> CreateOrderWithLockAsync(CheckoutViewModel model)
+        {
+            await using var transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable);
+
+            var car = await _context.Cars
+                .FirstOrDefaultAsync(item => item.CarID == model.CarId);
+
+            if (car == null || !OrderWorkflow.CanOrder(car))
+            {
+                return null;
+            }
+
+            var isLocked = await _context.OrderItems
+                .AnyAsync(item =>
+                    item.CarId == car.CarID &&
+                    OrderWorkflow.LockingOrderStatuses.Contains(item.Order.OrderStatus));
+
+            if (isLocked)
+            {
+                return null;
+            }
+
+            var order = new Order
+            {
+                OrderCode = await GenerateOrderCodeAsync(),
+                CustomerName = model.CustomerName,
+                PhoneNumber = model.PhoneNumber,
+                Email = model.Email,
+                Address = model.Address,
+                Note = model.Note,
+                PaymentMethod = model.PaymentMethod,
+                PaymentStatus = OrderWorkflow.GetInitialPaymentStatus(model.PaymentMethod),
+                OrderStatus = OrderWorkflow.GetInitialOrderStatus(model.PaymentMethod),
+                CreatedAt = DateTime.Now,
+                TotalAmount = car.Price,
+                Items =
+                [
+                    new OrderItem
+                    {
+                        CarId = car.CarID,
+                        CarName = car.CarName,
+                        CarImage = car.Image,
+                        UnitPrice = car.Price
+                    }
+                ]
+            };
+
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return order;
         }
 
         private static string GetAvailabilityMessage(Car car, bool isLocked)

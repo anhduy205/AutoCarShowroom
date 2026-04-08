@@ -4,6 +4,7 @@ using AutoCarShowroom.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace AutoCarShowroom.Controllers
 {
@@ -107,28 +108,29 @@ namespace AutoCarShowroom.Controllers
                     return View(model);
                 }
 
-                slotEvaluation ??= await _bookingSchedulingService.EvaluateAsync(model.AppointmentAt);
-
-                var booking = new Booking
+                var bookingCreation = await CreateBookingWithLockAsync(model);
+                if (bookingCreation == null)
                 {
-                    BookingCode = await GenerateBookingCodeAsync(),
-                    CarId = car.CarID,
-                    CarName = car.CarName,
-                    CarImage = car.Image,
-                    QuotedPrice = car.Price,
-                    CustomerName = model.CustomerName,
-                    PhoneNumber = model.PhoneNumber,
-                    Email = model.Email,
-                    ServiceType = model.ServiceType,
-                    AppointmentAt = slotEvaluation.SlotStart,
-                    Note = model.Note,
-                    BookingStatus = slotEvaluation.InitialStatus,
-                    AdminNote = slotEvaluation.AdminNote,
-                    CreatedAt = DateTime.Now
-                };
+                    TempData["ErrorMessage"] = "Mẫu xe này hiện không còn nhận đặt lịch.";
+                    return RedirectToAction("Details", "Cars", new { id = model.CarId });
+                }
 
-                _context.Bookings.Add(booking);
-                await _context.SaveChangesAsync();
+                if (bookingCreation.Value.Booking == null || bookingCreation.Value.SlotEvaluation == null)
+                {
+                    var refreshedSlot = bookingCreation.Value.SlotEvaluation;
+                    var suggestedSlotText = refreshedSlot?.SuggestedAppointmentAt.HasValue == true
+                        ? $" Khung giờ gần nhất còn trống là {refreshedSlot.SuggestedAppointmentAt.Value:HH:mm dd/MM/yyyy}."
+                        : string.Empty;
+
+                    ModelState.AddModelError(
+                        nameof(BookingCreateViewModel.AppointmentAt),
+                        $"Khung giờ {model.AppointmentAt:HH:mm dd/MM/yyyy} vừa được khách khác giữ trước.{suggestedSlotText}");
+                    PopulateServiceTypeOptions(model.ServiceType);
+                    return View(model);
+                }
+
+                var booking = bookingCreation.Value.Booking;
+                slotEvaluation = bookingCreation.Value.SlotEvaluation;
 
                 TempData["SuccessMessage"] = "Đã ghi nhận yêu cầu đặt lịch của bạn.";
                 TempData["BookingCustomerMessage"] = slotEvaluation.CustomerMessage;
@@ -236,6 +238,50 @@ namespace AutoCarShowroom.Controllers
                     return bookingCode;
                 }
             }
+        }
+
+        private async Task<(Booking? Booking, BookingSlotEvaluationResult? SlotEvaluation)?> CreateBookingWithLockAsync(
+            BookingCreateViewModel model)
+        {
+            await using var transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable);
+
+            var car = await _context.Cars
+                .FirstOrDefaultAsync(item => item.CarID == model.CarId);
+
+            if (car == null || !OrderWorkflow.CanOrder(car))
+            {
+                return null;
+            }
+
+            var slotEvaluation = await _bookingSchedulingService.EvaluateAsync(model.AppointmentAt);
+            if (slotEvaluation.IsFull)
+            {
+                return (null, slotEvaluation);
+            }
+
+            var booking = new Booking
+            {
+                BookingCode = await GenerateBookingCodeAsync(),
+                CarId = car.CarID,
+                CarName = car.CarName,
+                CarImage = car.Image,
+                QuotedPrice = car.Price,
+                CustomerName = model.CustomerName,
+                PhoneNumber = model.PhoneNumber,
+                Email = model.Email,
+                ServiceType = model.ServiceType,
+                AppointmentAt = slotEvaluation.SlotStart,
+                Note = model.Note,
+                BookingStatus = slotEvaluation.InitialStatus,
+                AdminNote = slotEvaluation.AdminNote,
+                CreatedAt = DateTime.Now
+            };
+
+            _context.Bookings.Add(booking);
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return (booking, slotEvaluation);
         }
     }
 }
