@@ -99,7 +99,11 @@ namespace AutoCarShowroom.Services.Chatbot
         {
             var cars = await QueryVisibleCarsLite().ToListAsync();
             var preferredBodyTypes = GetPreferredBodyTypes(criteria.Purpose);
+            var normalizedPreferredBodyTypes = preferredBodyTypes
+                .Select(ChatbotTextParser.Normalize)
+                .ToHashSet(StringComparer.Ordinal);
             var keywordTokens = ChatbotTextParser.TokenizeSearchKeywords(criteria.Keyword);
+            var normalizedRequestedBodyType = ChatbotTextParser.Normalize(criteria.BodyType);
 
             var rankedCars = cars
                 .Where(car => !criteria.ExcludedCarId.HasValue || car.CarID != criteria.ExcludedCarId.Value)
@@ -108,6 +112,7 @@ namespace AutoCarShowroom.Services.Chatbot
                     var score = 0;
                     var matchedReasons = new List<string>();
                     var considerations = new List<string>();
+                    var normalizedCarBodyType = ChatbotTextParser.Normalize(car.BodyType);
 
                     if (!string.IsNullOrWhiteSpace(criteria.Brand) &&
                         string.Equals(criteria.Brand, car.Brand, StringComparison.OrdinalIgnoreCase))
@@ -116,8 +121,8 @@ namespace AutoCarShowroom.Services.Chatbot
                         matchedReasons.Add($"đúng hãng {car.Brand}");
                     }
 
-                    if (!string.IsNullOrWhiteSpace(criteria.BodyType) &&
-                        string.Equals(criteria.BodyType, car.BodyType, StringComparison.OrdinalIgnoreCase))
+                    if (!string.IsNullOrWhiteSpace(normalizedRequestedBodyType) &&
+                        string.Equals(normalizedRequestedBodyType, normalizedCarBodyType, StringComparison.Ordinal))
                     {
                         score += 80;
                         matchedReasons.Add($"thuộc nhóm {car.BodyType}");
@@ -137,7 +142,7 @@ namespace AutoCarShowroom.Services.Chatbot
                         }
                     }
 
-                    if (preferredBodyTypes.Contains(car.BodyType, StringComparer.OrdinalIgnoreCase))
+                    if (normalizedPreferredBodyTypes.Contains(normalizedCarBodyType))
                     {
                         score += 60;
                         matchedReasons.Add($"phù hợp nhu cầu {criteria.Purpose}");

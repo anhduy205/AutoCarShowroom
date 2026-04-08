@@ -1,7 +1,11 @@
-﻿@model IEnumerable<Booking>
+@model IEnumerable<Booking>
 
 @{
     ViewData["Title"] = "Quản lý khách đặt lịch";
+
+    bool CanConfirm(Booking booking) =>
+        booking.BookingStatus == BookingWorkflow.StatusPendingConfirmation ||
+        booking.BookingStatus == BookingWorkflow.StatusRescheduleRequested;
 
     string GetBookingStatusClass(string status) => status switch
     {
@@ -58,7 +62,20 @@
                             <td>@booking.AppointmentAt.ToString("dd/MM/yyyy HH:mm")</td>
                             <td><span class="@GetBookingStatusClass(booking.BookingStatus)">@booking.BookingStatus</span></td>
                             <td>@booking.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
-                            <td>
+                            <td class="d-flex flex-wrap gap-2 justify-content-end">
+                                @if (CanConfirm(booking))
+                                {
+                                    <form asp-action="Confirm" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@booking.BookingId" />
+                                        <button type="submit" class="btn btn-accent btn-sm">Xác nhận</button>
+                                    </form>
+                                }
+                                <form asp-action="Delete" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa lịch hẹn này?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@booking.BookingId" />
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">Xóa</button>
+                                </form>
                                 <a asp-action="Details" asp-route-id="@booking.BookingId" class="btn btn-outline-dark btn-sm">Chi tiết</a>
                             </td>
                         </tr>

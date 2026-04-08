@@ -5,7 +5,10 @@ namespace AutoCarShowroom.ViewModels
 {
     public class RevenueRecordFormViewModel
     {
-        [Range(typeof(decimal), "0.01", "79228162514264337593543950335", ErrorMessage = "Doanh thu phải lớn hơn 0.")]
+        [Range(typeof(decimal), "0.01", "79228162514264337593543950335",
+            ConvertValueInInvariantCulture = true,
+            ParseLimitsInInvariantCulture = true,
+            ErrorMessage = "Doanh thu phải lớn hơn 0.")]
         [Display(Name = "Số tiền")]
         public decimal Amount { get; set; }
 

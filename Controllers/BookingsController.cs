@@ -75,11 +75,30 @@ namespace AutoCarShowroom.Controllers
                 }
 
                 model.Car = BuildPurchaseSummary(car);
+                model.AppointmentAt = BookingWorkflow.NormalizeSlot(model.AppointmentAt);
+
                 ValidateServiceType(model.ServiceType);
 
                 if (model.AppointmentAt <= DateTime.Now)
                 {
                     ModelState.AddModelError(nameof(BookingCreateViewModel.AppointmentAt), "Ngày giờ hẹn phải lớn hơn thời điểm hiện tại.");
+                }
+
+                BookingSlotEvaluationResult? slotEvaluation = null;
+                if (ModelState.IsValid)
+                {
+                    slotEvaluation = await _bookingSchedulingService.EvaluateAsync(model.AppointmentAt);
+
+                    if (slotEvaluation.IsFull)
+                    {
+                        var suggestedSlotText = slotEvaluation.SuggestedAppointmentAt.HasValue
+                            ? $" Khung giờ gần nhất còn trống là {slotEvaluation.SuggestedAppointmentAt.Value:HH:mm dd/MM/yyyy}."
+                            : string.Empty;
+
+                        ModelState.AddModelError(
+                            nameof(BookingCreateViewModel.AppointmentAt),
+                            $"Khung giờ {slotEvaluation.SlotStart:HH:mm dd/MM/yyyy} đã có khách đặt trước.{suggestedSlotText}");
+                    }
                 }
 
                 if (!ModelState.IsValid)
@@ -88,7 +107,8 @@ namespace AutoCarShowroom.Controllers
                     return View(model);
                 }
 
-                var slotEvaluation = await _bookingSchedulingService.EvaluateAsync(model.AppointmentAt);
+                slotEvaluation ??= await _bookingSchedulingService.EvaluateAsync(model.AppointmentAt);
+
                 var booking = new Booking
                 {
                     BookingCode = await GenerateBookingCodeAsync(),
@@ -100,7 +120,7 @@ namespace AutoCarShowroom.Controllers
                     PhoneNumber = model.PhoneNumber,
                     Email = model.Email,
                     ServiceType = model.ServiceType,
-                    AppointmentAt = model.AppointmentAt,
+                    AppointmentAt = slotEvaluation.SlotStart,
                     Note = model.Note,
                     BookingStatus = slotEvaluation.InitialStatus,
                     AdminNote = slotEvaluation.AdminNote,

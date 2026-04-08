@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Gửi yêu cầu đặt lịch";
     ViewData["ChatbotCurrentCarId"] = Model.CarId;
+    var minimumAppointment = BookingWorkflow.NormalizeSlot(DateTime.Now.AddHours(1));
+    var minimumAppointmentValue = minimumAppointment.ToString("yyyy-MM-ddTHH:mm");
 }
 
 <section class="section-block">
@@ -46,7 +48,12 @@
                     </div>
                     <div class="col-md-6">
                         <label asp-for="AppointmentAt" class="form-label"></label>
-                        <input asp-for="AppointmentAt" asp-format="{0:yyyy-MM-ddTHH:mm}" type="datetime-local" class="form-control" />
+                        <input asp-for="AppointmentAt"
+                               asp-format="{0:yyyy-MM-ddTHH:mm}"
+                               type="datetime-local"
+                               class="form-control"
+                               min="@minimumAppointmentValue"
+                               step="3600" />
                         <span asp-validation-for="AppointmentAt" class="text-danger"></span>
                     </div>
                     <div class="col-12">
@@ -74,7 +81,7 @@
                     </div>
                 </article>
             </div>
-            <p class="checkout-note copy-safe copy-safe--compact">Yêu cầu đặt lịch của anh/chị sẽ được tạo ở trạng thái <strong>Chờ xác nhận</strong> hoặc <strong>Đề nghị đổi giờ</strong> nếu khung giờ đã đầy. Chỉ khi Admin xác nhận thì lịch mới được chốt chính thức.</p>
+            <p class="checkout-note copy-safe copy-safe--compact">Mỗi khung giờ chỉ nhận <strong>1 lịch hẹn</strong>. Nếu khung giờ đã có khách đặt trước, hệ thống sẽ yêu cầu anh/chị chọn giờ khác. Lịch chỉ được chốt chính thức sau khi Admin xác nhận.</p>
         </aside>
     </div>
 </section>

@@ -23,7 +23,7 @@ namespace AutoCarShowroom.Services.Chatbot
                 return string.Empty;
             }
 
-            var normalized = value.Normalize(NormalizationForm.FormD);
+            var normalized = ChatbotTextEncodingHelper.NormalizeText(value).Normalize(NormalizationForm.FormD);
             var builder = new StringBuilder(normalized.Length);
 
             foreach (var character in normalized)

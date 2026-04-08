@@ -1,7 +1,10 @@
-﻿@model AdminBookingDetailViewModel
+@model AdminBookingDetailViewModel
 
 @{
     ViewData["Title"] = "Chi tiết lịch hẹn";
+    var canConfirm =
+        Model.Booking.BookingStatus == BookingWorkflow.StatusPendingConfirmation ||
+        Model.Booking.BookingStatus == BookingWorkflow.StatusRescheduleRequested;
 
     string GetBookingStatusClass(string status) => status switch
     {
@@ -65,7 +68,23 @@
         </div>
 
         <aside class="summary-panel">
-            <span class="section-kicker">Cập nhật trạng thái</span>
+            <span class="section-kicker">Thao tác admin</span>
+
+            @if (canConfirm)
+            {
+                <form asp-action="Confirm" method="post" class="app-form mt-4">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Booking.BookingId" />
+                    <button type="submit" class="btn btn-accent w-100">Xác nhận lịch hẹn</button>
+                </form>
+            }
+
+            <form asp-action="Delete" method="post" class="app-form mt-3" onsubmit="return confirm('Bạn có chắc muốn xóa lịch hẹn này?');">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Booking.BookingId" />
+                <button type="submit" class="btn btn-outline-danger w-100">Xóa lịch hẹn</button>
+            </form>
+
             <form asp-action="UpdateStatus" method="post" class="app-form mt-4">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Booking.BookingId" />
@@ -83,7 +102,7 @@
                     <strong>@Model.Booking.QuotedPrice.ToString("N0") VNĐ</strong>
                 </div>
                 <div class="summary-actions">
-                    <button type="submit" class="btn btn-accent">Lưu trạng thái</button>
+                    <button type="submit" class="btn btn-outline-dark">Lưu cập nhật</button>
                 </div>
             </form>
         </aside>

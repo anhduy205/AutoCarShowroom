@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using AutoCarShowroom.Models;
 using AutoCarShowroom.ViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -51,6 +51,8 @@ namespace AutoCarShowroom.Services.Chatbot
                 Note = draft.Note
             };
 
+            model.AppointmentAt = BookingWorkflow.NormalizeSlot(model.AppointmentAt);
+
             var validationResults = new List<ValidationResult>();
             var validationContext = new ValidationContext(model);
             Validator.TryValidateObject(model, validationContext, validationResults, validateAllProperties: true);
@@ -84,6 +86,25 @@ namespace AutoCarShowroom.Services.Chatbot
             }
 
             var slotEvaluation = await _bookingSchedulingService.EvaluateAsync(model.AppointmentAt);
+            if (slotEvaluation.IsFull)
+            {
+                var errors = new List<string>
+                {
+                    $"Khung giờ {slotEvaluation.SlotStart:HH:mm dd/MM/yyyy} đã có khách khác đặt trước."
+                };
+
+                if (slotEvaluation.SuggestedAppointmentAt.HasValue)
+                {
+                    errors.Add($"Anh/chị có thể chọn khung giờ {slotEvaluation.SuggestedAppointmentAt.Value:HH:mm dd/MM/yyyy}.");
+                }
+
+                return new ChatbotBookingCreationResult
+                {
+                    Car = car,
+                    Errors = errors,
+                    SuggestedAppointmentAt = slotEvaluation.SuggestedAppointmentAt
+                };
+            }
 
             var booking = new Booking
             {
@@ -96,7 +117,7 @@ namespace AutoCarShowroom.Services.Chatbot
                 PhoneNumber = model.PhoneNumber,
                 Email = model.Email,
                 ServiceType = model.ServiceType,
-                AppointmentAt = model.AppointmentAt,
+                AppointmentAt = slotEvaluation.SlotStart,
                 Note = model.Note,
                 BookingStatus = slotEvaluation.InitialStatus,
                 AdminNote = slotEvaluation.AdminNote,

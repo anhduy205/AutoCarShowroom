@@ -45,10 +45,12 @@ namespace AutoCarShowroom.Services.Chatbot
             try
             {
                 var json = File.ReadAllText(filePath);
-                return JsonSerializer.Deserialize<List<ChatbotFaqArticle>>(json, new JsonSerializerOptions
+                return (JsonSerializer.Deserialize<List<ChatbotFaqArticle>>(json, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
-                }) ?? [];
+                }) ?? [])
+                    .Select(ChatbotTextEncodingHelper.NormalizeArticle)
+                    .ToList();
             }
             catch
             {

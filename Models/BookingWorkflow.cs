@@ -15,8 +15,8 @@ namespace AutoCarShowroom.Models
         public const string ServiceConsultation = "Tư vấn";
         public const string ServiceTestDrive = "Lái thử";
 
-        public const int MaxRequestsPerSlot = 3;
-        public const int BusySlotThreshold = 2;
+        public const int MaxRequestsPerSlot = 1;
+        public const int BusySlotThreshold = 1;
 
         public static readonly string[] Statuses =
         [
@@ -59,14 +59,16 @@ namespace AutoCarShowroom.Models
         {
             return booking.BookingStatus switch
             {
+                StatusConfirmed =>
+                    "Lịch hẹn của anh/chị đã được Admin xác nhận. Showroom sẽ tiếp đón đúng khung giờ đã chốt.",
                 StatusRescheduleRequested =>
-                    "Yêu cầu đặt lịch của anh/chị đã được ghi nhận, nhưng khung giờ này hiện đã đầy. Showroom đang đề nghị đổi sang khung giờ khác và chờ Admin xác nhận lại.",
+                    "Khung giờ anh/chị chọn đã có khách khác đặt trước. Showroom sẽ liên hệ để đề nghị đổi sang khung giờ khác phù hợp.",
                 StatusRejected =>
                     "Yêu cầu đặt lịch của anh/chị hiện chưa được showroom chấp nhận. Anh/chị vui lòng chờ thông báo tiếp theo từ Admin.",
                 StatusCancelled =>
                     "Lịch hẹn này hiện đã bị hủy. Nếu cần, anh/chị có thể tạo yêu cầu đặt lịch mới.",
                 _ =>
-                    "Yêu cầu đặt lịch của anh/chị đã được ghi nhận và đang chờ Admin xác nhận. Hiện tại lịch này chưa được chốt chính thức."
+                    "Yêu cầu đặt lịch của anh/chị đã được ghi nhận và đang chờ Admin xác nhận. Lịch chỉ được chốt chính thức sau khi Admin duyệt."
             };
         }
     }

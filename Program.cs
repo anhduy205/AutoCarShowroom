@@ -48,7 +48,9 @@ namespace AutoCarShowroom
                         .RequireAssertion(context => InternalAccess.CanAccessRevenue(context.User)));
             });
             builder.Services.Configure<InstallmentOptions>(builder.Configuration.GetSection("InstallmentOptions"));
+            builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("Email"));
             builder.Services.AddScoped<BookingSchedulingService>();
+            builder.Services.AddScoped<BookingEmailService>();
             builder.Services.AddScoped<ChatbotInventoryTools>();
             builder.Services.AddScoped<ChatbotFinanceTools>();
             builder.Services.AddScoped<ChatbotBookingTools>();

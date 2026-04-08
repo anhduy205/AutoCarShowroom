@@ -1,4 +1,4 @@
-﻿using AutoCarShowroom.Models;
+using AutoCarShowroom.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace AutoCarShowroom.Services
@@ -30,28 +30,25 @@ namespace AutoCarShowroom.Services
                 .CountAsync();
 
             var isFull = existingRequests >= BookingWorkflow.MaxRequestsPerSlot;
-            var isBusy = !isFull && existingRequests >= BookingWorkflow.BusySlotThreshold;
             var suggestedSlot = isFull ? await FindNextAvailableSlotAsync(slotStart) : null;
 
             var customerMessage = isFull
-                ? $"Khung giờ {slotStart:HH:mm dd/MM/yyyy} hiện đã đủ số lượng tiếp nhận. Yêu cầu sẽ được ghi nhận ở trạng thái đề nghị đổi giờ và cần chờ Admin xác nhận lại."
-                : isBusy
-                    ? $"Khung giờ {slotStart:HH:mm dd/MM/yyyy} hiện đã có nhiều khách đăng ký. Yêu cầu của khách vẫn được ghi nhận nhưng sẽ cần chờ Admin xác nhận."
-                    : "Yêu cầu đặt lịch sẽ được ghi nhận ở trạng thái chờ xác nhận và cần Admin duyệt lại trước khi chốt lịch chính thức.";
+                ? suggestedSlot.HasValue
+                    ? $"Khung giờ {slotStart:HH:mm dd/MM/yyyy} đã có khách khác đặt trước. Anh/chị vui lòng chọn giờ khác, hoặc tham khảo {suggestedSlot.Value:HH:mm dd/MM/yyyy}."
+                    : $"Khung giờ {slotStart:HH:mm dd/MM/yyyy} đã có khách khác đặt trước. Anh/chị vui lòng chọn giờ khác."
+                : "Yêu cầu đặt lịch sẽ được ghi nhận ở trạng thái chờ xác nhận và cần Admin duyệt lại trước khi chốt lịch chính thức.";
 
             var adminNote = isFull
                 ? suggestedSlot.HasValue
-                    ? $"Khung giờ khách chọn đã đầy. Đề nghị đổi sang {suggestedSlot.Value:dd/MM/yyyy HH:mm}."
-                    : "Khung giờ khách chọn đã đầy. Cần liên hệ khách để đề nghị đổi giờ."
-                : isBusy
-                    ? $"Khung giờ này hiện đã có {existingRequests} yêu cầu chờ/đã xác nhận. Cần Admin kiểm tra khả năng tiếp nhận thực tế."
-                    : null;
+                    ? $"Khung giờ khách chọn đã có lịch khác. Có thể đề xuất đổi sang {suggestedSlot.Value:dd/MM/yyyy HH:mm}."
+                    : "Khung giờ khách chọn đã có lịch khác. Cần liên hệ khách để đổi giờ."
+                : null;
 
             return new BookingSlotEvaluationResult
             {
                 SlotStart = slotStart,
                 ExistingRequests = existingRequests,
-                IsBusy = isBusy,
+                IsBusy = false,
                 IsFull = isFull,
                 SuggestedAppointmentAt = suggestedSlot,
                 InitialStatus = isFull ? BookingWorkflow.StatusRescheduleRequested : BookingWorkflow.StatusPendingConfirmation,
