@@ -4,6 +4,8 @@ namespace AutoCarShowroom.Services.Chatbot
 {
     public sealed class ChatbotSearchCriteria
     {
+        public decimal? MinBudget { get; set; }
+
         public decimal? MaxBudget { get; set; }
 
         public string? Brand { get; set; }
@@ -19,6 +21,17 @@ namespace AutoCarShowroom.Services.Chatbot
         public int? ExcludedCarId { get; set; }
 
         public int MaxResults { get; set; } = 5;
+    }
+
+    public sealed class ChatbotBudgetConstraint
+    {
+        public decimal Amount { get; init; }
+
+        public decimal? MinBudget { get; init; }
+
+        public decimal? MaxBudget { get; init; }
+
+        public string Mode { get; init; } = "under";
     }
 
     public sealed class ChatbotCarMatch

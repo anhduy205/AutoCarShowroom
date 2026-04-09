@@ -978,6 +978,7 @@ namespace AutoCarShowroom.Services.Chatbot
             if (NeedMoreSearchContext(normalizedMessage, state.SearchProfile))
             {
                 state.ActiveMode = "search";
+                state.ActiveIntent = "search";
                 state.PendingField = "search_context";
                 state.ClarifyingQuestionsAsked++;
 
@@ -993,11 +994,14 @@ namespace AutoCarShowroom.Services.Chatbot
             }
 
             state.ActiveMode = null;
+            state.ActiveIntent = "search";
             state.PendingField = null;
 
             var searchCriteria = new ChatbotSearchCriteria
             {
-                MaxBudget = state.SearchProfile.Budget,
+                MinBudget = state.SearchProfile.MinBudget,
+                MaxBudget = state.SearchProfile.MaxBudget ?? state.SearchProfile.Budget,
+                Brand = state.SearchProfile.Brand,
                 BodyType = state.SearchProfile.BodyType,
                 SeatCount = state.SearchProfile.SeatCount,
                 Purpose = state.SearchProfile.Purpose,
@@ -1040,7 +1044,13 @@ namespace AutoCarShowroom.Services.Chatbot
 
         private static bool NeedMoreSearchContext(string normalizedMessage, ChatbotSearchProfile profile)
         {
-            if (!string.IsNullOrWhiteSpace(profile.BodyType) || !string.IsNullOrWhiteSpace(profile.Purpose) || profile.Budget.HasValue || profile.SeatCount.HasValue)
+            if (!string.IsNullOrWhiteSpace(profile.BodyType)
+                || !string.IsNullOrWhiteSpace(profile.Purpose)
+                || !string.IsNullOrWhiteSpace(profile.Brand)
+                || profile.Budget.HasValue
+                || profile.MinBudget.HasValue
+                || profile.MaxBudget.HasValue
+                || profile.SeatCount.HasValue)
             {
                 return false;
             }
@@ -1057,10 +1067,13 @@ namespace AutoCarShowroom.Services.Chatbot
 
         private static void MergeSearchProfile(ChatbotSearchProfile profile, string message, string normalizedMessage)
         {
-            var budget = ChatbotTextParser.ExtractMoneyValue(message);
-            if (budget.HasValue)
+            var budgetConstraint = ChatbotTextParser.ExtractBudgetConstraint(message);
+            if (budgetConstraint != null)
             {
-                profile.Budget = budget;
+                profile.Budget = budgetConstraint.Amount;
+                profile.MinBudget = budgetConstraint.MinBudget;
+                profile.MaxBudget = budgetConstraint.MaxBudget;
+                profile.BudgetMode = budgetConstraint.Mode;
             }
 
             var bodyType = ExtractBodyType(normalizedMessage);
@@ -1079,6 +1092,12 @@ namespace AutoCarShowroom.Services.Chatbot
             if (seatCount.HasValue)
             {
                 profile.SeatCount = seatCount;
+            }
+
+            var brand = ExtractBrand(normalizedMessage);
+            if (!string.IsNullOrWhiteSpace(brand))
+            {
+                profile.Brand = brand;
             }
 
             profile.RawKeywords = message.Trim();
@@ -1116,6 +1135,12 @@ namespace AutoCarShowroom.Services.Chatbot
                 normalizedMessage.Contains(keyword, StringComparison.Ordinal));
         }
 
+        private static string? ExtractBrand(string normalizedMessage)
+        {
+            return KnownBrandKeywords.FirstOrDefault(brand =>
+                normalizedMessage.Contains(ChatbotTextParser.Normalize(brand), StringComparison.Ordinal));
+        }
+
         private static bool ShouldResetSearchProfile(string normalizedMessage, ChatbotConversationState state)
         {
             if (!HasSearchProfile(state.SearchProfile))
@@ -1137,12 +1162,19 @@ namespace AutoCarShowroom.Services.Chatbot
                 return false;
             }
 
+            if (ShouldContinueCurrentSearch(normalizedMessage, state.SearchProfile))
+            {
+                return false;
+            }
+
             return LooksLikeFreshSearchRequest(normalizedMessage) || IsInventoryOverviewIntent(normalizedMessage);
         }
 
         private static bool HasSearchProfile(ChatbotSearchProfile profile)
         {
             return profile.Budget.HasValue
+                   || profile.MinBudget.HasValue
+                   || profile.MaxBudget.HasValue
                    || profile.SeatCount.HasValue
                    || !string.IsNullOrWhiteSpace(profile.BodyType)
                    || !string.IsNullOrWhiteSpace(profile.Purpose)
@@ -1150,8 +1182,38 @@ namespace AutoCarShowroom.Services.Chatbot
                    || !string.IsNullOrWhiteSpace(profile.RawKeywords);
         }
 
+        private static bool ShouldContinueCurrentSearch(string normalizedMessage, ChatbotSearchProfile currentProfile)
+        {
+            if (!HasSearchProfile(currentProfile))
+            {
+                return false;
+            }
+
+            if (ChatbotTextParser.ExtractBudgetConstraint(normalizedMessage) != null)
+            {
+                return false;
+            }
+
+            if (ChatbotTextParser.ContainsAny(normalizedMessage, "xe moi", "doi cau hoi", "cau hoi moi"))
+            {
+                return false;
+            }
+
+            if (ChatbotTextParser.ContainsAny(normalizedMessage, "them", "loc them", "bo sung", "doi sang", "con"))
+            {
+                return HasSearchTraits(normalizedMessage);
+            }
+
+            return IsAttributeOnlySearchMessage(normalizedMessage);
+        }
+
         private static bool LooksLikeFreshSearchRequest(string normalizedMessage)
         {
+            if (ChatbotTextParser.ExtractBudgetConstraint(normalizedMessage) != null)
+            {
+                return true;
+            }
+
             return ChatbotTextParser.ContainsAny(
                 normalizedMessage,
                 "toi can",
@@ -1161,19 +1223,48 @@ namespace AutoCarShowroom.Services.Chatbot
                 "goi y xe",
                 "tu van xe",
                 "tim xe",
-                "7 cho",
-                "5 cho",
-                "sedan",
-                "suv",
-                "mpv",
-                "crossover",
-                "hatchback",
-                "ban tai",
-                "gia dinh",
-                "di lam",
-                "hang ngay",
-                "di pho",
-                "tiet kiem");
+                "xe nao hop",
+                "xe nao tot",
+                "tu van mua xe",
+                "goi y mau xe",
+                "tim mau xe");
+        }
+
+        private static bool IsAttributeOnlySearchMessage(string normalizedMessage)
+        {
+            if (string.IsNullOrWhiteSpace(normalizedMessage))
+            {
+                return false;
+            }
+
+            if (ChatbotTextParser.ContainsAny(
+                    normalizedMessage,
+                    "toi can",
+                    "toi muon",
+                    "can xe",
+                    "muon xe",
+                    "goi y xe",
+                    "tu van xe",
+                    "tim xe"))
+            {
+                return false;
+            }
+
+            var tokens = ChatbotTextParser.TokenizeNormalizedWords(normalizedMessage);
+            if (tokens.Count == 0 || tokens.Count > 4)
+            {
+                return false;
+            }
+
+            return HasSearchTraits(normalizedMessage);
+        }
+
+        private static bool HasSearchTraits(string normalizedMessage)
+        {
+            return !string.IsNullOrWhiteSpace(ExtractBodyType(normalizedMessage))
+                   || !string.IsNullOrWhiteSpace(ExtractPurpose(normalizedMessage))
+                   || !string.IsNullOrWhiteSpace(ExtractBrand(normalizedMessage))
+                   || ChatbotTextParser.ExtractSeatCount(normalizedMessage).HasValue;
         }
 
         private static bool IsBookingIntent(string normalizedMessage)
@@ -1272,14 +1363,20 @@ namespace AutoCarShowroom.Services.Chatbot
             ChatbotSearchProfile profile)
         {
             var summaryParts = new List<string>();
-            if (profile.Budget.HasValue)
+            var budgetSummary = BuildBudgetSummary(profile);
+            if (!string.IsNullOrWhiteSpace(budgetSummary))
             {
-                summaryParts.Add($"ngân sách khoảng {profile.Budget.Value:N0} VNĐ");
+                summaryParts.Add(budgetSummary);
             }
 
             if (!string.IsNullOrWhiteSpace(profile.Purpose))
             {
                 summaryParts.Add($"nhu cầu {profile.Purpose}");
+            }
+
+            if (!string.IsNullOrWhiteSpace(profile.Brand))
+            {
+                summaryParts.Add($"hãng {profile.Brand}");
             }
 
             if (!string.IsNullOrWhiteSpace(profile.BodyType))
@@ -1309,6 +1406,28 @@ namespace AutoCarShowroom.Services.Chatbot
             builder.Append("Bước tiếp theo: anh/chị có thể mở chi tiết, so sánh 2 mẫu đầu hoặc đặt lịch xem xe cho mẫu đang ưng ý.");
 
             return builder.ToString().Trim();
+        }
+
+        private static string? BuildBudgetSummary(ChatbotSearchProfile profile)
+        {
+            if (profile.MinBudget.HasValue && profile.MaxBudget.HasValue)
+            {
+                return $"tầm giá từ {profile.MinBudget.Value:N0} đến {profile.MaxBudget.Value:N0} VNĐ";
+            }
+
+            if (profile.MinBudget.HasValue)
+            {
+                return $"mức giá từ {profile.MinBudget.Value:N0} VNĐ trở lên";
+            }
+
+            if (profile.MaxBudget.HasValue)
+            {
+                return $"ngân sách dưới {profile.MaxBudget.Value:N0} VNĐ";
+            }
+
+            return profile.Budget.HasValue
+                ? $"ngân sách khoảng {profile.Budget.Value:N0} VNĐ"
+                : null;
         }
 
         private static string BuildSuggestionReason(ChatbotCarMatch match)

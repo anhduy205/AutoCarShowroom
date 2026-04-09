@@ -85,6 +85,49 @@ namespace AutoCarShowroom.Services.Chatbot
             return null;
         }
 
+        public static ChatbotBudgetConstraint? ExtractBudgetConstraint(string? message)
+        {
+            var amount = ExtractMoneyValue(message);
+            if (!amount.HasValue)
+            {
+                return null;
+            }
+
+            var normalizedMessage = Normalize(message);
+            if (string.IsNullOrWhiteSpace(normalizedMessage))
+            {
+                return null;
+            }
+
+            if (ContainsAny(normalizedMessage, "tren", "tro len", "it nhat", "toi thieu") ||
+                Regex.IsMatch(normalizedMessage, @"\btu\s+\d"))
+            {
+                return new ChatbotBudgetConstraint
+                {
+                    Amount = amount.Value,
+                    MinBudget = amount.Value,
+                    Mode = "over"
+                };
+            }
+
+            if (ContainsAny(normalizedMessage, "khoang", "tam", "quanh", "gan"))
+            {
+                return new ChatbotBudgetConstraint
+                {
+                    Amount = amount.Value,
+                    MaxBudget = amount.Value,
+                    Mode = "around"
+                };
+            }
+
+            return new ChatbotBudgetConstraint
+            {
+                Amount = amount.Value,
+                MaxBudget = amount.Value,
+                Mode = "under"
+            };
+        }
+
         public static int? ExtractTermMonths(string? message)
         {
             var normalizedMessage = Normalize(message);

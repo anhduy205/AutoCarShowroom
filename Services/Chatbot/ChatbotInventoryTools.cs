@@ -104,9 +104,25 @@ namespace AutoCarShowroom.Services.Chatbot
                 .ToHashSet(StringComparer.Ordinal);
             var keywordTokens = ChatbotTextParser.TokenizeSearchKeywords(criteria.Keyword);
             var normalizedRequestedBodyType = ChatbotTextParser.Normalize(criteria.BodyType);
-
-            var rankedCars = cars
+            var filteredCars = cars
                 .Where(car => !criteria.ExcludedCarId.HasValue || car.CarID != criteria.ExcludedCarId.Value)
+                .Where(car => string.IsNullOrWhiteSpace(criteria.Brand)
+                    || string.Equals(criteria.Brand, car.Brand, StringComparison.OrdinalIgnoreCase))
+                .Where(car => string.IsNullOrWhiteSpace(normalizedRequestedBodyType)
+                    || string.Equals(normalizedRequestedBodyType, ChatbotTextParser.Normalize(car.BodyType), StringComparison.Ordinal))
+                .Where(car => !criteria.SeatCount.HasValue
+                    || (!string.IsNullOrWhiteSpace(car.Seats)
+                        && car.Seats.Contains(criteria.SeatCount.Value.ToString(), StringComparison.OrdinalIgnoreCase)))
+                .Where(car => !criteria.MinBudget.HasValue || car.Price >= criteria.MinBudget.Value)
+                .Where(car => !criteria.MaxBudget.HasValue || car.Price <= criteria.MaxBudget.Value)
+                .ToList();
+
+            if (filteredCars.Count == 0)
+            {
+                return [];
+            }
+
+            var rankedCars = filteredCars
                 .Select(car =>
                 {
                     var score = 0;
@@ -114,15 +130,13 @@ namespace AutoCarShowroom.Services.Chatbot
                     var considerations = new List<string>();
                     var normalizedCarBodyType = ChatbotTextParser.Normalize(car.BodyType);
 
-                    if (!string.IsNullOrWhiteSpace(criteria.Brand) &&
-                        string.Equals(criteria.Brand, car.Brand, StringComparison.OrdinalIgnoreCase))
+                    if (!string.IsNullOrWhiteSpace(criteria.Brand))
                     {
                         score += 90;
                         matchedReasons.Add($"đúng hãng {car.Brand}");
                     }
 
-                    if (!string.IsNullOrWhiteSpace(normalizedRequestedBodyType) &&
-                        string.Equals(normalizedRequestedBodyType, normalizedCarBodyType, StringComparison.Ordinal))
+                    if (!string.IsNullOrWhiteSpace(normalizedRequestedBodyType))
                     {
                         score += 80;
                         matchedReasons.Add($"thuộc nhóm {car.BodyType}");
@@ -130,16 +144,8 @@ namespace AutoCarShowroom.Services.Chatbot
 
                     if (criteria.SeatCount.HasValue)
                     {
-                        if (car.Seats.Contains(criteria.SeatCount.Value.ToString(), StringComparison.OrdinalIgnoreCase))
-                        {
-                            score += 75;
-                            matchedReasons.Add($"có phương án {criteria.SeatCount.Value} chỗ");
-                        }
-                        else
-                        {
-                            considerations.Add($"không nổi bật theo nhu cầu {criteria.SeatCount.Value} chỗ");
-                            score -= 20;
-                        }
+                        score += 75;
+                        matchedReasons.Add($"có phương án {criteria.SeatCount.Value} chỗ");
                     }
 
                     if (normalizedPreferredBodyTypes.Contains(normalizedCarBodyType))
@@ -148,19 +154,16 @@ namespace AutoCarShowroom.Services.Chatbot
                         matchedReasons.Add($"phù hợp nhu cầu {criteria.Purpose}");
                     }
 
+                    if (criteria.MinBudget.HasValue)
+                    {
+                        score += 70;
+                        matchedReasons.Add($"nằm trong mức giá từ {criteria.MinBudget.Value:N0} VNĐ");
+                    }
+
                     if (criteria.MaxBudget.HasValue)
                     {
-                        if (car.Price <= criteria.MaxBudget.Value)
-                        {
-                            score += 70;
-                            matchedReasons.Add($"nằm trong ngân sách khoảng {criteria.MaxBudget.Value:N0} VNĐ");
-                        }
-                        else
-                        {
-                            var gap = car.Price - criteria.MaxBudget.Value;
-                            considerations.Add($"giá cao hơn ngân sách khoảng {gap:N0} VNĐ");
-                            score -= 40;
-                        }
+                        score += 70;
+                        matchedReasons.Add($"nằm trong ngân sách đến khoảng {criteria.MaxBudget.Value:N0} VNĐ");
                     }
 
                     if (keywordTokens.Count > 0)

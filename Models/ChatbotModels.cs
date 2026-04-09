@@ -99,6 +99,12 @@
     {
         public decimal? Budget { get; set; }
 
+        public decimal? MinBudget { get; set; }
+
+        public decimal? MaxBudget { get; set; }
+
+        public string? BudgetMode { get; set; }
+
         public string? Purpose { get; set; }
 
         public string? BodyType { get; set; }
